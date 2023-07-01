@@ -1,0 +1,74 @@
+{
+  "name": "formalizer",
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
+  "sourceRoot": "apps/formalizer/src",
+  "projectType": "application",
+  "targets": {
+    "build": {
+      "executor": "@nx/rspack:rspack",
+      "outputs": ["{options.outputPath}"],
+      "defaultConfiguration": "production",
+      "options": {
+        "target": "web",
+        "outputPath": "dist/apps/formalizer",
+        "main": "apps/formalizer/src/main.tsx",
+        "tsConfig": "apps/formalizer/tsconfig.app.json",
+        "rspackConfig": "apps/formalizer/rspack.config.js",
+        "assets": [
+          "apps/formalizer/src/favicon.ico",
+          "apps/formalizer/src/assets"
+        ]
+      },
+      "configurations": {
+        "development": {
+          "mode": "development"
+        },
+        "production": {
+          "mode": "production",
+          "optimization": true,
+          "sourceMap": false
+        }
+      }
+    },
+    "serve": {
+      "executor": "@nx/rspack:dev-server",
+      "options": {
+        "buildTarget": "formalizer:build:development"
+      },
+      "configurations": {
+        "development": {},
+        "production": {
+          "buildTarget": "formalizer:build:production"
+        }
+      }
+    },
+    "lint": {
+      "executor": "@nx/linter:eslint",
+      "outputs": ["{options.outputFile}"],
+      "options": {
+        "lintFilePatterns": ["apps/formalizer/**/*.{ts,tsx,js,jsx}"]
+      }
+    },
+    "serve-static": {
+      "executor": "@nx/web:file-server",
+      "options": {
+        "buildTarget": "formalizer:build"
+      }
+    },
+    "test": {
+      "executor": "@nx/jest:jest",
+      "outputs": ["{workspaceRoot}/coverage/{projectRoot}"],
+      "options": {
+        "jestConfig": "apps/formalizer/jest.config.ts",
+        "passWithNoTests": true
+      },
+      "configurations": {
+        "ci": {
+          "ci": true,
+          "codeCoverage": true
+        }
+      }
+    }
+  },
+  "tags": []
+}

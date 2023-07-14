@@ -18,6 +18,29 @@ import { applyPathAndIdToModel } from './apply-path-and-id-to-model';
 import { extendClientModel } from './extend-client-model';
 import { getModelValue } from './get-model-value';
 
+const bailReports = (model: FormalizedModel, parent?: FormalizedModel) => {
+  let bailEarly = false;
+
+  // If trying to create a type that does not exist
+  if (!coreModelTypes.includes(model.type)) {
+    console.warn(
+      `The model: "${model.name}" has an invalid type: "${model.type}"`
+    );
+
+    bailEarly = true;
+  }
+
+  // If parent exists and type is not accepted - bail and warn
+  if (parent && (!parent.accepts || !parent?.accepts?.includes(model.type))) {
+    console.warn(
+      `The model: "${parent.id}" does not accept the child: "${model.name}" with the type "${model.type}"`
+    );
+    bailEarly = true;
+  }
+
+  return bailEarly;
+};
+
 export type CreateFormalizerModelResult = {
   model?: FormalizedModel;
   modelIdMap?: FormalizerModelIdMap;
@@ -57,19 +80,8 @@ export const createFormalizerModel = ({
   }
 
   // Bail early scenarios as we touch directly into modelIdMap object
-
-  // If trying to create a type that does not exist
-  if (!coreModelTypes.includes(_model.type)) {
-    console.warn(
-      `The model: "${_model.name}" has an invalid type: "${_model.type}"`
-    );
-  }
-
-  // If parent exists and type is not accepted - bail and warn
-  if (parent && (!parent.accepts || !parent?.accepts?.includes(_model.type))) {
-    console.warn(
-      `The model: "${parent.id}" does not accept the child: "${_model.name}" with the type "${_model.type}"`
-    );
+  const bailEarly = bailReports(_model, parent);
+  if (bailEarly) {
     return { model: undefined, modelIdMap };
   }
 
@@ -158,7 +170,7 @@ export const createFormalizerModel = ({
   }
 
   // Ensure value is set properly for data parent type models
-  const modelValue = getModelValue({ model: instanceModel });
+  const modelValue = getModelValue({ model: instanceModel, options });
   instanceModel.value = modelValue;
 
   // Create the observable model that will enable listeners on each model

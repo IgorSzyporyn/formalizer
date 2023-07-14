@@ -38,26 +38,22 @@ export const transformCoreProperties = ({
 
   // Convert defaultValue property if present
   if (model.defaultValue !== undefined) {
-    const newDefaultValue = model.rawToValue?.({
+    model.defaultValue = model.valueToRaw?.({
       model,
       options,
       value: model.defaultValue,
     });
 
-    model.defaultValue = newDefaultValue;
-
-    onChange({ model, property: 'defaultValue', value: newDefaultValue });
+    onChange({ model, property: 'defaultValue', value: model.defaultValue });
   }
 
   // Convert defaultValue property if present
   if (model.emptyValue !== undefined) {
-    const newEmptyValue = model.rawToValue?.({
+    model.emptyValue = model.valueToRaw?.({
       model,
       options,
       value: model.emptyValue,
     });
-
-    model.emptyValue = newEmptyValue;
 
     onChange({ model, property: 'emptyValue', value: model.emptyValue });
   }

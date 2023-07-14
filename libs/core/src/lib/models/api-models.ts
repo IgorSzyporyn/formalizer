@@ -1,4 +1,4 @@
-import { isArray, isEmpty } from 'lodash';
+import { isArray, isEmpty, isObject } from 'lodash';
 import { ApiModelInterface } from '../types/model-types';
 
 export const apiModel: ApiModelInterface = {
@@ -195,7 +195,7 @@ export const apiModel: ApiModelInterface = {
           | null;
       }
 
-      if (isArray(value)) {
+      if (isObject(value)) {
         raw = value;
       } else if (typeof value === 'string') {
         raw = model.serialize ? value : JSON.parse(value);

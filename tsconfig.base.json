@@ -14,7 +14,17 @@
     "skipLibCheck": true,
     "skipDefaultLibCheck": true,
     "baseUrl": ".",
-    "paths": {}
+    "paths": {
+      "@formalizer/components": ["libs/shared/components/src/index.ts"],
+      "@formalizer/core": ["libs/core/src/index.ts"],
+      "@formalizer/designer": ["libs/designer/src/index.ts"],
+      "@formalizer/hooks": ["libs/shared/hooks/src/index.ts"],
+      "@formalizer/models": ["libs/shared/ui-models/src/index.ts"],
+      "@formalizer/react": ["libs/extensions/react/src/index.ts"],
+      "@formalizer/theme": ["libs/shared/theme/src/index.ts"],
+      "@formalizer/ui-models": ["libs/shared/ui-models/src/index.ts"],
+      "@formalizer/utils": ["libs/shared/utils/src/index.ts"]
+    }
   },
   "exclude": ["node_modules", "tmp"]
 }

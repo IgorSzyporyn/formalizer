@@ -41,17 +41,18 @@
   "generators": {
     "@nx/react": {
       "application": {
-        "style": "styled-components",
+        "style": "emotion",
         "linter": "eslint",
         "bundler": "rspack",
         "babel": true
       },
       "component": {
-        "style": "styled-components"
+        "style": "emotion"
       },
       "library": {
-        "style": "styled-components",
-        "linter": "eslint"
+        "style": "emotion",
+        "linter": "eslint",
+        "unitTestRunner": "jest"
       }
     }
   }

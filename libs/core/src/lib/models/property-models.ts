@@ -133,7 +133,7 @@ export const propertiesModel: PropertyModelInterface = {
     defaultValue: false,
     description: 'Hides the model entry',
     readonly: false,
-    options: ['true', 'false'],
+    options: [true, false],
   },
   collapsed: {
     type: 'option',
@@ -143,7 +143,7 @@ export const propertiesModel: PropertyModelInterface = {
     defaultValue: false,
     description: 'Hides the model items',
     readonly: false,
-    options: ['true', 'false'],
+    options: [true, false],
   },
   fullWidth: {
     type: 'option',
@@ -153,7 +153,7 @@ export const propertiesModel: PropertyModelInterface = {
     defaultValue: false,
     description: 'Does field take up full width',
     readonly: false,
-    options: ['true', 'false'],
+    options: [true, false],
   },
   inline: {
     type: 'option',
@@ -163,7 +163,7 @@ export const propertiesModel: PropertyModelInterface = {
     defaultValue: false,
     description: 'Is field inline',
     readonly: false,
-    options: ['true', 'false'],
+    options: [true, false],
   },
   nullable: {
     type: 'option',
@@ -173,7 +173,7 @@ export const propertiesModel: PropertyModelInterface = {
     defaultValue: false,
     description: 'Enable nullability on data',
     readonly: false,
-    options: ['true', 'false'],
+    options: [true, false],
   },
   layoutOnly: {
     type: 'options',
@@ -183,7 +183,7 @@ export const propertiesModel: PropertyModelInterface = {
     defaultValue: false,
     description: 'Only use as layout for children',
     readonly: false,
-    options: ['true', 'false'],
+    options: [true, false],
   },
   multiple: {
     type: 'option',
@@ -193,7 +193,7 @@ export const propertiesModel: PropertyModelInterface = {
     defaultValue: false,
     description: 'Allow multiple values',
     readonly: false,
-    options: ['true', 'false'],
+    options: [true, false],
   },
   readonly: {
     type: 'option',
@@ -203,7 +203,7 @@ export const propertiesModel: PropertyModelInterface = {
     defaultValue: false,
     description: 'Is field readonly',
     readonly: false,
-    options: ['true', 'false'],
+    options: [true, false],
   },
   serialize: {
     type: 'option',
@@ -213,7 +213,7 @@ export const propertiesModel: PropertyModelInterface = {
     defaultValue: false,
     description: 'Save field data serialized',
     readonly: false,
-    options: ['true', 'false'],
+    options: [true, false],
   },
   serializeDelimiter: {
     type: 'text',

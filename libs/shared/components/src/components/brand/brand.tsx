@@ -1,4 +1,3 @@
-import { Box } from '@mui/material';
 import * as Styled from './styled';
 
 type BrandProps = {

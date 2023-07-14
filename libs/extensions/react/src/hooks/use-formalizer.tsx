@@ -36,17 +36,17 @@ export const useFormalizer = ({
   const handleChange = (e: ChangeEvent<unknown>) => {
     e.stopPropagation?.();
 
-    const _target = e.target as unknown;
-    const target = _target as FormalizedModel;
-
+    const target = e.target as HTMLInputElement;
     const targetModel = formalizer?.getModel(target.id);
+    const value = target.value;
 
     if (targetModel) {
-      targetModel.value = target.value;
+      targetModel.value = targetModel.valueToRaw?.({
+        model: targetModel,
+        value: value,
+      });
     }
   };
-
-  window.B = formalizer;
 
   return {
     formalizer: formalizer,

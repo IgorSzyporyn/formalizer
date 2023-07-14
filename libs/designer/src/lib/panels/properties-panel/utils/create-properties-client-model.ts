@@ -19,15 +19,9 @@ type CreatePropertiesModelProps = {
 export const createPropertiesClientModel = ({
   model,
 }: CreatePropertiesModelProps) => {
-  const propertiesModelRoot: ClientModel = {
-    name: 'root',
-    type: 'root',
-    items: [],
-  };
-
   const propertiesModel: ClientModel = {
     name: `${model?.name}`,
-    type: 'form',
+    type: 'root',
     items: [],
   };
 
@@ -79,7 +73,5 @@ export const createPropertiesClientModel = ({
     });
   }
 
-  propertiesModelRoot.items?.push(propertiesModel);
-
-  return propertiesModelRoot;
+  return propertiesModel;
 };

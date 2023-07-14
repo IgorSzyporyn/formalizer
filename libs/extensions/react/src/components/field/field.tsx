@@ -1,8 +1,4 @@
-import {
-  CoreModelType,
-  ExtraProperties,
-  FormalizedModel,
-} from '@formalizer/core';
+import { ExtraProperties, FormalizedModel } from '@formalizer/core';
 import { cloneDeep } from 'lodash';
 import {
   ChangeEvent,
@@ -10,11 +6,21 @@ import {
   useCallback,
   useContext,
   useEffect,
-  useRef,
   useState,
 } from 'react';
 import { FormalizerContext } from '../../context/formalizer-context';
+import { useListener } from '../../hooks/use-listener';
 import { FieldChildProps, FormalizerComponentProps } from '../../types';
+
+const toJSON = (model?: FormalizedModel) => {
+  let _model: FormalizedModel | undefined = undefined;
+
+  if (model) {
+    _model = JSON.parse(JSON.stringify(model));
+  }
+
+  return _model;
+};
 
 type FieldProps = {
   id?: string;
@@ -28,8 +34,6 @@ type FieldProps = {
 };
 
 export const Field = ({ id, children, onChange, onBlur }: FieldProps) => {
-  const initialized = useRef(false);
-
   const {
     formalizer,
     framework: _framework,
@@ -37,12 +41,10 @@ export const Field = ({ id, children, onChange, onBlur }: FieldProps) => {
     handleChange: _handleChange,
   } = useContext(FormalizerContext);
 
+  const options = formalizer?.getOptions();
   const model = formalizer?.getModel(id);
-  const value = model?.value;
-
-  const [modelType, setModelType] = useState<CoreModelType | undefined>(
-    model?.type
-  );
+  const [state, setState] = useState(toJSON(model));
+  const listener = useListener(model);
 
   const handleBlur = useCallback(
     (e: ChangeEvent<unknown>) => {
@@ -60,49 +62,37 @@ export const Field = ({ id, children, onChange, onBlur }: FieldProps) => {
     [_handleChange, onChange]
   );
 
+  const handleStateChange = (_model?: FormalizedModel) => {
+    if (_model) {
+      const newState = toJSON(_model);
+      setState(newState);
+    }
+  };
+
   let extraProperties: ExtraProperties = {};
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   let Component: any;
 
-  if (model && modelType && _framework?.[modelType]) {
-    const framework = _framework?.[modelType];
+  if (model && _framework?.[model.type]) {
+    const framework = _framework?.[model.type];
     const frameworkProperties = framework?.(model) || {};
 
     extraProperties = frameworkProperties.extraProperties || {};
     Component = frameworkProperties.Component;
   }
 
-  const addListener = useCallback(() => {
-    model?.addListener?.({
-      property: 'type',
-      id: `react-component-field-${model.id}-type`,
-      callback: ({ value }) => {
-        setModelType(value as CoreModelType);
-      },
-    });
-  }, [model]);
-
   useEffect(() => {
-    if (!initialized.current) {
-      addListener();
-      initialized.current = true;
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+    handleStateChange(listener.model);
+  }, [listener]);
 
-  useEffect(() => {
-    if (model?.type !== modelType) {
-      setModelType(model?.type);
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [model]);
+  const value = model?.rawToValue?.({ model, value: state?.value, options });
 
   return model && Component
     ? children?.({
         props: {
           ...cloneDeep(extraProperties),
-          id: model?.id || '',
-          name: model?.name || '',
+          id: state?.id || '',
+          name: state?.name || '',
           value: value,
           onChange: handleChange,
           onBlur: handleBlur,

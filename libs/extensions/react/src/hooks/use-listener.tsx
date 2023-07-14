@@ -1,5 +1,4 @@
 import {
-  ApiValue,
   ClientModel,
   FormalizedModel,
   PropertyModelType,

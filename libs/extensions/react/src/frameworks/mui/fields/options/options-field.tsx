@@ -44,8 +44,8 @@ export const OptionsField = (props: FormalizerComponentProps) => {
       >
         {model?.options?.map((option) => {
           return (
-            <MenuItem key={option} value={option}>
-              {option}
+            <MenuItem key={option} value={String(option)}>
+              {String(option)}
             </MenuItem>
           );
         })}

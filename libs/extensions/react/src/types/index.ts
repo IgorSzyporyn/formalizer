@@ -1,7 +1,7 @@
 import {
+  FormalizedModel,
   FormalizerCore,
   FormalizerFrameworkModel,
-  FormalizedModel,
   FormalizerState,
 } from '@formalizer/core';
 import { ChangeEvent } from 'react';

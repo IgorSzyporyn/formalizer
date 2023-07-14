@@ -1,6 +1,6 @@
 import { FormalizerComponentProps } from '../../../../types';
 import * as Styled from './styled';
-import { FieldWrapper } from '../../../../components/field-wrapper/field-wrapper';
+import { FieldWrapper } from '../../field-wrapper/field-wrapper';
 import { ChangeEvent } from 'react';
 
 export const TextField = (props: FormalizerComponentProps) => {

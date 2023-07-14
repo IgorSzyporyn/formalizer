@@ -1,4 +1,4 @@
-import { FieldWrapper } from '../../../../components/field-wrapper/field-wrapper';
+import { FieldWrapper } from '../../field-wrapper/field-wrapper';
 import { FormalizerComponentProps } from '../../../../types';
 import { CreateChildren } from '../../../../components/create-children/create-children';
 

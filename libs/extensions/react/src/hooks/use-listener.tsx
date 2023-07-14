@@ -55,7 +55,7 @@ export const useListener = (model?: FormalizedModel) => {
   useEffect(() => {
     removeListeners(listener.lastId);
 
-    if (model?.id && model?.id !== listener.lastId) {
+    if (model?.id) {
       addListeners(model?.id);
 
       if (!initialized.current) {
@@ -66,12 +66,10 @@ export const useListener = (model?: FormalizedModel) => {
     }
 
     return () => {
-      if (model?.id) {
-        removeListeners(model?.id);
-      }
+      removeListeners(model?.id);
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [model]);
+  }, [model?.id]);
 
   return listener;
 };

@@ -40,6 +40,8 @@ export const setItemsProperty = ({
     let newItems: FormalizedModel[] = [];
 
     const isAdding = model.items.length < items.length;
+    const isRemoving = model.items.length > items.length;
+    const isShuffling = model.items.length === items.length;
 
     if (isAdding) {
       const isAddedModel = ({ item }: { item: FormalizedModel }) =>
@@ -75,22 +77,27 @@ export const setItemsProperty = ({
               dataParentId,
             });
 
+            rest.modelIdMap = formalized.modelIdMap;
+            rest.modelPathMap = formalized.modelPathMap;
+
             if (formalized.model) {
               applyDependencies({
                 model: item,
                 modelIdMap: formalized.modelIdMap,
               });
 
-              applyValues({
-                config: rest.config,
-                options: rest.options,
-                modelIdMap: formalized.modelIdMap,
-                modelPathMap: formalized.modelPathMap,
-              });
+              applyValues(rest);
 
               preparedModelsArray[index] = formalized.model;
             }
           } else {
+            // Check if this model item is allowed in parent
+            if (!model.accepts?.includes(item.type)) {
+              throw Error(
+                `Attempting to an unaccepted item (${item.id}) on to ${model.id}`
+              );
+            }
+
             updateRelations({
               ...rest,
               model: item,
@@ -105,7 +112,7 @@ export const setItemsProperty = ({
       newItems = preparedModelsArray;
       model.items = newItems;
       onChange({ model, property: 'items', value: newItems });
-    } else {
+    } else if (isRemoving) {
       // Find the removed items
       const removedItems = model.items.filter((item) => {
         return !items.map((m) => m.id).includes(item.id);
@@ -157,6 +164,78 @@ export const setItemsProperty = ({
       // Apply values last or arrays and objects will fault in trying
       // to set values for items that are no longer there
       applyValues(rest);
+    } else if (isShuffling) {
+      // We could be given new client models as well as models
+      // from other parents - no way of knowing for sure
+      const preparedModelsArray = new Array(items.length);
+
+      items.forEach((item, index) => {
+        const dataParentId = model.path ? model.id : model.dataParentId;
+        const dataParentModel = rest.modelIdMap?.[dataParentId || ''];
+
+        if (!item.__formalized__) {
+          // Brand new client model being pumped in
+          const formalized = createFormalizerModel({
+            ...rest,
+            model: item,
+            parentId: model.id,
+            index,
+            dataParentId,
+          });
+
+          rest.modelIdMap = formalized.modelIdMap;
+          rest.modelPathMap = formalized.modelPathMap;
+
+          if (formalized.model) {
+            applyDependencies({
+              model: item,
+              modelIdMap: formalized.modelIdMap,
+            });
+
+            applyValues(rest);
+
+            preparedModelsArray[index] = formalized.model;
+          }
+        } else {
+          // Can be internally moved item or from another parent
+          if (item.parentId !== model.id) {
+            // Moved here from another parent
+            // Check if this model item is allowed in this parent
+            if (!model.accepts?.includes(item.type)) {
+              throw Error(
+                `Attempting to an unaccepted item (${item.id}) on to ${model.id}`
+              );
+            }
+
+            updateRelations({
+              ...rest,
+              model: item,
+              index,
+              path: dataParentModel?.path,
+              dataParentId,
+              parentId: model.id,
+            });
+
+            preparedModelsArray[index] = item;
+          } else {
+            // Moved around internally
+            updateRelations({
+              ...rest,
+              model: item,
+              index,
+              path: dataParentModel?.path,
+              dataParentId,
+              parentId: model.id,
+            });
+
+            preparedModelsArray[index] = item;
+          }
+        }
+      });
+
+      newItems = preparedModelsArray;
+      model.items = newItems;
+      onChange({ model, property: 'items', value: newItems });
     }
   }
 };

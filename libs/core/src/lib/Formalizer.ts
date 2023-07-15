@@ -3,7 +3,7 @@
  * It handles the nitty-gritty of updating and maintaining the state of the form model
  * so that you can focus on implementing the business logic of your application.
  */
-
+import { arrayMoveImmutable } from 'array-move';
 import deepmerge from 'deepmerge';
 import dot from 'dot-object';
 import {
@@ -217,19 +217,13 @@ export class FormalizerCore {
     return true;
   };
 
-  removeModelById = (modelId: string) => {
+  removeModel = (modelId: string) => {
     // Prevent removing the root model
     if (modelId === this.getModel()?.id) {
       throw new Error('Cannot remove root model');
     }
 
-    const modelIdMap = this.getModelIdMap();
-
-    if (!modelIdMap) {
-      throw new Error('Model ID map is not defined');
-    }
-
-    const modelToRemove = modelIdMap[modelId];
+    const modelToRemove = this.getModel(modelId);
 
     if (!modelToRemove) {
       throw new Error(`No model found for the id: ${modelId}`);
@@ -238,10 +232,12 @@ export class FormalizerCore {
     const parentModelId = modelToRemove.parentId;
 
     if (!parentModelId) {
-      throw new Error(`No parent found for the model with id: ${modelId}`);
+      throw new Error(
+        `No parent model found for the model with id: ${modelId}`
+      );
     }
 
-    const parentModel = modelIdMap[parentModelId];
+    const parentModel = this.getModel(parentModelId);
 
     if (!parentModel) {
       throw new Error(`No model found for the parent id: ${parentModelId}`);
@@ -255,11 +251,31 @@ export class FormalizerCore {
     parentModel.items = parentModel.items.filter((item) => item.id !== modelId);
   };
 
-  removeModel = (model: FormalizedModel) => {
-    if (model.id) {
-      this.removeModelById(model.id);
-    } else {
-      throw new Error('The model has no id');
+  moveModel = (modelId: string, parentId: string, newPosition: number) => {
+    const model = this.getModel(modelId);
+    const parentModel = this.getModel(parentId);
+
+    if (model && parentModel) {
+      if (model.parentId === parentModel.id) {
+        // if parentId is models current parentId then we move inside same items array
+        const currentPosition = parentModel.items
+          ?.map((item, index) => ({ item, index }))
+          .filter(({ item }) => item.id === model.id)
+          .map(({ index }) => index)[0];
+
+        if (currentPosition !== undefined && parentModel.items) {
+          const newItems = arrayMoveImmutable(
+            parentModel.items,
+            currentPosition,
+            newPosition
+          );
+
+          parentModel.items = newItems;
+        }
+      } else {
+        // if parentId is not models current parentId then we first remove from original
+        // item array and then add to new parent items array
+      }
     }
   };
 }

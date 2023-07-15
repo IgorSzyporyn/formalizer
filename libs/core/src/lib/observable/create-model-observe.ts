@@ -1,28 +1,26 @@
 import { isEqual } from 'lodash';
 import {
   FormalizedModelFlat,
+  FormalizerCoreConfig,
   FormalizerCoreOptions,
 } from '../types/formalizer-types';
 import {
-  CoreModelInterface,
-  ExtensionInterface,
+  ClientPropertyType,
   FormalizedModel,
+  FormalizedPropertyType,
   Listener,
   ListenerCallback,
   ListenerProps,
-  ClientPropertyType,
-  FormalizedPropertyType,
   formalizedPropertyTypes,
 } from '../types/model-types';
+import { setItemsProperty } from './utils/set-items-property';
 import { setTypeProperty } from './utils/set-type-property';
 import { setValueProperty } from './utils/set-value-property';
-import { setItemsProperty } from './utils/set-items-property';
 import { CreateObjectObserveHandlerProps } from './utils/shared-types';
 
 type CreateObservableModelProps = {
-  customCoreModel?: CoreModelInterface;
+  config: FormalizerCoreConfig;
   dataParentModel?: FormalizedModel;
-  extension?: ExtensionInterface;
   index?: number;
   model: FormalizedModel;
   modelIdMap: FormalizedModelFlat;
@@ -128,9 +126,12 @@ const createObjectObserveHandler = (
         } else if (
           formalizedPropertyTypes.includes(property as FormalizedPropertyType)
         ) {
-          throw Error(`The property ${property} is immutable on ${model.id}`);
+          if (property === 'id' || property === 'path') {
+            model[property] = value as never;
+          } else {
+            throw Error(`The property ${property} is immutable on ${model.id}`);
+          }
         } else {
-          model[property] = value as never;
           onChange({ model, property, value });
         }
       }

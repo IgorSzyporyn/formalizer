@@ -2,11 +2,11 @@ import deepmerge from 'deepmerge';
 import { createModelObserve } from '../observable/create-model-observe';
 import {
   FormalizedModelFlat,
+  FormalizerCoreConfig,
   FormalizerCoreOptions,
 } from '../types/formalizer-types';
 import {
   ClientModel,
-  CoreModelInterface,
   ExtensionInterface,
   ExtraProperties,
   FormalizedModel,
@@ -17,7 +17,7 @@ import { applyPathAndIdToModel } from './apply-path-and-id-to-model';
 import { extendClientModel } from './extend-client-model';
 import { getModelValue } from './get-model-value';
 
-const bailReports = (model: FormalizedModel, parent?: FormalizedModel) => {
+const bailReports = (model: FormalizedModel, parentModel?: FormalizedModel) => {
   let bailEarly = false;
 
   // If trying to create a type that does not exist
@@ -30,9 +30,12 @@ const bailReports = (model: FormalizedModel, parent?: FormalizedModel) => {
   }
 
   // If parent exists and type is not accepted - bail and warn
-  if (parent && (!parent.accepts || !parent?.accepts?.includes(model.type))) {
+  if (
+    parentModel &&
+    (!parentModel.accepts || !parentModel?.accepts?.includes(model.type))
+  ) {
     console.warn(
-      `The model: "${parent.id}" does not accept the child: "${model.name}" with the type "${model.type}"`
+      `The model: "${parentModel.id}" does not accept the child: "${model.name}" with the type "${model.type}"`
     );
     bailEarly = true;
   }
@@ -47,67 +50,69 @@ export type CreateFormalizerModelResult = {
 };
 
 type CreateFormalizerModelProps = {
-  customCoreModel?: CoreModelInterface;
-  dataParentModel?: FormalizedModel;
-  extension?: ExtensionInterface;
+  config?: FormalizerCoreConfig;
+  dataParentId?: string;
   index?: number;
   model: ClientModel;
   modelIdMap?: FormalizedModelFlat;
   modelPathMap?: FormalizedModelFlat;
   onModelItemChange: (props: ListenerProps) => void;
   options?: FormalizerCoreOptions;
-  parent?: FormalizedModel;
+  parentId?: string;
   path?: string;
 };
 
 export const createFormalizerModel = ({
-  customCoreModel,
-  dataParentModel,
-  extension,
+  config = {},
+  dataParentId,
   index,
   model: _model,
   modelIdMap = {},
   modelPathMap = {},
   onModelItemChange,
   options,
-  parent,
+  parentId,
   path: _path,
 }: CreateFormalizerModelProps): CreateFormalizerModelResult => {
+  const parentModel = modelIdMap[parentId || ''];
+  const dataParentModel = modelIdMap[dataParentId || ''];
+  const { core: customCore, extension } = config;
+
   // For root we have to ensure type is "root"
-  if (!parent) {
+  if (!parentId) {
     _model.type = 'root';
   }
 
   // Bail early scenarios as we touch directly into modelIdMap object
-  const bailEarly = bailReports(_model, parent);
+  const bailEarly = bailReports(_model, parentModel);
   if (bailEarly) {
     return { model: undefined, modelIdMap };
   }
 
   // Extend the core model on to the client model to start the
   // creation of the formalizer model
-  const instanceModel = extendClientModel(_model, customCoreModel);
+  const instanceModel = extendClientModel(_model, customCore);
 
   const path = applyPathAndIdToModel({
-    dataParentModel,
+    dataParentId,
     index,
     model: instanceModel,
     modelIdMap,
-    parent,
+    parentId,
     path: _path,
   });
 
-  if (parent) {
-    instanceModel.parent = parent.id;
+  if (parentModel) {
+    instanceModel.parentId = parentModel.id;
   }
 
   if (dataParentModel) {
-    instanceModel.dataParent = dataParentModel.id;
+    instanceModel.dataParentId = dataParentModel.id;
   }
 
   // Keep track of current dataParentModel
   if (instanceModel.apiType === 'object' || instanceModel.apiType === 'array') {
-    dataParentModel = instanceModel;
+    dataParentId = instanceModel.id;
   }
 
   // Ensure value property is set if a defaultValue is provided but no value
@@ -156,14 +161,14 @@ export const createFormalizerModel = ({
   // children of items
   if (instanceModel.items && instanceModel.items.length > 0) {
     instanceModel.items = createFormalizerModels({
-      dataParentModel,
-      extension,
+      dataParentId,
+      config,
       modelIdMap,
       modelPathMap: modelPathMap,
       models: instanceModel.items,
       onModelItemChange,
       options,
-      parent: instanceModel,
+      parentId: instanceModel.id,
       path,
     });
   }
@@ -177,16 +182,15 @@ export const createFormalizerModel = ({
 
   // Create the observable model that will enable listeners on each model
   const observableModel = createModelObserve({
+    config,
+    dataParentModel,
+    index,
     model: instanceModel,
     modelIdMap,
+    modelPathMap,
     onModelItemChange,
     options,
-    customCoreModel,
-    dataParentModel,
-    modelPathMap,
-    extension,
-    index,
-    parent,
+    parent: parentModel,
     path,
   });
 
@@ -206,40 +210,41 @@ export const createFormalizerModel = ({
 };
 
 type CreateFormalizerModelsProps = {
-  parent: FormalizedModel;
-  models: FormalizedModel[];
+  config?: FormalizerCoreConfig;
+  dataParentId?: string;
+  extension?: ExtensionInterface;
   modelIdMap?: FormalizedModelFlat;
   modelPathMap?: FormalizedModelFlat;
-  extension?: ExtensionInterface;
-  options?: FormalizerCoreOptions;
+  models: FormalizedModel[];
   onModelItemChange: (props: ListenerProps) => void;
+  options?: FormalizerCoreOptions;
+  parentId?: string;
   path?: string;
-  dataParentModel?: FormalizedModel;
 };
 
 const createFormalizerModels = ({
-  parent,
-  models,
+  dataParentId,
+  config,
   modelIdMap,
-  extension,
-  options,
-  onModelItemChange,
-  path,
-  dataParentModel,
   modelPathMap,
+  models,
+  onModelItemChange,
+  options,
+  parentId,
+  path,
 }: CreateFormalizerModelsProps) => {
   const formalizedModels = models
     .map((model, index) => {
       const { model: _model } = createFormalizerModel({
         model,
-        parent,
+        parentId,
         modelIdMap,
-        extension,
+        config,
         options,
         path,
         onModelItemChange,
         index,
-        dataParentModel,
+        dataParentId,
         modelPathMap,
       });
 

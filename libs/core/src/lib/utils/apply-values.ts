@@ -1,30 +1,27 @@
 import deepmerge from 'deepmerge';
+import dot from 'dot-object';
+import { isObject } from 'lodash';
 import {
   FormalizedModelFlat,
   FormalizerCoreConfig,
   FormalizerCoreOptions,
 } from '../types/formalizer-types';
-import { FormalizedModel } from '../types/model-types';
 import { getModelValueMap } from './get-model-value-map';
-import { isObject } from 'lodash';
-import dot from 'dot-object';
 
 type ApplyValuesProps = {
-  model?: FormalizedModel;
   modelIdMap?: FormalizedModelFlat;
   modelPathMap?: FormalizedModelFlat;
-  config: FormalizerCoreConfig;
-  options: FormalizerCoreOptions;
+  config?: FormalizerCoreConfig;
+  options?: FormalizerCoreOptions;
 };
 
 export const applyValues = ({
-  model,
   modelIdMap,
   modelPathMap,
-  config,
-  options,
+  config = {},
+  options = {},
 }: ApplyValuesProps) => {
-  if (!model || !modelIdMap) return false;
+  if (!modelIdMap || !modelPathMap) return false;
 
   const { initialValue } = config;
   const valueMap = getModelValueMap({ modelIdMap, options });
@@ -43,44 +40,68 @@ export const applyValues = ({
 
 const applyValueToModel = (
   value: Record<string, unknown>,
-  modelPathMap: FormalizedModelFlat = {}
+  modelPathMap: FormalizedModelFlat
 ) => {
-  const looper = ({ value, path }: { value: unknown; path?: string }) => {
-    switch (typeof value) {
-      case 'object':
-        if (Array.isArray(value)) {
-          if (path) {
+  //
+
+  looper({ value, modelPathMap });
+};
+
+const looper = ({
+  value,
+  path,
+  modelPathMap,
+}: {
+  modelPathMap: FormalizedModelFlat;
+  value: unknown;
+  path?: string;
+}) => {
+  switch (typeof value) {
+    case 'object':
+      if (Array.isArray(value)) {
+        if (path && modelPathMap[path]) {
+          if (modelPathMap[path].initialValue === undefined) {
             modelPathMap[path].initialValue = value;
-            modelPathMap[path].value = value;
           }
 
-          value.forEach((_value, _index) => {
-            looper({
-              value: _value,
-              path: `${path}[${_index}]`,
-            });
-          });
-        } else if (isObject(value)) {
-          if (path) {
-            modelPathMap[path].initialValue = value;
-            modelPathMap[path].value = value;
-          }
-
-          for (const [_key, _value] of Object.entries(
-            value as Record<string, unknown>
-          )) {
-            looper({ value: _value, path: path ? `${path}.${_key}` : _key });
-          }
-        }
-        break;
-      default:
-        if (path) {
-          modelPathMap[path].initialValue = value;
           modelPathMap[path].value = value;
         }
-        break;
-    }
-  };
 
-  looper({ value });
+        value.forEach((_value, _index) => {
+          looper({
+            value: _value,
+            path: `${path}[${_index}]`,
+            modelPathMap,
+          });
+        });
+      } else if (isObject(value)) {
+        if (path && modelPathMap[path]) {
+          if (modelPathMap[path].initialValue === undefined) {
+            modelPathMap[path].initialValue = value;
+          }
+
+          modelPathMap[path].value = value;
+        }
+
+        for (const [_key, _value] of Object.entries(
+          value as Record<string, unknown>
+        )) {
+          looper({
+            value: _value,
+            path: path ? `${path}.${_key}` : _key,
+            modelPathMap,
+          });
+        }
+      }
+      break;
+    default:
+      if (path && modelPathMap[path]) {
+        if (modelPathMap[path].initialValue === undefined) {
+          modelPathMap[path].initialValue = value;
+        }
+
+        modelPathMap[path].value = value;
+      }
+      break;
+  }
 };

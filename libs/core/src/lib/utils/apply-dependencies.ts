@@ -2,6 +2,11 @@ import { isEqual } from 'lodash';
 import { FormalizedModelFlat } from '../types/formalizer-types';
 import { Dependency, FormalizedModel } from '../types/model-types';
 
+export const createDependencyListenerId = (
+  model: FormalizedModel,
+  dependency: Dependency
+) => `dependency-listener-${model.id}-${dependency.matchProp}`;
+
 type ApplyDependenciesProps = {
   model?: FormalizedModel;
   modelIdMap?: FormalizedModelFlat;
@@ -51,7 +56,7 @@ const createDependencyListener = ({
   const invoker = modelIdMap[dependency.id];
 
   invoker.addListener?.({
-    id: `dependency-listener-${model.id}-${dependency.matchProp}`,
+    id: createDependencyListenerId(model, dependency),
     property: dependency.matchProp,
     callback: ({ value }) => {
       // eslint-disable-next-line @typescript-eslint/no-non-null-assertion

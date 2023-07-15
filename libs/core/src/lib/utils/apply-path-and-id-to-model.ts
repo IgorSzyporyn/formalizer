@@ -2,23 +2,24 @@ import { FormalizedModelFlat } from '../types/formalizer-types';
 import { FormalizedModel } from '../types/model-types';
 
 type ApplyPathAndIdToModelProp = {
-  parent?: FormalizedModel;
-  model: FormalizedModel;
-  modelIdMap: FormalizedModelFlat;
-  path?: string;
+  dataParentId?: string;
   index?: number;
-  dataParentModel?: FormalizedModel;
+  model: FormalizedModel;
+  modelIdMap?: FormalizedModelFlat;
+  parentId?: string;
+  path?: string;
 };
 
 export const applyPathAndIdToModel = ({
-  model,
-  parent,
-  path,
-  modelIdMap,
+  dataParentId,
   index,
-  dataParentModel,
+  model,
+  modelIdMap,
+  parentId,
+  path,
 }: ApplyPathAndIdToModelProp) => {
-  const parentModel = parent && parent.id ? modelIdMap[parent.id] : undefined;
+  const parentModel = modelIdMap?.[parentId || ''];
+  const dataParentModel = modelIdMap?.[dataParentId || ''];
 
   // Setup ID with default value
   model.id = model.name;

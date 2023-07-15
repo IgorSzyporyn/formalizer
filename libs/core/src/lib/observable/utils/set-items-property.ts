@@ -1,4 +1,14 @@
-import { FormalizedModel, ListenerCallback } from '../../types/model-types';
+import {
+  Dependency,
+  FormalizedModel,
+  ListenerCallback,
+} from '../../types/model-types';
+import {
+  applyDependencies,
+  createDependencyListenerId,
+} from '../../utils/apply-dependencies';
+import { applyPathAndIdToModel } from '../../utils/apply-path-and-id-to-model';
+import { applyValues } from '../../utils/apply-values';
 import { createFormalizerModel } from '../../utils/create-formalizer-model';
 import { CreateObjectObserveHandlerProps } from './shared-types';
 
@@ -15,9 +25,6 @@ export const setItemsProperty = ({
 }: SetItemsPropertyProps) => {
   let allowSetting = true;
 
-  const isAddedModel = (item: FormalizedModel) =>
-    !item.parent || item.parent !== model.id || !item.__formalized__;
-
   if (!Array.isArray(items)) {
     allowSetting = false;
     throw new Error(
@@ -30,43 +37,152 @@ export const setItemsProperty = ({
   }
 
   if (allowSetting) {
-    const newItems: FormalizedModel[] = [];
+    let newItems: FormalizedModel[] = [];
+
     const isAdding = model.items.length < items.length;
 
     if (isAdding) {
-      // Find the model(s) we are adding - either it will be a client model
-      // or it will have wrong parent (or no parent)
-      const addedModels = items.filter(isAddedModel);
-      const oldModels = items.filter((item) => !isAddedModel(item));
+      const isAddedModel = ({ item }: { item: FormalizedModel }) =>
+        !item.parentId || item.parentId !== model.id || !item.__formalized__;
 
-      console.log(addedModels, oldModels);
+      const preparedModelsArray = new Array(items.length);
 
-      // Go through all added models and inject them into the formalizer model
-      addedModels.forEach((item, index) => {
-        const isClientModel = !item.__formalized__;
+      // Place the old items in the items array at the right index position
+      // in the prepared models array
+      items
+        .map((item, index) => ({ item, index }))
+        .filter(({ item }) => !isAddedModel({ item }))
+        .forEach(({ item, index }) => {
+          preparedModelsArray[index] = item;
+        });
 
-        if (isClientModel) {
-          // If a client model we inject by formalizing quite simply
-          const { model: formalizedModel } = createFormalizerModel({
-            model: item,
-            parent: model,
-            index,
-            ...rest,
+      // Go through all the new model items and either place them if formalized
+      // or formalize them and insert in the prepared model items array at the
+      // right index position
+      items
+        .map((item, index) => ({ item, index }))
+        .filter(isAddedModel)
+        .forEach(({ item, index }) => {
+          const dataParentId = model.path ? model.id : model.dataParentId;
+          const dataParentModel = rest.modelIdMap?.[dataParentId || ''];
+
+          if (!item.__formalized__) {
+            const formalized = createFormalizerModel({
+              ...rest,
+              model: item,
+              parentId: model.id,
+              index,
+              dataParentId,
+            });
+
+            if (formalized.model) {
+              applyDependencies({
+                model: item,
+                modelIdMap: formalized.modelIdMap,
+              });
+
+              applyValues({
+                config: rest.config,
+                options: rest.options,
+                modelIdMap: formalized.modelIdMap,
+                modelPathMap: formalized.modelPathMap,
+              });
+
+              preparedModelsArray[index] = formalized.model;
+            }
+          } else {
+            updateRelations({
+              ...rest,
+              model: item,
+              index,
+              path: dataParentModel?.path,
+              dataParentId,
+              parentId: model.id,
+            });
+          }
+        });
+
+      newItems = preparedModelsArray;
+      model.items = newItems;
+      onChange({ model, property: 'items', value: newItems });
+    } else {
+      // Find the removed items
+      const removedItems = model.items.filter((item) => {
+        return !items.map((m) => m.id).includes(item.id);
+      });
+
+      // Remove all relations model has in dependencies, modelIdMap and modelPathMap
+      removedItems.forEach((item) => {
+        for (const [_, mappedModel] of Object.entries(rest.modelIdMap || {})) {
+          const newDependencies: Dependency[] = [];
+
+          mappedModel.dependencies?.forEach((dependency) => {
+            if (dependency.id !== item.id) {
+              newDependencies.push(dependency);
+            } else {
+              // Remove the listener for this dependency
+              const listenerId = createDependencyListenerId(item, dependency);
+              item.removeListener?.(listenerId);
+            }
           });
 
-          if (formalizedModel) {
-            newItems.push(formalizedModel);
-          }
-        } else {
-          console.log('hello');
+          mappedModel.dependencies = newDependencies;
         }
+
+        delete rest.modelIdMap?.[item.id || ''];
+        delete rest.modelPathMap?.[item.path || ''];
       });
-    } else {
-      // Remove this value from the chain
+
+      const dataParentId = model.path ? model.id : model.dataParentId;
+      const dataParentModel = rest.modelIdMap?.[dataParentId || ''];
+
+      // Remaining items can have had their indexes moved and id and path must be
+      // changed as well as dependencies and other relations must be maintained
+      items.forEach((item, index) => {
+        updateRelations({
+          ...rest,
+          model: item,
+          index,
+          path: dataParentModel?.path,
+          dataParentId,
+          parentId: model.id,
+        });
+      });
+
+      newItems = items;
+      model.items = newItems;
+      onChange({ model, property: 'items', value: newItems });
+
+      // Make sure the values are maintained in the tree
+      // Apply values last or arrays and objects will fault in trying
+      // to set values for items that are no longer there
+      applyValues(rest);
     }
+  }
+};
 
-    model.items = newItems;
+const updateRelations = ({
+  model,
+  ...rest
+}: CreateObjectObserveHandlerProps) => {
+  // Store the old item and path as we need it to look for old references
+  // to this item in the root model that need reference id/path updated
+  const oldItemId = model.id;
 
-    onChange({ model, property: 'items', value: newItems });
+  // This is apparently a moved item and will need to have new values
+  // for id and path to keep track of placement in the root model structure
+  applyPathAndIdToModel({
+    ...rest,
+    model,
+  });
+
+  // Dependencies needs updating of the id relation that has now changed
+  // as we have a new parent and a new id/path
+  for (const [_, mappedModel] of Object.entries(rest.modelIdMap || {})) {
+    mappedModel.dependencies?.forEach((dependency, index, origin) => {
+      if (dependency.id === oldItemId && model.id) {
+        origin[index].id = model.id;
+      }
+    });
   }
 };

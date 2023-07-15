@@ -12,14 +12,12 @@ export type FormalizerModelChange = {
   modelIdMap?: FormalizedModelFlat;
   modelPathMap?: FormalizedModelFlat;
   props?: ListenerProps;
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  value?: Record<string, any>;
+  value?: Record<string, unknown>;
 };
 
 export type FormalizerCoreConfig = {
   model?: ClientModel;
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  initialValue?: any;
+  initialValue?: Record<string, unknown>;
   extension?: ExtensionInterface;
   core?: CoreModelInterface;
   onModelChange?: (change: FormalizerModelChange) => void;

@@ -38,8 +38,7 @@ export const setValueProperty = ({
       case 'object':
         model.items?.forEach((item) => {
           if (modelIdMap && item.id) {
-            // eslint-disable-next-line @typescript-eslint/no-explicit-any
-            const _value = (value || {}) as Record<string, any>;
+            const _value = (value || {}) as Record<string, unknown>;
             modelIdMap[item.id].value = _value[item.name];
           }
         });
@@ -49,14 +48,14 @@ export const setValueProperty = ({
     }
 
     // Propagate the value change up to the dataParent
-    if (model.apiType !== 'none' && model.dataParent) {
+    if (model.apiType !== 'none' && model.dataParentId) {
       propagateValueProperty({
         ...rest,
         model,
         options,
         modelIdMap,
         value,
-        parentId: model.dataParent,
+        parentId: model.dataParentId,
       });
     }
   }

@@ -6,7 +6,6 @@
 
 import deepmerge from 'deepmerge';
 import dot from 'dot-object';
-import { isArray, isObject } from 'lodash';
 import {
   FormalizedModelFlat,
   FormalizerCoreConfig,
@@ -15,14 +14,13 @@ import {
   FormalizerCoreState,
 } from './types/formalizer-types';
 import {
-  ApiValue,
   ClientModel,
   FormalizedModel,
   ListenerProps,
 } from './types/model-types';
 import { applyDependencies } from './utils/apply-dependencies';
-import { createFormalizerModel } from './utils/create-formalizer-model';
 import { applyValues } from './utils/apply-values';
+import { createFormalizerModel } from './utils/create-formalizer-model';
 import { getModelValueMap } from './utils/get-model-value-map';
 
 export class FormalizerCore {
@@ -44,7 +42,7 @@ export class FormalizerCore {
     this.setConfig({ model, core, extension, initialValue });
 
     if (model) {
-      const formalizer = this.createModel({ model, extension });
+      const formalizer = this.createModel({ model });
       this.setModel(formalizer?.model);
     }
 
@@ -138,16 +136,15 @@ export class FormalizerCore {
     return modelJSON;
   };
 
-  private createModel = ({ model, extension }: FormalizerCoreParams) => {
+  private createModel = ({ model }: FormalizerCoreParams) => {
     if (!model) return undefined;
 
     const options = this.getOptions();
     const config = this.getConfig();
 
     const formalizer = createFormalizerModel({
-      customCoreModel: config.core,
+      config,
       model,
-      extension,
       options,
       onModelItemChange: this.handleModelChange,
     });
@@ -238,7 +235,7 @@ export class FormalizerCore {
       throw new Error(`No model found for the id: ${modelId}`);
     }
 
-    const parentModelId = modelToRemove.parent;
+    const parentModelId = modelToRemove.parentId;
 
     if (!parentModelId) {
       throw new Error(`No parent found for the model with id: ${modelId}`);

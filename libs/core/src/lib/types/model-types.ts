@@ -73,8 +73,8 @@ export const propertyModelTypes = [
 export const formalizedPropertyTypes = [
   'id',
   'path',
-  'parent',
-  'dataParent',
+  'parentId',
+  'dataParentId',
   'items',
   'extension',
   'dirty',
@@ -256,8 +256,8 @@ export type ClientModel = {
 export type FormalizedModel = {
   id?: string;
   path?: string;
-  parent?: string;
-  dataParent?: string;
+  parentId?: string;
+  dataParentId?: string;
   items?: FormalizedModel[];
   extension?: ExtensionModel;
   dirty?: boolean;

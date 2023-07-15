@@ -7,6 +7,15 @@ export function App() {
     type: 'root',
     items: [
       {
+        type: 'array',
+        name: 'test',
+        items: [
+          { type: 'text', name: 'number1' },
+          { type: 'text', name: 'number2' },
+          { type: 'text', name: 'number3' },
+        ],
+      },
+      {
         name: 'my-form',
         type: 'form',
         title: 'Form #1',

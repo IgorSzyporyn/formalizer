@@ -68,7 +68,7 @@ export const useListener = (model?: FormalizedModel) => {
       removeListeners(model?.id);
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [model?.id]);
+  }, [model]);
 
   return listener;
 };

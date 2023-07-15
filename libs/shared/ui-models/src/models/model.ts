@@ -114,8 +114,8 @@ export const uiModels: UiModelInterface = {
   },
   form: {
     icon: DataObjectIcon,
-    title: 'Object',
-    description: 'Object description',
+    title: 'Form',
+    description: 'Form',
     group: 'data',
   },
   object: {

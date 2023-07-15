@@ -3,15 +3,15 @@ import { blue, green, grey, purple } from '@mui/material/colors';
 
 const palette: PaletteOptions = {
   mode: 'dark',
-  primary: { main: blue[700] },
-  secondary: { main: purple[700] },
+  primary: { main: blue[600] },
+  secondary: { main: purple[600] },
   neutral: {
     main: grey[700],
     light: grey[800],
     dark: grey[600],
     contrastText: '#fff',
   },
-  success: { main: green[700] },
+  success: { main: green[600] },
 };
 
 export const theme = createTheme({

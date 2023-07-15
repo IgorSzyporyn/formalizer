@@ -1,13 +1,10 @@
 import { cloneDeep } from 'lodash';
-import { FormalizerModelIdMap } from '../../types/formalizer-types';
-import { FormalizedModel } from '../../types/model-types';
+import { CreateObjectObserveHandlerProps } from './shared-types';
 
 type PropagateValuePropertyProps = {
-  model: FormalizedModel;
-  modelIdMap: FormalizerModelIdMap;
   value: unknown;
   parentId: string;
-};
+} & CreateObjectObserveHandlerProps;
 
 export const propagateValueProperty = ({
   modelIdMap,
@@ -15,7 +12,7 @@ export const propagateValueProperty = ({
   value,
   parentId,
 }: PropagateValuePropertyProps) => {
-  const parentModel = modelIdMap[parentId];
+  const parentModel = modelIdMap?.[parentId];
 
   if (parentModel) {
     if (parentModel.apiType === 'array') {

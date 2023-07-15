@@ -1,19 +1,13 @@
 import { isEqual } from 'lodash';
-import {
-  FormalizerModelIdMap,
-  FormalizerOptions,
-} from '../../types/formalizer-types';
-import { FormalizedModel, ListenerCallback } from '../../types/model-types';
+import { ListenerCallback } from '../../types/model-types';
 import { propagateValueProperty } from './propagate-value-property';
+import { CreateObjectObserveHandlerProps } from './shared-types';
 
 type SetValuePropertyProps = {
-  model: FormalizedModel;
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   value: any;
   onChange: ListenerCallback;
-  modelIdMap: FormalizerModelIdMap;
-  options?: FormalizerOptions;
-};
+} & CreateObjectObserveHandlerProps;
 
 export const setValueProperty = ({
   model,
@@ -21,11 +15,14 @@ export const setValueProperty = ({
   modelIdMap,
   onChange,
   options,
+  ...rest
 }: SetValuePropertyProps) => {
   const newValue = model.valueToRaw?.({ value, model, options }) as never;
 
   if (!isEqual(newValue, model.value)) {
     model.value = newValue;
+    model.touched = true;
+    model.dirty = !isEqual(newValue, model.initialValue);
 
     onChange({ model, property: 'value', value: newValue });
 
@@ -33,16 +30,18 @@ export const setValueProperty = ({
       case 'array':
         model.items?.forEach((item, index) => {
           const _value = (value || []) as [];
-          // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-          modelIdMap[item.id!].value = _value[index];
+          if (item.id && modelIdMap) {
+            modelIdMap[item.id].value = _value[index];
+          }
         });
         break;
       case 'object':
         model.items?.forEach((item) => {
-          // eslint-disable-next-line @typescript-eslint/no-explicit-any
-          const _value = (value || {}) as Record<string, any>;
-          // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-          modelIdMap[item.id!].value = _value[item.name];
+          if (modelIdMap && item.id) {
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
+            const _value = (value || {}) as Record<string, any>;
+            modelIdMap[item.id].value = _value[item.name];
+          }
         });
         break;
       default:
@@ -52,7 +51,9 @@ export const setValueProperty = ({
     // Propagate the value change up to the dataParent
     if (model.apiType !== 'none' && model.dataParent) {
       propagateValueProperty({
+        ...rest,
         model,
+        options,
         modelIdMap,
         value,
         parentId: model.dataParent,

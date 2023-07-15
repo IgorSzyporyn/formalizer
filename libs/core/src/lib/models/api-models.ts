@@ -26,7 +26,7 @@ export const apiModel: ApiModelInterface = {
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       let raw: any[] | string | undefined | null;
 
-      if (options?.emptyValues !== false && !value) {
+      if (options?.partialValues !== false && !value) {
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         value = model.emptyValue as any[] | string | undefined | null;
       }
@@ -69,7 +69,7 @@ export const apiModel: ApiModelInterface = {
       let value = _value as boolean | string | undefined | null;
       let raw: boolean | string | undefined | null;
 
-      if (options?.emptyValues !== false && !value) {
+      if (options?.partialValues !== false && !value) {
         value = model.emptyValue as boolean | string | undefined | null;
       }
 
@@ -108,7 +108,7 @@ export const apiModel: ApiModelInterface = {
       let value = _value as string | undefined | null;
       let raw: string | undefined | null;
 
-      if (options?.emptyValues && !value) {
+      if (options?.partialValues && !value) {
         value = model.emptyValue as string | undefined | null;
       }
 
@@ -143,7 +143,7 @@ export const apiModel: ApiModelInterface = {
       let value = _value as number | string | undefined | null;
       let raw: number | string | undefined | null;
 
-      if (options?.emptyValues !== false && !value) {
+      if (options?.partialValues !== false && !value) {
         value = model.emptyValue as number | string | undefined | null;
       }
 
@@ -187,7 +187,7 @@ export const apiModel: ApiModelInterface = {
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       let raw: Record<string, any> | string | undefined | null;
 
-      if (options?.emptyValues !== false && (!value || isEmpty(value))) {
+      if (options?.partialValues !== false && (!value || isEmpty(value))) {
         value = model.emptyValue as  // eslint-disable-next-line @typescript-eslint/no-explicit-any
           | Record<string, any>
           | string

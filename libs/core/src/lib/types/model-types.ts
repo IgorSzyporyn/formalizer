@@ -1,4 +1,4 @@
-import { FormalizerOptions } from './formalizer-types';
+import { FormalizerCoreOptions } from './formalizer-types';
 
 export const coreModelTypes = [
   'root',
@@ -58,6 +58,7 @@ export const propertyModelTypes = [
   'options',
   'width',
   'direction',
+  'initialValue',
   'readonly',
   'serialize',
   'serializeDelimiter',
@@ -69,9 +70,28 @@ export const propertyModelTypes = [
   'multiple',
 ] as const;
 
+export const formalizedPropertyTypes = [
+  'id',
+  'path',
+  'parent',
+  'dataParent',
+  'items',
+  'extension',
+  'dirty',
+  'touched',
+  'error',
+  'addListener',
+  'removeListener',
+  'removeListeners',
+  'toJSON',
+  '__formalized__',
+] as const;
+
 export type CoreModelType = (typeof coreModelTypes)[number];
 export type ApiModelType = (typeof apiModelTypes)[number];
-export type PropertyModelType = (typeof propertyModelTypes)[number];
+
+export type FormalizedPropertyType = (typeof formalizedPropertyTypes)[number];
+export type ClientPropertyType = (typeof propertyModelTypes)[number];
 
 export type ApiValueType =
   | string
@@ -95,12 +115,12 @@ export type ApiValue = ApiValueType | ApiValueTypeArray | undefined;
 export type ApiModelFnProps = {
   value?: ApiValueType | ApiValueTypeArray;
   model: FormalizedModel;
-  options?: FormalizerOptions;
+  options?: FormalizerCoreOptions;
 };
 
 export type ApiModelInterface = Record<ApiModelType, ApiModel>;
 export type CoreModelInterface = Record<CoreModelType, CoreModel>;
-export type PropertyModelInterface = Record<PropertyModelType, PropertyModel>;
+export type PropertyModelInterface = Record<ClientPropertyType, PropertyModel>;
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export type ExtraProperties = Record<string, any>;
@@ -131,7 +151,7 @@ export type RemoveListenersFn = (listenerIds: string[]) => void;
 export type AddListenerAllFn = (callback: ListenerCallback) => void;
 
 export type ListenerProps = {
-  property: PropertyModelType;
+  property: ClientPropertyType | FormalizedPropertyType;
   value: unknown;
   model: FormalizedModel;
 };
@@ -176,8 +196,8 @@ export type ApiModel = {
 export type CoreModel = {
   apiType?: ApiModelType;
   accepts?: CoreModelType[];
-  preventedProperties?: PropertyModelType[];
-  defaultProperties?: PropertyModelType[];
+  preventedProperties?: ClientPropertyType[];
+  defaultProperties?: ClientPropertyType[];
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   options?: any[];
   rawToValue?: ApiModelRawToValueFn;
@@ -204,6 +224,8 @@ export type ClientModel = {
   items?: ClientModel[];
   defaultValue?: ApiValue;
   emptyValue?: ApiValue;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  initialValue?: any;
   group?: string;
   multiple?: boolean;
   layoutOnly?: boolean;
@@ -245,6 +267,7 @@ export type FormalizedModel = {
   removeListener?: RemoveListenerFn;
   removeListeners?: RemoveListenersFn;
   toJSON?: () => ClientModel;
+  __formalized__?: boolean;
 } & CoreModel &
   ApiModel &
   ClientModel;

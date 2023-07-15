@@ -1,31 +1,20 @@
-import {
-  FormalizerModelIdMap,
-  FormalizerOptions,
-} from '../../types/formalizer-types';
-import {
-  CoreModelType,
-  FormalizedModel,
-  ListenerCallback,
-} from '../../types/model-types';
+import { CoreModelType, ListenerCallback } from '../../types/model-types';
 import { isCoreType } from '../../utils/is-core-type';
 import { addDefaultProperties } from './add-default-properties';
 import { removePreventedProperties } from './remove-prevented-properties';
+import { CreateObjectObserveHandlerProps } from './shared-types';
 import { transformCoreProperties } from './transform-core-properties';
 
 type SetTypeProperty = {
-  model: FormalizedModel;
   type: CoreModelType;
   onChange: ListenerCallback;
-  modelIdMap: FormalizerModelIdMap;
-  options?: FormalizerOptions;
-};
+} & CreateObjectObserveHandlerProps;
 
 export const setTypeProperty = ({
   model,
   type,
   onChange,
-  options,
-  modelIdMap,
+  ...rest
 }: SetTypeProperty) => {
   const allowedType = isCoreType(type);
 
@@ -35,7 +24,7 @@ export const setTypeProperty = ({
 
     removePreventedProperties({ model, onChange, type });
     addDefaultProperties({ model, onChange, type });
-    transformCoreProperties({ model, type, options, onChange, modelIdMap });
+    transformCoreProperties({ model, type, onChange, ...rest });
 
     onChange({ model, property: 'type', value: type });
   } else {

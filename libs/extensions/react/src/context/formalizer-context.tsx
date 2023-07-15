@@ -9,10 +9,8 @@ export const defaultContext: FormalizerContextProps = {
   value: undefined,
   state: {
     dirty: false,
-    dirtyMap: {},
     errors: {},
     touched: false,
-    touchedMap: {},
     valid: false,
   },
   handleChange: () => {

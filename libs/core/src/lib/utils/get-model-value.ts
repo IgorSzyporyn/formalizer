@@ -1,10 +1,10 @@
 import { isEmpty } from 'lodash';
 import { ApiValue, FormalizedModel } from '../types/model-types';
-import { FormalizerOptions } from '../types/formalizer-types';
+import { FormalizerCoreOptions } from '../types/formalizer-types';
 
 type GetModelValueProps = {
   model: FormalizedModel;
-  options?: FormalizerOptions;
+  options?: FormalizerCoreOptions;
 };
 
 export const getModelValue = ({ model, options }: GetModelValueProps) => {

@@ -1,10 +1,10 @@
 import { isEqual } from 'lodash';
-import { FormalizerModelIdMap } from '../types/formalizer-types';
+import { FormalizedModelFlat } from '../types/formalizer-types';
 import { Dependency, FormalizedModel } from '../types/model-types';
 
 type ApplyDependenciesProps = {
   model?: FormalizedModel;
-  modelIdMap?: FormalizerModelIdMap;
+  modelIdMap?: FormalizedModelFlat;
 };
 
 export const applyDependencies = ({
@@ -32,14 +32,14 @@ export const applyDependencies = ({
 
 const applyDependenciesItems = (
   models: FormalizedModel[],
-  modelIdMap: FormalizerModelIdMap
+  modelIdMap: FormalizedModelFlat
 ) => {
   models.forEach((model) => applyDependencies({ model, modelIdMap }));
 };
 
 type CreateDependencyListenerProps = {
   model: FormalizedModel;
-  modelIdMap: FormalizerModelIdMap;
+  modelIdMap: FormalizedModelFlat;
   dependency: Dependency;
 };
 

@@ -1,29 +1,19 @@
-import {
-  FormalizerModelIdMap,
-  FormalizerOptions,
-} from '../../types/formalizer-types';
-import {
-  CoreModelType,
-  FormalizedModel,
-  ListenerCallback,
-} from '../../types/model-types';
+import { CoreModelType, ListenerCallback } from '../../types/model-types';
 import { getCoreModel } from '../../utils/get-core-model';
 import { setValueProperty } from './set-value-property';
+import { CreateObjectObserveHandlerProps } from './shared-types';
 
 type TransformCorePropertiesProps = {
-  model: FormalizedModel;
   type: CoreModelType;
-  options?: FormalizerOptions;
-  modelIdMap: FormalizerModelIdMap;
   onChange: ListenerCallback;
-};
+} & CreateObjectObserveHandlerProps;
 
 export const transformCoreProperties = ({
   model,
   type,
-  options,
   onChange,
-  modelIdMap,
+  options,
+  ...rest
 }: TransformCorePropertiesProps) => {
   const coreModel = getCoreModel(type);
 
@@ -60,10 +50,10 @@ export const transformCoreProperties = ({
 
   // Convert the value if present
   setValueProperty({
+    ...rest,
+    options,
     model,
     value: model.value,
-    modelIdMap,
     onChange,
-    options,
   });
 };

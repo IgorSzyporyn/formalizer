@@ -1,4 +1,4 @@
-import { PropertyModel, PropertyModelType } from '@formalizer/core';
+import { PropertyModel, ClientPropertyType } from '@formalizer/core';
 import { SvgIconTypeMap } from '@mui/material';
 import { OverridableComponent } from '@mui/material/OverridableComponent';
 
@@ -8,4 +8,4 @@ export type UiPropertyModel = {
   };
 } & Partial<PropertyModel>;
 
-export type UiPropertiesInterface = Record<PropertyModelType, UiPropertyModel>;
+export type UiPropertiesInterface = Record<ClientPropertyType, UiPropertyModel>;

@@ -1,9 +1,8 @@
 import deepmerge from 'deepmerge';
 import { createModelObserve } from '../observable/create-model-observe';
 import {
-  FormalizerModelIdMap,
-  FormalizerModelPathMap,
-  FormalizerOptions,
+  FormalizedModelFlat,
+  FormalizerCoreOptions,
 } from '../types/formalizer-types';
 import {
   ClientModel,
@@ -43,22 +42,22 @@ const bailReports = (model: FormalizedModel, parent?: FormalizedModel) => {
 
 export type CreateFormalizerModelResult = {
   model?: FormalizedModel;
-  modelIdMap?: FormalizerModelIdMap;
-  modelPathMap?: FormalizerModelPathMap;
+  modelIdMap?: FormalizedModelFlat;
+  modelPathMap?: FormalizedModelFlat;
 };
 
 type CreateFormalizerModelProps = {
+  customCoreModel?: CoreModelInterface;
   dataParentModel?: FormalizedModel;
   extension?: ExtensionInterface;
   index?: number;
   model: ClientModel;
-  modelIdMap?: FormalizerModelIdMap;
+  modelIdMap?: FormalizedModelFlat;
+  modelPathMap?: FormalizedModelFlat;
   onModelItemChange: (props: ListenerProps) => void;
-  options?: FormalizerOptions;
+  options?: FormalizerCoreOptions;
   parent?: FormalizedModel;
   path?: string;
-  customCoreModel?: CoreModelInterface;
-  modelPathMap?: FormalizerModelPathMap;
 };
 
 export const createFormalizerModel = ({
@@ -68,11 +67,11 @@ export const createFormalizerModel = ({
   index,
   model: _model,
   modelIdMap = {},
+  modelPathMap = {},
   onModelItemChange,
   options,
   parent,
   path: _path,
-  modelPathMap = {},
 }: CreateFormalizerModelProps): CreateFormalizerModelResult => {
   // For root we have to ensure type is "root"
   if (!parent) {
@@ -90,12 +89,12 @@ export const createFormalizerModel = ({
   const instanceModel = extendClientModel(_model, customCoreModel);
 
   const path = applyPathAndIdToModel({
-    model: instanceModel,
-    path: _path,
-    parent,
-    modelIdMap,
-    index,
     dataParentModel,
+    index,
+    model: instanceModel,
+    modelIdMap,
+    parent,
+    path: _path,
   });
 
   if (parent) {
@@ -157,15 +156,15 @@ export const createFormalizerModel = ({
   // children of items
   if (instanceModel.items && instanceModel.items.length > 0) {
     instanceModel.items = createFormalizerModels({
-      parent: instanceModel,
-      models: instanceModel.items,
-      modelIdMap,
-      extension,
-      options,
-      path,
-      onModelItemChange,
       dataParentModel,
+      extension,
+      modelIdMap,
       modelPathMap: modelPathMap,
+      models: instanceModel.items,
+      onModelItemChange,
+      options,
+      parent: instanceModel,
+      path,
     });
   }
 
@@ -173,13 +172,23 @@ export const createFormalizerModel = ({
   const modelValue = getModelValue({ model: instanceModel, options });
   instanceModel.value = modelValue;
 
+  // Set the __formalized__ flag
+  instanceModel.__formalized__ = true;
+
   // Create the observable model that will enable listeners on each model
-  const observableModel = createModelObserve(
-    instanceModel,
+  const observableModel = createModelObserve({
+    model: instanceModel,
     modelIdMap,
     onModelItemChange,
-    options
-  );
+    options,
+    customCoreModel,
+    dataParentModel,
+    modelPathMap,
+    extension,
+    index,
+    parent,
+    path,
+  });
 
   // Update the formalized model to the flat dot notated map
   // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
@@ -199,10 +208,10 @@ export const createFormalizerModel = ({
 type CreateFormalizerModelsProps = {
   parent: FormalizedModel;
   models: FormalizedModel[];
-  modelIdMap?: FormalizerModelIdMap;
-  modelPathMap?: FormalizerModelPathMap;
+  modelIdMap?: FormalizedModelFlat;
+  modelPathMap?: FormalizedModelFlat;
   extension?: ExtensionInterface;
-  options?: FormalizerOptions;
+  options?: FormalizerCoreOptions;
   onModelItemChange: (props: ListenerProps) => void;
   path?: string;
   dataParentModel?: FormalizedModel;

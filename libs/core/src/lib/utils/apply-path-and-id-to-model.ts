@@ -1,10 +1,10 @@
-import { FormalizerModelIdMap } from '../types/formalizer-types';
+import { FormalizedModelFlat } from '../types/formalizer-types';
 import { FormalizedModel } from '../types/model-types';
 
 type ApplyPathAndIdToModelProp = {
   parent?: FormalizedModel;
   model: FormalizedModel;
-  modelIdMap: FormalizerModelIdMap;
+  modelIdMap: FormalizedModelFlat;
   path?: string;
   index?: number;
   dataParentModel?: FormalizedModel;

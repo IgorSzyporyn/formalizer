@@ -1,6 +1,6 @@
 import { isEmpty } from 'lodash';
-import { ApiValue, FormalizedModel } from '../types/model-types';
-import { FormalizerCoreOptions } from '../types/formalizer-types';
+import { FormalizerCoreOptions } from '../typings/formalizer-types';
+import { FormalizedModel } from '../typings/model-types';
 
 type GetModelValueProps = {
   model: FormalizedModel;
@@ -9,8 +9,8 @@ type GetModelValueProps = {
 
 export const getModelValue = ({ model, options }: GetModelValueProps) => {
   let value = model.value;
-  const arrayValue: ApiValue | undefined = [];
-  const objectValue: ApiValue | undefined = {};
+  const arrayValue: Array<unknown> | undefined = [];
+  const objectValue: Record<string, unknown> | undefined = {};
   let arrayActuallyHasValues = false;
 
   switch (model.apiType) {
@@ -22,7 +22,7 @@ export const getModelValue = ({ model, options }: GetModelValueProps) => {
 
         const itemValue = getModelValue({ model: item });
 
-        arrayValue.push(itemValue as never);
+        arrayValue.push(itemValue);
       });
 
       if (

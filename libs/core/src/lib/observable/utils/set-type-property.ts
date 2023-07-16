@@ -1,4 +1,4 @@
-import { CoreModelType, ListenerCallback } from '../../types/model-types';
+import { CoreModelType, ListenerCallback } from '../../typings/model-types';
 import { isCoreType } from '../../utils/is-core-type';
 import { addDefaultProperties } from './add-default-properties';
 import { removePreventedProperties } from './remove-prevented-properties';

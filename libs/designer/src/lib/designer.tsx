@@ -21,7 +21,7 @@ export type DesignerProps = {
 export const Designer = ({ model }: DesignerProps) => {
   const formalizer = new FormalizerCore({ model });
   const [uiState, setUiState] = useState<DesignerUiContextValueSafe>({
-    utilities: { activeTab: UtilityTab.Layer },
+    utilities: { activeTab: UtilityTab.Layer, collapsed: true },
     activeModelId: formalizer?.getModel()?.id,
   });
 

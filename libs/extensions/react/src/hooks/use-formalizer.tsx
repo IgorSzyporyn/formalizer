@@ -1,26 +1,24 @@
 import {
   ComponentMap,
-  FormalizedModel,
-  FormalizerConfig,
   FormalizerCore,
+  FormalizerCoreParams,
 } from '@formalizer/core';
 import { ChangeEvent } from 'react';
 import { reactExtension } from '../models/react-model';
 import { FormalizerPayload, FrameworkType } from '../types';
 import { getFrameworkModel } from '../utils/get-framework-model';
 
-export const useFormalizer = ({
-  model,
-  options,
-  framework: _framework = 'vanilla',
-}: {
-  model: FormalizedModel;
+export type UseFormalizerProps = {
   framework?: FrameworkType | ComponentMap<unknown>;
-} & FormalizerConfig): FormalizerPayload => {
+} & FormalizerCoreParams;
+
+export const useFormalizer = ({
+  framework: _framework = 'vanilla',
+  ...rest
+}: UseFormalizerProps): FormalizerPayload => {
   const formalizer = new FormalizerCore({
-    model,
+    ...rest,
     extension: reactExtension,
-    options: { ...options, onModelChange: options?.onModelChange },
   });
 
   const framework = getFrameworkModel(_framework, formalizer);

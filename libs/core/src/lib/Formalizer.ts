@@ -12,12 +12,13 @@ import {
   FormalizerCoreOptions,
   FormalizerCoreParams,
   FormalizerCoreState,
-} from './types/formalizer-types';
+} from './typings/formalizer-types';
 import {
   ClientModel,
+  ClientPropertyType,
   FormalizedModel,
   ListenerProps,
-} from './types/model-types';
+} from './typings/model-types';
 import { applyDependencies } from './utils/apply-dependencies';
 import { applyValues } from './utils/apply-values';
 import { createFormalizerModel } from './utils/create-formalizer-model';
@@ -36,10 +37,11 @@ export class FormalizerCore {
     core,
     extension,
     initialValue,
+    onModelChange,
     ...options
   }: FormalizerCoreParams) {
     this.setOptions(options);
-    this.setConfig({ model, core, extension, initialValue });
+    this.setConfig({ model, core, extension, initialValue, onModelChange });
 
     if (model) {
       const formalizer = this.createModel({ model });
@@ -159,6 +161,12 @@ export class FormalizerCore {
   private handleModelChange = (props: ListenerProps) => {
     if (this.initializing) return;
 
+    console.log(
+      `RUNNING HANDLE MODEL CHANGE FROM FORMALIZER CLASS - ${
+        this.getModel()?.id
+      }`
+    );
+
     const { onModelChange } = this.getConfig();
 
     onModelChange?.({
@@ -193,6 +201,26 @@ export class FormalizerCore {
     }
 
     return { model, flattened, keyProperty };
+  };
+
+  updateModel = ({
+    id,
+    properties,
+  }: {
+    id?: string;
+    properties?: ClientModel;
+  }) => {
+    if (!id) {
+      throw Error('Updating root item is not allowed');
+    }
+
+    const model = this.getModel(id);
+
+    if (model && properties) {
+      for (const [property, value] of Object.entries(properties)) {
+        model[property as ClientPropertyType] = value;
+      }
+    }
   };
 
   addModel = (model: ClientModel, parentId: string) => {

@@ -4,7 +4,7 @@ import {
   FormalizedModelFlat,
   FormalizerCoreConfig,
   FormalizerCoreOptions,
-} from '../types/formalizer-types';
+} from '../typings/formalizer-types';
 import {
   ClientModel,
   ExtensionInterface,
@@ -12,7 +12,7 @@ import {
   FormalizedModel,
   ListenerProps,
   coreModelTypes,
-} from '../types/model-types';
+} from '../typings/model-types';
 import { applyPathAndIdToModel } from './apply-path-and-id-to-model';
 import { extendClientModel } from './extend-client-model';
 import { getModelValue } from './get-model-value';

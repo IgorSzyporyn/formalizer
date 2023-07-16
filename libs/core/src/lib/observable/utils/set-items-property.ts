@@ -2,7 +2,7 @@ import {
   Dependency,
   FormalizedModel,
   ListenerCallback,
-} from '../../types/model-types';
+} from '../../typings/model-types';
 import {
   applyDependencies,
   createDependencyListenerId,

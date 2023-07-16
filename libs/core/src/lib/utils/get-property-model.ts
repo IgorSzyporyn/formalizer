@@ -1,4 +1,4 @@
-import { PropertyModel, ClientPropertyType } from '../types/model-types';
+import { PropertyModel, ClientPropertyType } from '../typings/model-types';
 import { getPropertyModels } from './get-property-models';
 
 export const getPropertyModel = (type?: ClientPropertyType) => {

@@ -3,7 +3,7 @@ import {
   FormalizedModel,
   ListenerCallback,
   CoreModelType,
-} from '../../types/model-types';
+} from '../../typings/model-types';
 import { getCoreModel } from '../../utils/get-core-model';
 import { getPropertyModel } from '../../utils/get-property-model';
 
@@ -25,7 +25,7 @@ export const addDefaultProperties = ({
   defaultProperties?.forEach((property) => {
     const propertyModel = getPropertyModel(property);
     const oldPropertyValue = model[property];
-    const defaultPropertyValue = propertyModel?.defaultValue as never;
+    const defaultPropertyValue = propertyModel?.defaultValue;
 
     if (
       oldPropertyValue === undefined &&

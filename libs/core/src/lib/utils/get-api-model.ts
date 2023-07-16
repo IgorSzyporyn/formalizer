@@ -1,4 +1,4 @@
-import { ApiModel, ApiModelType } from '../types/model-types';
+import { ApiModel, ApiModelType } from '../typings/model-types';
 import { getApiModels } from './get-api-models';
 
 export const getApiModel = (type?: ApiModelType) => {

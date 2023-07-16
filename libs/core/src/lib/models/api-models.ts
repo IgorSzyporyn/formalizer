@@ -1,5 +1,5 @@
 import { isArray, isEmpty, isObject } from 'lodash';
-import { ApiModelInterface } from '../types/model-types';
+import { ApiModelInterface } from '../typings/model-types';
 
 export const apiModel: ApiModelInterface = {
   none: {},

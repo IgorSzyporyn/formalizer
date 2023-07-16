@@ -1,4 +1,4 @@
-import { CoreModel, CoreModelType } from '../types/model-types';
+import { CoreModel, CoreModelType } from '../typings/model-types';
 import { getCoreModels } from './get-core-models';
 
 export const getCoreModel = (type?: CoreModelType) => {

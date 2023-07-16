@@ -1,7 +1,7 @@
 import deepmerge from 'deepmerge';
 import { cloneDeep } from 'lodash';
 import { coreModel } from '../models/core-models';
-import { CoreModelInterface, CoreModelType } from '../types/model-types';
+import { CoreModelInterface, CoreModelType } from '../typings/model-types';
 import { getApiModels } from './get-api-models';
 
 export const getCoreModels = (customCoreModels?: CoreModelInterface) => {

@@ -3,7 +3,7 @@ import {
   FormalizedModelFlat,
   FormalizerCoreConfig,
   FormalizerCoreOptions,
-} from '../types/formalizer-types';
+} from '../typings/formalizer-types';
 import {
   ClientPropertyType,
   FormalizedModel,
@@ -12,7 +12,7 @@ import {
   ListenerCallback,
   ListenerProps,
   formalizedPropertyTypes,
-} from '../types/model-types';
+} from '../typings/model-types';
 import { setItemsProperty } from './utils/set-items-property';
 import { setTypeProperty } from './utils/set-type-property';
 import { setValueProperty } from './utils/set-value-property';
@@ -62,18 +62,13 @@ export const createModelObserve = ({
 
   const handler = createObjectObserveHandler(
     (args) => {
-      setTimeout(() => {
-        onModelItemChange?.(args);
+      onModelItemChange?.(args);
 
-        for (const [_, listener] of Object.entries(listenerMap)) {
-          if (
-            args.property === listener.property ||
-            listener.property === '*'
-          ) {
-            listener.callback(args);
-          }
+      for (const [_, listener] of Object.entries(listenerMap)) {
+        if (args.property === listener.property || listener.property === '*') {
+          listener.callback(args);
         }
-      }, 0);
+      }
     },
     { model, onModelItemChange, ...rest }
   );
@@ -88,11 +83,6 @@ const createObjectObserveHandler = (
   props: CreateObjectObserveHandlerProps
 ) => {
   return {
-    deleteProperty() {
-      // Gotta do something about this - set to default value
-      // if attemped deleted maybe?
-      return true;
-    },
     set(
       model: FormalizedModel,
       property: ClientPropertyType | FormalizedPropertyType,
@@ -127,11 +117,12 @@ const createObjectObserveHandler = (
           formalizedPropertyTypes.includes(property as FormalizedPropertyType)
         ) {
           if (property === 'id' || property === 'path') {
-            model[property] = value as never;
+            model[property] = value;
           } else {
             throw Error(`The property ${property} is immutable on ${model.id}`);
           }
         } else {
+          model[property] = value;
           onChange({ model, property, value });
         }
       }

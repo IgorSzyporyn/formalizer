@@ -2,7 +2,7 @@ import {
   FormalizedModel,
   ListenerCallback,
   CoreModelType,
-} from '../../types/model-types';
+} from '../../typings/model-types';
 import { getCoreModel } from '../../utils/get-core-model';
 
 type RemovePreventedPropertiesProps = {
@@ -21,7 +21,7 @@ export const removePreventedProperties = ({
 
   preventedProperties?.forEach((preventedProperty) => {
     if (model[preventedProperty] !== undefined) {
-      model[preventedProperty] = undefined as never;
+      model[preventedProperty] = undefined;
 
       onChange({
         model,

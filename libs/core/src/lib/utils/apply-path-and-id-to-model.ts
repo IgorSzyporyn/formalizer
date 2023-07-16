@@ -1,5 +1,5 @@
-import { FormalizedModelFlat } from '../types/formalizer-types';
-import { FormalizedModel } from '../types/model-types';
+import { FormalizedModelFlat } from '../typings/formalizer-types';
+import { FormalizedModel } from '../typings/model-types';
 
 type ApplyPathAndIdToModelProp = {
   dataParentId?: string;

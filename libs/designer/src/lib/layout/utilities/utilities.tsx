@@ -52,19 +52,16 @@ const panelContentVariants: Variants = {
   },
 };
 
-type UtilitiesProps = {
-  collapsed?: boolean;
-  id?: string;
-};
-
-export const Utilities = ({ collapsed: _collapsed, id }: UtilitiesProps) => {
+export const Utilities = () => {
   const {
+    activeModelId,
     utilities: { activeTab, collapsed },
     updateUiContext,
   } = useContext(DesignerUiContext);
 
   const { formalizer } = useContext(DesignerContext);
-  const model = formalizer?.getModel(id);
+  const rootModel = formalizer?.getModel();
+  const activeModel = formalizer?.getModel(activeModelId);
 
   const handleTabClick = (id: UtilityTab) => {
     updateUiContext({ utilities: { activeTab: id, collapsed } });
@@ -126,7 +123,7 @@ export const Utilities = ({ collapsed: _collapsed, id }: UtilitiesProps) => {
             variants={panelContentVariants}
             animate={activeTab === UtilityTab.Layer ? 'enter' : 'exit'}
           >
-            <LayerPanel model={model} />
+            <LayerPanel model={rootModel} />
           </Styled.AnimatedContentPanel>
           <Styled.AnimatedContentPanel
             key="toolbox-panel"
@@ -142,7 +139,7 @@ export const Utilities = ({ collapsed: _collapsed, id }: UtilitiesProps) => {
             variants={panelContentVariants}
             animate={activeTab === UtilityTab.Properties ? 'enter' : 'exit'}
           >
-            <PropertiesPanel onCancelItemEdit={handleItemEditCancel} />
+            <PropertiesPanel model={activeModel} />
           </Styled.AnimatedContentPanel>
         </Styled.Content>
       </Styled.ContentMotion>

@@ -1,4 +1,4 @@
-import { CoreModelInterface } from '../types/model-types';
+import { CoreModelInterface } from '../typings/model-types';
 
 export const coreModel: CoreModelInterface = {
   root: {

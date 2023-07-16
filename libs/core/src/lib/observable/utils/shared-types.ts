@@ -2,8 +2,8 @@ import {
   FormalizedModelFlat,
   FormalizerCoreConfig,
   FormalizerCoreOptions,
-} from '../../types/formalizer-types';
-import { FormalizedModel, ListenerProps } from '../../types/model-types';
+} from '../../typings/formalizer-types';
+import { FormalizedModel, ListenerProps } from '../../typings/model-types';
 
 export type CreateObjectObserveHandlerProps = {
   config: FormalizerCoreConfig;

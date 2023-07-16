@@ -1,7 +1,7 @@
 import {
   FormalizedModelFlat,
   FormalizerCoreOptions,
-} from '../types/formalizer-types';
+} from '../typings/formalizer-types';
 
 type GetModelValueMapProps = {
   modelIdMap: FormalizedModelFlat;

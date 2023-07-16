@@ -1,5 +1,5 @@
 import { isEqual } from 'lodash';
-import { ListenerCallback } from '../../types/model-types';
+import { ListenerCallback } from '../../typings/model-types';
 import { propagateValueProperty } from './propagate-value-property';
 import { CreateObjectObserveHandlerProps } from './shared-types';
 
@@ -17,7 +17,7 @@ export const setValueProperty = ({
   options,
   ...rest
 }: SetValuePropertyProps) => {
-  const newValue = model.valueToRaw?.({ value, model, options }) as never;
+  const newValue = model.valueToRaw?.({ value, model, options });
 
   if (!isEqual(newValue, model.value)) {
     model.value = newValue;

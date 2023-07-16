@@ -3,7 +3,7 @@ import {
   ClientModel,
   CoreModelInterface,
   FormalizedModel,
-} from '../types/model-types';
+} from '../typings/model-types';
 import { getApiModel } from './get-api-model';
 import { getCoreModel } from './get-core-model';
 

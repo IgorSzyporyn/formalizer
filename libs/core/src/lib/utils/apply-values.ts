@@ -5,7 +5,7 @@ import {
   FormalizedModelFlat,
   FormalizerCoreConfig,
   FormalizerCoreOptions,
-} from '../types/formalizer-types';
+} from '../typings/formalizer-types';
 import { getModelValueMap } from './get-model-value-map';
 
 type ApplyValuesProps = {

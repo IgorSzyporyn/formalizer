@@ -2,7 +2,7 @@ import {
   ApiModelType,
   CoreModelType,
   PropertyModelInterface,
-} from '../types/model-types';
+} from '../typings/model-types';
 
 export const propertiesModel: PropertyModelInterface = {
   name: {

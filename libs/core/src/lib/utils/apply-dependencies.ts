@@ -1,6 +1,6 @@
 import { isEqual } from 'lodash';
-import { FormalizedModelFlat } from '../types/formalizer-types';
-import { Dependency, FormalizedModel } from '../types/model-types';
+import { FormalizedModelFlat } from '../typings/formalizer-types';
+import { Dependency, FormalizedModel } from '../typings/model-types';
 
 export const createDependencyListenerId = (
   model: FormalizedModel,
@@ -59,25 +59,25 @@ const createDependencyListener = ({
     id: createDependencyListenerId(model, dependency),
     property: dependency.matchProp,
     callback: ({ value }) => {
-      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-      invokeDependency({ model: modelIdMap[model.id!], value, dependency });
+      if (model.id) {
+        invokeDependency({ model: modelIdMap[model.id], value, dependency });
+      }
     },
   });
 };
 
 type InvokeDependenciesProps = {
-  value: unknown;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  value: any;
   model: FormalizedModel;
   dependency: Dependency;
 };
 
 const invokeDependency = ({
-  value: _value,
+  value,
   model,
   dependency,
 }: InvokeDependenciesProps) => {
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const value = _value as any;
   let success = false;
 
   if (dependency.matchValue !== undefined) {
@@ -102,5 +102,5 @@ const invokeDependency = ({
   const newValue = success ? dependency.successValue : dependency.failureValue;
   const targetProp = dependency.targetProp;
 
-  model[targetProp] = newValue as never;
+  model[targetProp] = newValue;
 };

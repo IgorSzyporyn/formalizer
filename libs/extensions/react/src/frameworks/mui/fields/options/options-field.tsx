@@ -7,11 +7,9 @@ import {
   Select,
   SelectChangeEvent,
 } from '@mui/material';
-import { FormalizerComponentProps } from '../../../../types';
+import { FieldComponentProps } from '../../../../types';
 
-export const OptionsField = (props: FormalizerComponentProps) => {
-  const { model } = props;
-
+export const OptionsField = ({ model, ...props }: FieldComponentProps) => {
   const handleChange = (e: SelectChangeEvent<string>) => {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     props.onChange?.({ ...e, target: { ...e.target, id: model?.id } } as any);
@@ -25,15 +23,11 @@ export const OptionsField = (props: FormalizerComponentProps) => {
         <InputLabel id={`${model?.id}-label`}>{model.title}</InputLabel>
       )}
       <Select
+        {...props}
         size={model?.size === 'small' ? 'small' : 'medium'}
         labelId={`${model?.id}-label`}
-        id={props.id}
-        name={props.name}
-        value={props.value}
         label={model?.title}
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         onChange={handleChange}
-        onBlur={props.onBlur}
         startAdornment={
           Icon ? (
             <InputAdornment position="start">

@@ -9,13 +9,7 @@ export const CreateChild = ({ model }: CreateChildProps) => {
   return (
     <Field id={model?.id}>
       {({ props, Component }) => {
-        return (
-          <Component
-            {...props}
-            // key={`react-create-child-${model?.id}-${model?.type}`}
-            model={model}
-          />
-        );
+        return <Component {...props} model={model} />;
       }}
     </Field>
   );

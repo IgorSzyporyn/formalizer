@@ -8,12 +8,9 @@ import cx from 'classnames';
 import deepmerge from 'deepmerge';
 import { Fragment, HTMLAttributes, forwardRef, useContext } from 'react';
 import { ModelCardHeader } from '../../../../components/model-card-header/model-card-header';
-import {
-  DesignerContext,
-  DesignerUiContext,
-  UtilityTab,
-} from '../../../../context';
+import { DesignerContext, DesignerUiContext } from '../../../../context';
 import * as Styled from './styled';
+import { UtilityTab } from '../../../../typings/designer-types';
 
 export type TreeItemProps = {
   modelId?: string;
@@ -61,7 +58,7 @@ export const TreeItem = forwardRef<HTMLDivElement, TreeItemProps>(
     },
     ref
   ) => {
-    const { updateUiContext, utilities } = useContext(DesignerUiContext);
+    const { updateUiContext } = useContext(DesignerUiContext);
 
     const { formalizer } = useContext(DesignerContext);
     const model = formalizer?.getModel?.(modelId);
@@ -69,7 +66,7 @@ export const TreeItem = forwardRef<HTMLDivElement, TreeItemProps>(
     const handleEditClick = () => {
       updateUiContext({
         activeModelId: modelId,
-        utilities: { ...utilities, activeTab: UtilityTab.Properties },
+        activeTab: UtilityTab.Properties,
       });
     };
 
@@ -113,19 +110,14 @@ export const TreeItem = forwardRef<HTMLDivElement, TreeItemProps>(
               <ModelCardHeader
                 modelId={model?.id}
                 action={
-                  <Fragment key={`layer-card-action-${model?.id}`}>
+                  <Fragment>
                     <CollapseButton
                       size="medium"
                       collapsed={collapsed}
                       onCollapseToggle={onCollapse}
-                      key={`layer-card-action-collapse-${model?.id}`}
                       style={{ visibility: hasItems ? 'visible' : 'hidden' }}
                     />
-                    <IconButton
-                      key={`layer-card-action-edit-${model?.id}`}
-                      size="medium"
-                      onClick={handleEditClick}
-                    >
+                    <IconButton size="medium" onClick={handleEditClick}>
                       <EditNoteIcon />
                     </IconButton>
                   </Fragment>

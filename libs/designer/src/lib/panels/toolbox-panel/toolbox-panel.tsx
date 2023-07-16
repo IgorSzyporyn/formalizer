@@ -1,10 +1,13 @@
 import { PanelBody, PanelHeader } from '@formalizer/components';
 import HandymanIcon from '@mui/icons-material/Handyman';
 import { ToolboxGroups } from './components/toolbox-groups/toolbox-groups';
+import { HTMLAttributes } from 'react';
 
-export const ToolboxPanel = () => {
+type ToolboxPanelProps = HTMLAttributes<HTMLDivElement>;
+
+export const ToolboxPanel = ({ ...props }: ToolboxPanelProps) => {
   return (
-    <>
+    <div {...props}>
       <PanelHeader
         title="Toolbox"
         Icon={HandymanIcon}
@@ -14,6 +17,6 @@ export const ToolboxPanel = () => {
       <PanelBody>
         <ToolboxGroups />
       </PanelBody>
-    </>
+    </div>
   );
 };

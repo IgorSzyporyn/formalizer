@@ -23,7 +23,7 @@ import {
 } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
 import { FormalizedModel } from '@formalizer/core';
-import { useEffect, useMemo, useRef, useState } from 'react';
+import { useContext, useEffect, useMemo, useRef, useState } from 'react';
 import { createPortal } from 'react-dom';
 import { FlattenedItem, TreeItem } from '../../typings/sortable-tree-types';
 import { sortableTreeKeyboardCoordinates } from '../../utils/keyboard-coordinates';
@@ -37,6 +37,7 @@ import {
 } from '../../utils/sortable-tree';
 import { SortableTreeItem } from '../sortable-tree-item/sortable-tree-item';
 import * as Styled from './styled';
+import { DesignerContext } from '../../../../context';
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 const toJSON = (json: Record<string, any>) => {
@@ -74,18 +75,18 @@ const dropAnimationConfig: DropAnimation = {
 
 type SortableTreeProps = {
   collapsible?: boolean;
-  model: FormalizedModel;
   indentationWidth?: number;
   removable?: boolean;
+  model?: FormalizedModel;
 };
 
 export function SortableTree({
   collapsible,
-  model,
   indentationWidth = 32,
   removable,
+  model,
 }: SortableTreeProps) {
-  const modelJSON = toJSON(model) as TreeItem;
+  const modelJSON = toJSON(model || {}) as TreeItem;
   const [items, setItems] = useState<TreeItem[]>(modelJSON.items || []);
   const [activeId, setActiveId] = useState<UniqueIdentifier | null>(null);
   const [overId, setOverId] = useState<UniqueIdentifier | null>(null);

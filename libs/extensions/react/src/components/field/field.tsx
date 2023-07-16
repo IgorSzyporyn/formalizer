@@ -1,33 +1,12 @@
-import { ExtraProperties, FormalizedModel } from '@formalizer/core';
-import {
-  ChangeEvent,
-  ReactNode,
-  useCallback,
-  useContext,
-  useEffect,
-  useState,
-} from 'react';
+import { ExtraProperties } from '@formalizer/core';
+import { ChangeEvent, ReactNode, useCallback, useContext } from 'react';
 import { FormalizerContext } from '../../context/formalizer-context';
 import { useListener } from '../../hooks/use-listener';
-import { FieldChildProps, FormalizerComponentProps } from '../../types';
-
-const toJSON = (model?: FormalizedModel) => {
-  let _model: FormalizedModel | undefined = undefined;
-
-  if (model) {
-    _model = JSON.parse(JSON.stringify(model));
-  }
-
-  return _model;
-};
+import { FieldChildRenderProps } from '../../types';
 
 type FieldProps = {
   id?: string;
-  children?: (props: {
-    props: FieldChildProps;
-    model: FormalizedModel;
-    Component: (props: FormalizerComponentProps) => ReactNode;
-  }) => ReactNode;
+  children?: (props: FieldChildRenderProps) => ReactNode;
   onChange?: (e: ChangeEvent<unknown>) => void;
   onBlur?: (e: ChangeEvent<unknown>) => void;
 };
@@ -42,8 +21,8 @@ export const Field = ({ id, children, onChange, onBlur }: FieldProps) => {
 
   const options = formalizer?.getOptions();
   const model = formalizer?.getModel(id);
-  const [state, setState] = useState(toJSON(model));
-  const listener = useListener(model);
+
+  useListener(model);
 
   const handleBlur = useCallback(
     (e: ChangeEvent<unknown>) => {
@@ -61,13 +40,6 @@ export const Field = ({ id, children, onChange, onBlur }: FieldProps) => {
     [_handleChange, onChange]
   );
 
-  const handleStateChange = (_model?: FormalizedModel) => {
-    if (_model) {
-      const newState = toJSON(_model);
-      setState(newState);
-    }
-  };
-
   let extraProperties: ExtraProperties = {};
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   let Component: any;
@@ -80,18 +52,14 @@ export const Field = ({ id, children, onChange, onBlur }: FieldProps) => {
     Component = frameworkProperties.Component;
   }
 
-  useEffect(() => {
-    handleStateChange(listener.model);
-  }, [listener]);
-
-  const value = model?.rawToValue?.({ model, value: state?.value, options });
+  const value = model?.rawToValue?.({ model, value: model?.value, options });
 
   return model && Component
     ? children?.({
         props: {
           ...extraProperties,
-          id: state?.id || '',
-          name: state?.name || '',
+          id: model?.id || '',
+          name: model?.name || '',
           value: value,
           onChange: handleChange,
           onBlur: handleBlur,

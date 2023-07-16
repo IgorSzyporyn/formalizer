@@ -1,10 +1,8 @@
 import { Checkbox, FormControlLabel } from '@mui/material';
 import { ChangeEvent } from 'react';
-import { FormalizerComponentProps } from '../../../../types';
+import { FieldComponentProps } from '../../../../types';
 
-export const BooleanField = (props: FormalizerComponentProps) => {
-  const { model } = props;
-
+export const BooleanField = ({ model, ...props }: FieldComponentProps) => {
   const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
     e.stopPropagation();
 
@@ -17,13 +15,7 @@ export const BooleanField = (props: FormalizerComponentProps) => {
   return (
     <FormControlLabel
       control={
-        <Checkbox
-          id={props.id}
-          name={props.name}
-          checked={!!props.value}
-          onChange={handleChange}
-          onBlur={props.onBlur}
-        />
+        <Checkbox {...props} checked={!!props.value} onChange={handleChange} />
       }
       label={model?.title}
     />

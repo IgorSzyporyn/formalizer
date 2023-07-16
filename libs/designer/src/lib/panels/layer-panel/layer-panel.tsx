@@ -1,37 +1,29 @@
 import { PanelBody, PanelHeader } from '@formalizer/components';
-import { FormalizedModel } from '@formalizer/core';
 import AddCircleIcon from '@mui/icons-material/AddCircle';
 import EditIcon from '@mui/icons-material/Edit';
 import LayersIcon from '@mui/icons-material/Layers';
 import { Box, Button } from '@mui/material';
-import { Fragment } from 'react';
+import { Fragment, HTMLAttributes, useContext } from 'react';
 import { SortableTree } from './components/sortable-tree/sortable-tree';
+import { DesignerContext } from '../../context';
 
-type LayerPanelProps = {
-  model?: FormalizedModel;
-};
+type LayerPanelProps = HTMLAttributes<HTMLDivElement>;
 
-export const LayerPanel = ({ model }: LayerPanelProps) => {
+export const LayerPanel = ({ ...props }: LayerPanelProps) => {
+  const { formalizer } = useContext(DesignerContext);
+  const model = formalizer?.getRootModel();
+
   return (
-    <Fragment key="layer-panel">
+    <div {...props}>
       <PanelHeader
         Icon={LayersIcon}
         title="Model Structure"
         Action={
           <Fragment key="layer-panel-action">
-            <Button
-              key="layer-panel-edit"
-              color="primary"
-              sx={{ mr: 1 }}
-              startIcon={<EditIcon />}
-            >
+            <Button color="primary" sx={{ mr: 1 }} startIcon={<EditIcon />}>
               Edit
             </Button>
-            <Button
-              key="layer-panel-add"
-              color="success"
-              startIcon={<AddCircleIcon />}
-            >
+            <Button color="success" startIcon={<AddCircleIcon />}>
               Add
             </Button>
           </Fragment>
@@ -49,10 +41,8 @@ export const LayerPanel = ({ model }: LayerPanelProps) => {
         }
       />
       <PanelBody>
-        {model && (
-          <SortableTree collapsible model={model} indentationWidth={16} />
-        )}
+        <SortableTree model={model} collapsible indentationWidth={16} />
       </PanelBody>
-    </Fragment>
+    </div>
   );
 };

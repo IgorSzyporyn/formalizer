@@ -1,10 +1,10 @@
 import {
   FormalizedModel,
   FormalizerCore,
+  FormalizerCoreState,
   FormalizerFrameworkModel,
-  FormalizerState,
 } from '@formalizer/core';
-import { ChangeEvent } from 'react';
+import { ChangeEvent, ReactNode } from 'react';
 
 export type FrameworkType = 'vanilla' | 'mui' | 'antd';
 
@@ -15,7 +15,7 @@ export type FormalizerPayload = {
   value?: Record<string, any>;
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   model?: Record<string, any>;
-  state?: FormalizerState;
+  state?: FormalizerCoreState;
   handleSubmit: (e: unknown) => void;
   handleBlur: (e: unknown) => void;
   handleChange: (e: ChangeEvent<unknown>) => void;
@@ -30,6 +30,12 @@ export type FieldChildProps = {
   onBlur: (e: ChangeEvent<unknown>) => void;
 };
 
-export type FormalizerComponentProps = FieldChildProps & {
+export type FieldComponentProps = {
   model?: FormalizedModel;
+} & FieldChildProps;
+
+export type FieldChildRenderProps = {
+  props: FieldChildProps;
+  model: FormalizedModel;
+  Component: (componentProps: FieldComponentProps) => ReactNode;
 };

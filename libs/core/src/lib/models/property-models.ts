@@ -176,7 +176,7 @@ export const propertiesModel: PropertyModelInterface = {
     options: [true, false],
   },
   layoutOnly: {
-    type: 'options',
+    type: 'option',
     apiType: 'boolean',
     name: 'layoutOnly',
     title: 'Layout Only',
@@ -244,6 +244,14 @@ export const propertiesModel: PropertyModelInterface = {
     inheritType: true,
     name: 'value',
     title: 'Value',
+    description: 'Sets the initial value',
+    readonly: false,
+  },
+  initialValue: {
+    type: 'text',
+    inheritType: true,
+    name: 'initialValue',
+    title: 'Initial Value',
     description: 'Sets the initial value',
     readonly: false,
   },

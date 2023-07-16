@@ -1,9 +1,11 @@
-import { FormalizerComponentProps } from '../../types';
+import { FormalizedModel } from '@formalizer/core';
 import { CreateChild } from '../create-child/create-child';
 
-export const CreateChildren = (props: FormalizerComponentProps) => {
-  const { model } = props;
+type CreateChildrenProps = {
+  model?: FormalizedModel;
+};
 
+export const CreateChildren = ({ model }: CreateChildrenProps) => {
   const children = model?.items?.map((item) => {
     return <CreateChild key={item.id} model={item} />;
   });

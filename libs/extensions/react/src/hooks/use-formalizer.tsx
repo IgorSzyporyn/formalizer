@@ -3,7 +3,7 @@ import {
   FormalizerCore,
   FormalizerCoreParams,
 } from '@formalizer/core';
-import { ChangeEvent } from 'react';
+import { ChangeEvent, useRef } from 'react';
 import { reactExtension } from '../models/react-model';
 import { FormalizerPayload, FrameworkType } from '../types';
 import { getFrameworkModel } from '../utils/get-framework-model';
@@ -16,12 +16,14 @@ export const useFormalizer = ({
   framework: _framework = 'vanilla',
   ...rest
 }: UseFormalizerProps): FormalizerPayload => {
-  const formalizer = new FormalizerCore({
-    ...rest,
-    extension: reactExtension,
-  });
+  const formalizer = useRef(
+    new FormalizerCore({
+      ...rest,
+      extension: reactExtension,
+    })
+  );
 
-  const framework = getFrameworkModel(_framework, formalizer);
+  const framework = getFrameworkModel(_framework, formalizer.current);
 
   const handleSubmit = (e: unknown) => {
     // console.log(e);
@@ -35,7 +37,7 @@ export const useFormalizer = ({
     e.stopPropagation?.();
 
     const target = e.target as HTMLInputElement;
-    const targetModel = formalizer?.getModel(target.id);
+    const targetModel = formalizer.current?.getModel(target.id);
     const value = target.value;
 
     if (targetModel) {
@@ -47,7 +49,7 @@ export const useFormalizer = ({
   };
 
   return {
-    formalizer: formalizer,
+    formalizer: formalizer.current,
     framework: framework,
     handleSubmit,
     handleBlur,

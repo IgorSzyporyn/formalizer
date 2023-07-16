@@ -168,10 +168,6 @@ export class FormalizerCore {
   private handleModelChange = (props: ListenerProps) => {
     if (this.initializing) return;
 
-    console.log(
-      `MODEL CHANGE FROM FORMALIZER CLASS - ${props.model.id} - ${props.property} - ${props.value}`
-    );
-
     const { onModelChange } = this.getConfig();
 
     onModelChange?.({

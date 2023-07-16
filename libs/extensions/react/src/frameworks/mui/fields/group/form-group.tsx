@@ -1,12 +1,11 @@
 import { FormGroup as MuiFormGroup, Typography } from '@mui/material';
 import { CreateChildren } from '../../../../components/create-children/create-children';
-import { FormalizerComponentProps } from '../../../../types';
+import { FieldComponentProps } from '../../../../types';
+import { Fragment } from 'react';
 
-export const FormGroup = (props: FormalizerComponentProps) => {
-  const { model } = props;
-
+export const FormGroup = ({ model, ...props }: FieldComponentProps) => {
   return (
-    <>
+    <Fragment key={`react-mui-group-form-group-${model?.id}`}>
       {model?.description && (
         <Typography variant="body1" sx={{ mb: 1 }}>
           {model.description}
@@ -18,8 +17,8 @@ export const FormGroup = (props: FormalizerComponentProps) => {
         </Typography>
       )}
       <MuiFormGroup sx={{ pb: 2, pt: 1 }}>
-        <CreateChildren {...props} />
+        <CreateChildren model={model} {...props} />
       </MuiFormGroup>
-    </>
+    </Fragment>
   );
 };

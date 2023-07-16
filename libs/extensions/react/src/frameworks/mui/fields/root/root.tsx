@@ -1,6 +1,6 @@
 import { CreateChildren } from '../../../../components/create-children/create-children';
-import { FormalizerComponentProps } from '../../../../types';
+import { FieldComponentProps } from '../../../../types';
 
-export const RootField = (props: FormalizerComponentProps) => {
+export const RootField = (props: FieldComponentProps) => {
   return <CreateChildren {...props} />;
 };

@@ -110,6 +110,12 @@ export const uiProperties: UiPropertiesInterface = {
     size: 'small',
     group: 'value',
   },
+  initialValue: {
+    icon: ColorLensIcon,
+    fullWidth: true,
+    size: 'small',
+    group: 'value',
+  },
   value: {
     icon: ColorLensIcon,
     fullWidth: true,

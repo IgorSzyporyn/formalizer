@@ -4,23 +4,17 @@ import {
   InputAdornment,
   TextField as MuiTextField,
 } from '@mui/material';
-import { FormalizerComponentProps } from '../../../../types';
+import { FieldComponentProps } from '../../../../types';
 
-export const TextField = (props: FormalizerComponentProps) => {
-  const { model } = props;
-
+export const TextField = ({ model, ...props }: FieldComponentProps) => {
   const Icon = model?.icon;
 
   return (
     <FormControl fullWidth={model?.fullWidth} sx={{ mb: 2 }}>
       <MuiTextField
+        {...props}
         label={model?.title}
         size={model?.size === 'small' ? 'small' : 'medium'}
-        id={props.id}
-        name={props.name}
-        value={props.value}
-        onChange={props.onChange}
-        onBlur={props.onBlur}
         type={model?.type}
         fullWidth={model?.fullWidth}
         InputProps={

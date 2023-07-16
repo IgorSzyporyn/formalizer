@@ -1,12 +1,11 @@
 import { ChevronRight } from '@mui/icons-material';
 import { Collapse, FormControl, FormLabel, IconButton } from '@mui/material';
 import { useState } from 'react';
-import { FormalizerComponentProps } from '../../../../types';
+import { FieldComponentProps } from '../../../../types';
 import { FormGroup } from './form-group';
 import * as Styled from './styled';
 
-export const GroupField = (props: FormalizerComponentProps) => {
-  const { model } = props;
+export const GroupField = ({ model, ...props }: FieldComponentProps) => {
   const [collapsed, setCollapsed] = useState(!!model?.collapsed);
 
   const handleCollapse = () => {
@@ -47,10 +46,10 @@ export const GroupField = (props: FormalizerComponentProps) => {
       )}
       {model?.collapsed !== undefined ? (
         <Collapse in={!collapsed}>
-          <FormGroup {...props} />
+          <FormGroup model={model} {...props} />
         </Collapse>
       ) : (
-        <FormGroup {...props} />
+        <FormGroup model={model} {...props} />
       )}
     </FormControl>
   );

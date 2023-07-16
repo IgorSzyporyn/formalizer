@@ -3,7 +3,7 @@ import { ClientModel, FormalizerCore } from '@formalizer/core';
 import { theme } from '@formalizer/theme';
 import { Box, CssBaseline } from '@mui/material';
 import deepmerge from 'deepmerge';
-import { useCallback, useState } from 'react';
+import { useCallback, useRef, useState } from 'react';
 import {
   DesignerContext,
   DesignerUiContext,
@@ -19,7 +19,7 @@ export type DesignerProps = {
 };
 
 export const Designer = ({ model }: DesignerProps) => {
-  const formalizer = new FormalizerCore({ model });
+  const formalizer = useRef(new FormalizerCore({ model }));
   const [uiState, setUiState] = useState<DesignerUiContextValueSafe>({
     ...defaultDesignerUiContextValue,
   });
@@ -31,12 +31,12 @@ export const Designer = ({ model }: DesignerProps) => {
     [uiState]
   );
 
-  window.A = formalizer;
+  window.A = formalizer.current;
 
   return (
     <ThemeProvider theme={theme}>
       <CssBaseline />
-      <DesignerContext.Provider value={{ formalizer }}>
+      <DesignerContext.Provider value={{ formalizer: formalizer.current }}>
         <DesignerUiContext.Provider value={{ ...uiState, updateUiContext }}>
           <Box className="designer" sx={{ display: 'flex', height: '100%' }}>
             <Canvas className="designer-main" sx={{ flexGrow: '1', mr: 4 }} />

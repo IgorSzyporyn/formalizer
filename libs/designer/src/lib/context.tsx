@@ -1,5 +1,6 @@
 import { FormalizerCore } from '@formalizer/core';
 import { createContext } from 'react';
+import { UtilityTab } from './typings/designer-types';
 
 export type DesignerContextValue = {
   formalizer: FormalizerCore | undefined;
@@ -9,20 +10,16 @@ export const DesignerContext = createContext<DesignerContextValue>({
   formalizer: undefined,
 });
 
-export enum UtilityTab {
-  Layer = 1,
-  Toolbox = 2,
-  Properties = 3,
-}
-
 export type DesignerUiContextValueSafe = {
-  utilities: { activeTab: UtilityTab; collapsed: boolean };
+  activeTab: UtilityTab;
+  utilitiesCollapsed: boolean;
   activeModelId?: string;
 };
 
 export const defaultDesignerUiContextValue: DesignerUiContextValue = {
-  utilities: { activeTab: UtilityTab.Layer, collapsed: false },
   activeModelId: undefined,
+  activeTab: UtilityTab.Layer,
+  utilitiesCollapsed: false,
   // eslint-disable-next-line @typescript-eslint/no-empty-function
   updateUiContext: () => {},
 };

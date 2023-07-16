@@ -1,4 +1,3 @@
-import { isEmpty } from 'lodash';
 import { FormalizerCoreOptions } from '../typings/formalizer-types';
 import { FormalizedModel } from '../typings/model-types';
 
@@ -7,48 +6,38 @@ type GetModelValueProps = {
   options?: FormalizerCoreOptions;
 };
 
+// Helper function to check if an array or object is empty
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+const isCollectionEmpty = (collection: any) =>
+  collection instanceof Array
+    ? collection.length === 0
+    : Object.keys(collection).length === 0;
+
 export const getModelValue = ({ model, options }: GetModelValueProps) => {
   let value = model.value;
-  const arrayValue: Array<unknown> | undefined = [];
-  const objectValue: Record<string, unknown> | undefined = {};
-  let arrayActuallyHasValues = false;
 
   switch (model.apiType) {
     case 'array':
-      model.items?.forEach((item) => {
-        if (item.value !== undefined) {
-          arrayActuallyHasValues = true;
-        }
-
-        const itemValue = getModelValue({ model: item });
-
-        arrayValue.push(itemValue);
-      });
-
-      if (
-        (arrayValue.length === 0 && model.value === undefined) ||
-        !arrayActuallyHasValues
-      ) {
-        value = undefined;
-      } else {
-        value = arrayValue;
-      }
-
-      break;
     case 'object':
+      // eslint-disable-next-line no-case-declarations, @typescript-eslint/no-explicit-any
+      const collection: any = model.apiType === 'array' ? [] : {};
+
       model.items?.forEach((item) => {
         const itemValue = getModelValue({ model: item });
 
         if (itemValue !== undefined) {
-          objectValue[item.name] = itemValue;
+          if (model.apiType === 'array') {
+            collection.push(itemValue);
+          } else {
+            collection[item.name] = itemValue;
+          }
         }
       });
 
-      if (isEmpty(objectValue) && model.value === undefined) {
-        value = undefined;
-      } else {
-        value = objectValue;
-      }
+      value =
+        isCollectionEmpty(collection) && model.value === undefined
+          ? undefined
+          : collection;
       break;
     default:
       if (model.valueToRaw) {

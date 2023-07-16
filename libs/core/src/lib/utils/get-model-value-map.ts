@@ -14,24 +14,26 @@ export const getModelValueMap = ({
 }: GetModelValueMapProps) => {
   const valueMap: Record<string, unknown | undefined> = {};
 
-  for (const [_, model] of Object.entries(modelIdMap || {})) {
-    const apiType = model.apiType;
-    const isDataParent = apiType === 'object' || apiType === 'array';
-    const allowDataGather = !isDataParent;
-    const gatherEmptyValues = options.partialValues;
+  for (const modelId in modelIdMap) {
+    // eslint-disable-next-line no-prototype-builtins
+    if (modelIdMap.hasOwnProperty(modelId)) {
+      const model = modelIdMap[modelId];
+      const apiType = model.apiType;
+      const isDataParent = apiType === 'object' || apiType === 'array';
 
-    // Convert from whatever is stored
-    const value = model.valueToRaw?.({ model, value: model.value, options });
+      if (!isDataParent && model.path) {
+        // Convert from whatever is stored
+        const value = model.valueToRaw?.({
+          model,
+          value: model.value,
+          options,
+        });
+        const gatherEmptyValues = options.partialValues;
 
-    if (
-      allowDataGather &&
-      !gatherEmptyValues &&
-      value !== undefined &&
-      model.path
-    ) {
-      valueMap[model.path] = value;
-    } else if (allowDataGather && gatherEmptyValues && model.path) {
-      valueMap[model.path] = value;
+        if (gatherEmptyValues || value !== undefined) {
+          valueMap[model.path] = value;
+        }
+      }
     }
   }
 

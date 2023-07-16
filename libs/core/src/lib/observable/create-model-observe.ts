@@ -78,7 +78,7 @@ export const createModelObserve = ({
     (args) => {
       onModelItemChange?.(args);
 
-      for (const [_, listener] of Object.entries(listenerMap)) {
+      for (const listener of Object.values(listenerMap)) {
         if (args.property === listener.property || listener.property === '*') {
           listener.callback(args);
         }

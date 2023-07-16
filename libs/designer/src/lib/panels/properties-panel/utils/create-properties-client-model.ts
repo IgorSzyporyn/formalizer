@@ -10,7 +10,6 @@ import {
   getUiProperties,
   getUiPropertyGroups,
 } from '@formalizer/models';
-import { cloneDeep } from 'lodash';
 
 type CreatePropertiesModelProps = {
   model?: FormalizedModel;
@@ -49,7 +48,7 @@ export const createPropertiesClientModel = ({
       if (allowedProperty && uiPropertyType) {
         const propertyModelItem = {
           ..._value,
-          value: cloneDeep(model[property]),
+          value: model[property],
           type: typeOverride,
           name: property,
         };

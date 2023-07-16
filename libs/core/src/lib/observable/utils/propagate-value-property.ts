@@ -1,4 +1,3 @@
-import { cloneDeep } from 'lodash';
 import { CreateObjectObserveHandlerProps } from '../typings/shared-types';
 
 type PropagateValuePropertyProps = {
@@ -27,7 +26,7 @@ export const propagateValueProperty = ({
         return index !== -1;
       });
 
-      const cloneValue = cloneDeep(parentValue);
+      const cloneValue = parentValue;
       cloneValue[index] = value as never;
       parentModel.value = cloneValue;
 
@@ -37,7 +36,7 @@ export const propagateValueProperty = ({
     if (parentModel.apiType === 'object') {
       const parentValue = (parentModel.value || {}) as Record<string, unknown>;
 
-      const cloneValue = cloneDeep(parentValue);
+      const cloneValue = parentValue;
       cloneValue[model.name] = value;
       parentModel.value = cloneValue;
     }

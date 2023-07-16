@@ -107,7 +107,7 @@ export class FormalizerCore {
       valid: true,
     };
 
-    for (const [_, model] of Object.entries(modelPathMap)) {
+    for (const model of Object.values(modelPathMap)) {
       if (model.dirty) {
         state.dirty = true;
       }
@@ -217,7 +217,13 @@ export class FormalizerCore {
   }) => {
     const model = this.getModel(id);
 
-    if (model && properties) {
+    if (
+      model !== null &&
+      model !== undefined &&
+      properties !== null &&
+      properties !== undefined &&
+      Object.keys(properties).length > 0
+    ) {
       for (const [property, value] of Object.entries(properties)) {
         model[property as ClientPropertyType] = value;
       }

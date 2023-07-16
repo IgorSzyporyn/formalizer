@@ -1,8 +1,7 @@
 import { FormalizedModel, FormalizerModelChange } from '@formalizer/core';
-import { createPropertiesClientModel } from '../../utils/create-properties-client-model';
 import { Formalizer, useFormalizer } from '@formalizer/react';
-import { ModelCardHeader } from '../../../../components/model-card-header/model-card-header';
 import { Card, CardContent, CardProps } from '@mui/material';
+import { createPropertiesClientModel } from '../../utils/create-properties-client-model';
 
 type PropertiesPanelItemProps = {
   model?: FormalizedModel;
@@ -24,7 +23,6 @@ export const PropertiesPanelItem = ({
 
   return (
     <Card {...rest}>
-      <ModelCardHeader modelId={model?.id} />
       <CardContent>
         <Formalizer formalizer={formalizer} auto />
       </CardContent>

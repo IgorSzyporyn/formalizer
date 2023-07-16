@@ -1,6 +1,5 @@
 import deepmerge from 'deepmerge';
 import dot from 'dot-object';
-import { isObject } from 'lodash';
 import {
   FormalizedModelFlat,
   FormalizerCoreConfig,
@@ -27,13 +26,11 @@ export const applyValues = ({
   const valueMap = getModelValueMap({ modelIdMap, options });
   const defaultValue = dot.object(valueMap) as Record<string, unknown>;
 
-  if (initialValue) {
-    const values = deepmerge(defaultValue, initialValue);
+  const values = initialValue
+    ? deepmerge(defaultValue, initialValue)
+    : defaultValue;
 
-    applyValueToModel(values, modelPathMap);
-  } else {
-    applyValueToModel(defaultValue, modelPathMap);
-  }
+  applyValueToModel(values, modelPathMap);
 
   return true;
 };
@@ -42,9 +39,21 @@ const applyValueToModel = (
   value: Record<string, unknown>,
   modelPathMap: FormalizedModelFlat
 ) => {
-  //
-
   looper({ value, modelPathMap });
+};
+
+const applyValueToPath = (
+  value: unknown,
+  path: string | undefined,
+  modelPathMap: FormalizedModelFlat
+) => {
+  if (path && modelPathMap[path]) {
+    if (modelPathMap[path].initialValue === undefined) {
+      modelPathMap[path].initialValue = value;
+    }
+
+    modelPathMap[path].value = value;
+  }
 };
 
 const looper = ({
@@ -56,52 +65,31 @@ const looper = ({
   value: unknown;
   path?: string;
 }) => {
-  switch (typeof value) {
-    case 'object':
-      if (Array.isArray(value)) {
-        if (path && modelPathMap[path]) {
-          if (modelPathMap[path].initialValue === undefined) {
-            modelPathMap[path].initialValue = value;
-          }
+  if (Array.isArray(value)) {
+    applyValueToPath(value, path, modelPathMap);
 
-          modelPathMap[path].value = value;
-        }
+    value.forEach((_value, _index) => {
+      looper({
+        value: _value,
+        path: `${path}[${_index}]`,
+        modelPathMap,
+      });
+    });
+  } else if (typeof value === 'object' && value !== null) {
+    applyValueToPath(value, path, modelPathMap);
 
-        value.forEach((_value, _index) => {
-          looper({
-            value: _value,
-            path: `${path}[${_index}]`,
-            modelPathMap,
-          });
+    for (const _key in value as Record<string, unknown>) {
+      // eslint-disable-next-line no-prototype-builtins
+      if ((value as Record<string, unknown>).hasOwnProperty(_key)) {
+        const _value = (value as Record<string, unknown>)[_key];
+        looper({
+          value: _value,
+          path: path ? `${path}.${_key}` : _key,
+          modelPathMap,
         });
-      } else if (isObject(value)) {
-        if (path && modelPathMap[path]) {
-          if (modelPathMap[path].initialValue === undefined) {
-            modelPathMap[path].initialValue = value;
-          }
-
-          modelPathMap[path].value = value;
-        }
-
-        for (const [_key, _value] of Object.entries(
-          value as Record<string, unknown>
-        )) {
-          looper({
-            value: _value,
-            path: path ? `${path}.${_key}` : _key,
-            modelPathMap,
-          });
-        }
       }
-      break;
-    default:
-      if (path && modelPathMap[path]) {
-        if (modelPathMap[path].initialValue === undefined) {
-          modelPathMap[path].initialValue = value;
-        }
-
-        modelPathMap[path].value = value;
-      }
-      break;
+    }
+  } else {
+    applyValueToPath(value, path, modelPathMap);
   }
 };

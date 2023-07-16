@@ -1,5 +1,4 @@
 import { ExtraProperties, FormalizedModel } from '@formalizer/core';
-import { cloneDeep } from 'lodash';
 import {
   ChangeEvent,
   ReactNode,
@@ -90,7 +89,7 @@ export const Field = ({ id, children, onChange, onBlur }: FieldProps) => {
   return model && Component
     ? children?.({
         props: {
-          ...cloneDeep(extraProperties),
+          ...extraProperties,
           id: state?.id || '',
           name: state?.name || '',
           value: value,

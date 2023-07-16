@@ -1,22 +1,18 @@
-import { useContext } from 'react';
-import { FormalizerContext } from '../../context/formalizer-context';
+import { FormalizedModel } from '@formalizer/core';
 import { Field } from '../field/field';
 
 type CreateChildProps = {
-  id?: string;
+  model?: FormalizedModel;
 };
 
-export const CreateChild = ({ id }: CreateChildProps) => {
-  const { formalizer } = useContext(FormalizerContext);
-  const model = formalizer?.getModel(id);
-
+export const CreateChild = ({ model }: CreateChildProps) => {
   return (
-    <Field id={id}>
+    <Field id={model?.id}>
       {({ props, Component }) => {
         return (
           <Component
             {...props}
-            key={`react-create-child-${model?.id}-${model?.type}`}
+            // key={`react-create-child-${model?.id}-${model?.type}`}
             model={model}
           />
         );

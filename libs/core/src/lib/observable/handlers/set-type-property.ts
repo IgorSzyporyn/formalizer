@@ -1,9 +1,9 @@
 import { CoreModelType, ListenerCallback } from '../../typings/model-types';
 import { isCoreType } from '../../utils/is-core-type';
-import { addDefaultProperties } from './add-default-properties';
-import { removePreventedProperties } from './remove-prevented-properties';
-import { CreateObjectObserveHandlerProps } from './shared-types';
-import { transformCoreProperties } from './transform-core-properties';
+import { addDefaultProperties } from '../utils/add-default-properties';
+import { removePreventedProperties } from '../utils/remove-prevented-properties';
+import { CreateObjectObserveHandlerProps } from '../typings/shared-types';
+import { transformCoreProperties } from '../utils/transform-core-properties';
 
 type SetTypeProperty = {
   type: CoreModelType;

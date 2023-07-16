@@ -183,14 +183,12 @@ export const createFormalizerModel = ({
   // Create the observable model that will enable listeners on each model
   const observableModel = createModelObserve({
     config,
-    dataParentModel,
     index,
     model: instanceModel,
     modelIdMap,
     modelPathMap,
     onModelItemChange,
     options,
-    parent: parentModel,
     path,
   });
 

@@ -122,12 +122,19 @@ export class FormalizerCore {
 
   getModel = (modelId?: string) => {
     const modelIdMap = this.getModelIdMap();
+    let model: FormalizedModel | undefined;
 
     if (modelIdMap && modelId) {
-      return modelIdMap[modelId] || null;
+      model = modelIdMap[modelId];
     }
 
-    return this.model;
+    return model;
+  };
+
+  getRootModel = () => {
+    const rootModel = this.model;
+
+    return rootModel;
   };
 
   getModelJSON = (modelId?: string) => {
@@ -162,15 +169,13 @@ export class FormalizerCore {
     if (this.initializing) return;
 
     console.log(
-      `RUNNING HANDLE MODEL CHANGE FROM FORMALIZER CLASS - ${
-        this.getModel()?.id
-      }`
+      `MODEL CHANGE FROM FORMALIZER CLASS - ${props.model.id} - ${props.property} - ${props.value}`
     );
 
     const { onModelChange } = this.getConfig();
 
     onModelChange?.({
-      model: this.getModel(),
+      model: this.getRootModel(),
       modelIdMap: this.getModelIdMap(),
       modelPathMap: this.getModelPathMap(),
       state: this.getState(),
@@ -210,10 +215,6 @@ export class FormalizerCore {
     id?: string;
     properties?: ClientModel;
   }) => {
-    if (!id) {
-      throw Error('Updating root item is not allowed');
-    }
-
     const model = this.getModel(id);
 
     if (model && properties) {
@@ -247,7 +248,7 @@ export class FormalizerCore {
 
   removeModel = (modelId: string) => {
     // Prevent removing the root model
-    if (modelId === this.getModel()?.id) {
+    if (modelId === this.getRootModel()?.id) {
       throw new Error('Cannot remove root model');
     }
 

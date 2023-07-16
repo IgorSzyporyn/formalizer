@@ -1,8 +1,8 @@
 import {
   ClientModel,
+  ClientPropertyType,
   CoreModelType,
   FormalizedModel,
-  PropertyModelType,
 } from '@formalizer/core';
 import {
   UiPropertyGroupType,
@@ -35,7 +35,7 @@ export const createPropertiesClientModel = ({
     const uiModel = uiModels[type];
 
     for (const [_property, _value] of Object.entries(uiPropertiesModel)) {
-      const property = _property as PropertyModelType;
+      const property = _property as ClientPropertyType;
       const uiPropertyType = _value.type as CoreModelType;
       const uiPropertyGroupType = _value.group as UiPropertyGroupType;
 

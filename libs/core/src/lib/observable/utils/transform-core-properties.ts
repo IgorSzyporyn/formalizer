@@ -1,7 +1,7 @@
 import { CoreModelType, ListenerCallback } from '../../typings/model-types';
 import { getCoreModel } from '../../utils/get-core-model';
-import { setValueProperty } from './set-value-property';
-import { CreateObjectObserveHandlerProps } from './shared-types';
+import { setValueProperty } from '../handlers/set-value-property';
+import { CreateObjectObserveHandlerProps } from '../typings/shared-types';
 
 type TransformCorePropertiesProps = {
   type: CoreModelType;

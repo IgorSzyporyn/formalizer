@@ -10,7 +10,7 @@ import {
 import { applyPathAndIdToModel } from '../../utils/apply-path-and-id-to-model';
 import { applyValues } from '../../utils/apply-values';
 import { createFormalizerModel } from '../../utils/create-formalizer-model';
-import { CreateObjectObserveHandlerProps } from './shared-types';
+import { CreateObjectObserveHandlerProps } from '../typings/shared-types';
 
 type SetItemsPropertyProps = {
   items: FormalizedModel[];

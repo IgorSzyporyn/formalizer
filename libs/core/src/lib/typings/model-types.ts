@@ -93,27 +93,8 @@ export type ApiModelType = (typeof apiModelTypes)[number];
 export type FormalizedPropertyType = (typeof formalizedPropertyTypes)[number];
 export type ClientPropertyType = (typeof propertyModelTypes)[number];
 
-export type ApiValueType =
-  | string
-  | number
-  | boolean
-  | Date
-  | null
-  | Record<string, unknown>;
-
-export type ApiValueTypeArray = (
-  | string
-  | number
-  | boolean
-  | Date
-  | null
-  | Record<string, unknown>
-)[];
-
-export type ApiValue = ApiValueType | ApiValueTypeArray | undefined;
-
 export type ApiModelFnProps = {
-  value?: ApiValueType | ApiValueTypeArray;
+  value?: unknown;
   model: FormalizedModel;
   options?: FormalizerCoreOptions;
 };
@@ -151,7 +132,7 @@ export type RemoveListenersFn = (listenerIds: string[]) => void;
 export type AddListenerAllFn = (callback: ListenerCallback) => void;
 
 export type ListenerProps = {
-  property: ClientPropertyType | FormalizedPropertyType;
+  property: keyof FormalizedModel;
   value: unknown;
   model: FormalizedModel;
 };
@@ -178,8 +159,8 @@ export type Direction = 'horizontal' | 'vertical';
 
 export type ExtensionInterface = Record<CoreModelType, ExtensionModel>;
 
-export type ApiModelRawToValueFn = (props: ApiModelFnProps) => ApiValue;
-export type ApiModelValueToRawFn = (props: ApiModelFnProps) => ApiValue;
+export type ApiModelRawToValueFn = (props: ApiModelFnProps) => unknown;
+export type ApiModelValueToRawFn = (props: ApiModelFnProps) => unknown;
 
 /***********************************************************/
 /*   API MODEL                                             */
@@ -187,7 +168,7 @@ export type ApiModelValueToRawFn = (props: ApiModelFnProps) => ApiValue;
 export type ApiModel = {
   rawToValue?: ApiModelRawToValueFn;
   valueToRaw?: ApiModelValueToRawFn;
-  emptyValue?: ApiValueType | ApiValueTypeArray;
+  emptyValue?: unknown;
 };
 
 /***********************************************************/
@@ -202,7 +183,7 @@ export type CoreModel = {
   options?: any[];
   rawToValue?: ApiModelRawToValueFn;
   valueToRaw?: ApiModelValueToRawFn;
-  emptyValue?: ApiValueType | ApiValueTypeArray;
+  emptyValue?: unknown;
 };
 
 /***********************************************************/
@@ -222,15 +203,13 @@ export type ClientModel = {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   icon?: any;
   items?: ClientModel[];
-  defaultValue?: ApiValue;
-  emptyValue?: ApiValue;
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  initialValue?: any;
+  defaultValue?: unknown;
+  emptyValue?: unknown;
+  initialValue?: unknown;
   group?: string;
   multiple?: boolean;
   layoutOnly?: boolean;
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  value?: any;
+  value?: unknown;
   dependencies?: Dependency[];
   fullWidth?: boolean;
   // eslint-disable-next-line @typescript-eslint/no-explicit-any

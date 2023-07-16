@@ -1,5 +1,5 @@
 import { cloneDeep } from 'lodash';
-import { CreateObjectObserveHandlerProps } from './shared-types';
+import { CreateObjectObserveHandlerProps } from '../typings/shared-types';
 
 type PropagateValuePropertyProps = {
   value: unknown;

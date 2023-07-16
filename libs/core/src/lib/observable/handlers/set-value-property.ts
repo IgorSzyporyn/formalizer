@@ -1,7 +1,31 @@
 import { isEqual } from 'lodash';
-import { ListenerCallback } from '../../typings/model-types';
-import { propagateValueProperty } from './propagate-value-property';
-import { CreateObjectObserveHandlerProps } from './shared-types';
+import { ApiModelType, ListenerCallback } from '../../typings/model-types';
+import { propagateValueProperty } from '../utils/propagate-value-property';
+import { CreateObjectObserveHandlerProps } from '../typings/shared-types';
+
+const checkValueDirty = ({
+  apiType,
+  newValue,
+  oldValue,
+}: {
+  apiType?: ApiModelType;
+  newValue?: unknown;
+  oldValue?: unknown;
+}) => {
+  let dirty = false;
+
+  switch (apiType) {
+    case 'array':
+    case 'object':
+      dirty = !isEqual(newValue, oldValue);
+      break;
+    default:
+      dirty = newValue !== oldValue;
+      break;
+  }
+
+  return dirty;
+};
 
 type SetValuePropertyProps = {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -18,11 +42,20 @@ export const setValueProperty = ({
   ...rest
 }: SetValuePropertyProps) => {
   const newValue = model.valueToRaw?.({ value, model, options });
+  const dirty = checkValueDirty({
+    apiType: model.apiType,
+    newValue,
+    oldValue: value,
+  });
 
-  if (!isEqual(newValue, model.value)) {
+  if (!dirty) {
     model.value = newValue;
     model.touched = true;
-    model.dirty = !isEqual(newValue, model.initialValue);
+    model.dirty = checkValueDirty({
+      apiType: model.apiType,
+      newValue,
+      oldValue: model.initialValue,
+    });
 
     onChange({ model, property: 'value', value: newValue });
 

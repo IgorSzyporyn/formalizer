@@ -61,8 +61,7 @@ export const Utilities = ({ ...props }: PanelProps) => {
   } = useContext(DesignerUiContext);
 
   const { formalizer } = useContext(DesignerContext);
-  const rootModel = formalizer?.getModel();
-  const activeModel = formalizer?.getModel(activeModelId);
+  const rootModel = formalizer?.getRootModel();
 
   const handleTabClick = (id: UtilityTab) => {
     updateUiContext({ utilities: { activeTab: id, collapsed: false } });
@@ -138,7 +137,7 @@ export const Utilities = ({ ...props }: PanelProps) => {
             variants={panelContentVariants}
             animate={activeTab === UtilityTab.Properties ? 'enter' : 'exit'}
           >
-            <PropertiesPanel model={activeModel} />
+            <PropertiesPanel activeModelId={activeModelId} />
             {/*<PropertiesPanel model={activeModel} /> */}
           </Styled.AnimatedContentPanel>
         </Styled.Content>

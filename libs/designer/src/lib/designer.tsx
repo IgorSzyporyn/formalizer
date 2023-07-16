@@ -31,6 +31,8 @@ export const Designer = ({ model }: DesignerProps) => {
     [uiState]
   );
 
+  window.A = formalizer;
+
   return (
     <ThemeProvider theme={theme}>
       <CssBaseline />

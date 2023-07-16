@@ -32,8 +32,14 @@ export const ModelCardHeader = ({ modelId, ...rest }: ModelCardHeaderProps) => {
 
   useEffect(() => {
     const newState = createState(listener.model);
-    setState(newState);
+
+    if (newState !== state) {
+      setState(newState);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [listener]);
 
-  return <CardHeader {...rest} {...state} />;
+  return (
+    <CardHeader key={`model-card-header-${model?.id}`} {...rest} {...state} />
+  );
 };

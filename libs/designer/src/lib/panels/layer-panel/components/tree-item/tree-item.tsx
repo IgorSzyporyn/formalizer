@@ -47,10 +47,8 @@ const checkIsGroup = (model?: FormalizedModel) => {
 export const TreeItem = forwardRef<HTMLDivElement, TreeItemProps>(
   (
     {
-      childCount,
       clone,
       depth,
-      disableInteraction,
       ghost,
       handleProps,
       indentationWidth,

@@ -1,52 +1,62 @@
 import { PanelBody, PanelHeader } from '@formalizer/components';
-import { ClientModel, FormalizedModel } from '@formalizer/core';
-import { Formalizer, useFormalizer } from '@formalizer/react';
+import { FormalizedModel, FormalizerModelChange } from '@formalizer/core';
 import EditNoteIcon from '@mui/icons-material/EditNote';
-import { Card, CardContent } from '@mui/material';
-import { Fragment, useContext } from 'react';
-import { ModelCardHeader } from '../../components/model-card-header/model-card-header';
+import { Fragment, useContext, useEffect, useState } from 'react';
 import { DesignerContext } from '../../context';
-import { createPropertiesClientModel } from './utils/create-properties-client-model';
+import { PropertiesPanelItem } from './components/properties-panel-item/properties-panel-item';
 
 type PropertiesPanelProps = {
-  model?: FormalizedModel;
+  activeModelId?: string;
 };
 
-export const PropertiesPanel = ({ model }: PropertiesPanelProps) => {
+export const PropertiesPanel = ({ activeModelId }: PropertiesPanelProps) => {
   const { formalizer } = useContext(DesignerContext);
-  const clientModel = createPropertiesClientModel({ model });
+  const [items, setItems] = useState<FormalizedModel[]>([]);
 
-  const propertiesFormalizer = useFormalizer({
-    model: clientModel,
-    framework: 'mui',
-    onModelChange: ({ value }) => {
-      formalizer?.updateModel({
-        id: model?.id,
-        properties: value as ClientModel,
-      });
+  const updateItems = () => {
+    const modelIdMap = formalizer?.getModelIdMap();
+    const newItems: FormalizedModel[] = [];
 
-      // setDirty(!!propertiesFormalizer.formalizer?.getState()?.dirty);
-    },
-  });
+    for (const [_, value] of Object.entries(modelIdMap || {})) {
+      newItems.push(value);
+    }
+
+    setItems(newItems);
+  };
+
+  const handleModelItemChange = ({ props }: FormalizerModelChange) => {
+    const model = formalizer?.getModel(activeModelId);
+
+    if (model && props && props.model) {
+      const property = props.model.name as keyof FormalizedModel;
+      model[property] = props.value;
+    }
+  };
+
+  useEffect(() => {
+    updateItems();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  console.log('rendering properties panel');
 
   return (
-    <Fragment key={`properties-panel-${model?.id}`}>
+    <Fragment key="properties-panel">
       <PanelHeader
         title="Model Properties"
         Icon={EditNoteIcon}
         description="Edit the properties"
       />
       <PanelBody>
-        <Card>
-          <ModelCardHeader modelId={model?.id} />
-          <CardContent>
-            <Formalizer
-              formalizer={propertiesFormalizer}
-              formId={model?.id}
-              auto
+        {items.map((item) => {
+          return item.id === activeModelId ? (
+            <PropertiesPanelItem
+              key={item.id}
+              model={item}
+              onModelChange={handleModelItemChange}
             />
-          </CardContent>
-        </Card>
+          ) : null;
+        })}
       </PanelBody>
     </Fragment>
   );

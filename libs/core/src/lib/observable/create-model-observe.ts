@@ -13,21 +13,19 @@ import {
   ListenerProps,
   formalizedPropertyTypes,
 } from '../typings/model-types';
-import { setItemsProperty } from './utils/set-items-property';
-import { setTypeProperty } from './utils/set-type-property';
-import { setValueProperty } from './utils/set-value-property';
-import { CreateObjectObserveHandlerProps } from './utils/shared-types';
+import { setItemsProperty } from './handlers/set-items-property';
+import { setTypeProperty } from './handlers/set-type-property';
+import { setValueProperty } from './handlers/set-value-property';
+import { CreateObjectObserveHandlerProps } from './typings/shared-types';
 
 type CreateObservableModelProps = {
   config: FormalizerCoreConfig;
-  dataParentModel?: FormalizedModel;
   index?: number;
   model: FormalizedModel;
   modelIdMap: FormalizedModelFlat;
   modelPathMap?: FormalizedModelFlat;
   onModelItemChange: (props: ListenerProps) => void;
   options?: FormalizerCoreOptions;
-  parent?: FormalizedModel;
   path?: string;
 };
 
@@ -113,14 +111,6 @@ const createObjectObserveHandler = (
             onChange,
             items: value,
           });
-        } else if (
-          formalizedPropertyTypes.includes(property as FormalizedPropertyType)
-        ) {
-          if (property === 'id' || property === 'path') {
-            model[property] = value;
-          } else {
-            throw Error(`The property ${property} is immutable on ${model.id}`);
-          }
         } else {
           model[property] = value;
           onChange({ model, property, value });

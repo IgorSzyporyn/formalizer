@@ -1,15 +1,11 @@
-import {
-  ClientModel,
-  FormalizedModel,
-  PropertyModelType,
-} from '@formalizer/core';
+import { ClientModel, FormalizedModel } from '@formalizer/core';
 import { isEqual, uniqueId } from 'lodash';
 import { useCallback, useEffect, useRef, useState } from 'react';
 
 type State = {
   model?: ClientModel;
   lastId?: string;
-  property?: PropertyModelType;
+  property?: keyof FormalizedModel;
   value?: unknown;
 };
 

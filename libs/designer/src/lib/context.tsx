@@ -20,13 +20,17 @@ export type DesignerUiContextValueSafe = {
   activeModelId?: string;
 };
 
+export const defaultDesignerUiContextValue: DesignerUiContextValue = {
+  utilities: { activeTab: UtilityTab.Layer, collapsed: false },
+  activeModelId: undefined,
+  // eslint-disable-next-line @typescript-eslint/no-empty-function
+  updateUiContext: () => {},
+};
+
 export type DesignerUiContextValue = {
   updateUiContext: (value: Partial<DesignerUiContextValueSafe>) => void;
 } & DesignerUiContextValueSafe;
 
 export const DesignerUiContext = createContext<DesignerUiContextValue>({
-  utilities: { activeTab: UtilityTab.Layer, collapsed: false },
-  activeModelId: undefined,
-  // eslint-disable-next-line @typescript-eslint/no-empty-function
-  updateUiContext: () => {},
+  ...defaultDesignerUiContextValue,
 });

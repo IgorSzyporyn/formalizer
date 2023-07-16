@@ -18,7 +18,7 @@ export const Info = styled.div`
 
 export const Action = styled.div``;
 
-export const Content = styled.div``;
+export const Content = styled(Box)``;
 
 export const Title = styled(Typography)`
   margin: 0;

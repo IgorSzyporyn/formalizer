@@ -1,5 +1,6 @@
+import { BoxProps } from '@mui/material';
 import * as Styled from './styled';
 
-export const Canvas = () => {
-  return <Styled.Wrapper sx={{ mr: 4 }}></Styled.Wrapper>;
+export const Canvas = (props: BoxProps) => {
+  return <Styled.Wrapper {...props}></Styled.Wrapper>;
 };

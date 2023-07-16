@@ -21,24 +21,28 @@ export const Panel = forwardRef<HTMLDivElement, PanelProps>(
       transparent,
       size = 'medium',
       style = {},
+      sx = {},
       ...rest
     },
     ref
   ) => {
     const sxMap = {
       small: {
+        wrapper: { ...sx },
         utilities: {
           vertical: { p: 0.75, pt: 1, pb: 1 },
           horizontal: { p: 0.75, pl: 1, pr: 1 },
         },
       },
       medium: {
+        wrapper: { ...sx },
         utilities: {
           vertical: { p: 0.75, pt: 2, pb: 2 },
           horizontal: { p: 0.75, pl: 2, pr: 2 },
         },
       },
       large: {
+        wrapper: { ...sx },
         utilities: {
           vertical: { p: 1.25, pt: 2, pb: 2 },
           horizontal: { p: 1.25, pl: 2, pr: 2 },
@@ -67,10 +71,11 @@ export const Panel = forwardRef<HTMLDivElement, PanelProps>(
 
     return (
       <Styled.Wrapper
+        {...rest}
         ref={ref}
         elevation={elevation}
         style={{ ...wrapperStyle, ...style }}
-        {...rest}
+        sx={sxMap[size].wrapper}
       >
         {bar && (
           <Styled.UtilityBar

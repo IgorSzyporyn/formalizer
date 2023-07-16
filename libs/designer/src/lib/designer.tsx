@@ -8,7 +8,7 @@ import {
   DesignerContext,
   DesignerUiContext,
   DesignerUiContextValueSafe,
-  UtilityTab,
+  defaultDesignerUiContextValue,
 } from './context';
 import { Canvas } from './layout/canvas/canvas';
 import { Utilities } from './layout/utilities/utilities';
@@ -21,8 +21,7 @@ export type DesignerProps = {
 export const Designer = ({ model }: DesignerProps) => {
   const formalizer = new FormalizerCore({ model });
   const [uiState, setUiState] = useState<DesignerUiContextValueSafe>({
-    utilities: { activeTab: UtilityTab.Layer, collapsed: true },
-    activeModelId: formalizer?.getModel()?.id,
+    ...defaultDesignerUiContextValue,
   });
 
   const updateUiContext = useCallback(
@@ -32,20 +31,14 @@ export const Designer = ({ model }: DesignerProps) => {
     [uiState]
   );
 
-  window.A = formalizer;
-
   return (
     <ThemeProvider theme={theme}>
       <CssBaseline />
       <DesignerContext.Provider value={{ formalizer }}>
         <DesignerUiContext.Provider value={{ ...uiState, updateUiContext }}>
           <Box className="designer" sx={{ display: 'flex', height: '100%' }}>
-            <Box className="designer-main" sx={{ flexGrow: '1' }}>
-              <Canvas />
-            </Box>
-            <Box>
-              <Utilities />
-            </Box>
+            <Canvas className="designer-main" sx={{ flexGrow: '1', mr: 4 }} />
+            <Utilities className="designer-utilities" sx={{ height: '100%' }} />
           </Box>
         </DesignerUiContext.Provider>
       </DesignerContext.Provider>

@@ -21,7 +21,7 @@ export const PanelHeader = ({
 }: PanelHeaderProps) => {
   return (
     <Styled.Wrapper {...rest}>
-      <Styled.Header sx={{ p: 2, height: 80 }}>
+      <Styled.Header sx={{ p: 2, mb: 1, height: 80 }}>
         <Styled.Info>
           <Icon />
           <Styled.Title variant="h6" sx={{ pl: 1 }}>
@@ -31,11 +31,11 @@ export const PanelHeader = ({
         <Styled.Action>{action}</Styled.Action>
       </Styled.Header>
       {description && (
-        <Styled.Description variant="body2" sx={{ pl: 2, pr: 2, mb: 2 }}>
+        <Styled.Description variant="body2" sx={{ pl: 2, pr: 2 }}>
           {description}
         </Styled.Description>
       )}
-      <Styled.Content>{children}</Styled.Content>
+      <Styled.Content sx={{ pt: 3 }}>{children}</Styled.Content>
     </Styled.Wrapper>
   );
 };

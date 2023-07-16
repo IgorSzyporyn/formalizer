@@ -18,7 +18,7 @@ export const CollapseButton = ({
       <ChevronRight
         sx={{
           transform: collapsed ? 'rotate(0)' : 'rotate(90deg)',
-          transition: 'all 0.175s ease-in-out',
+          transition: 'transform 0.175s ease-in-out',
         }}
       />
     </IconButton>

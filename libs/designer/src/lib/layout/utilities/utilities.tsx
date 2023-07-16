@@ -1,4 +1,4 @@
-import { Panel } from '@formalizer/components';
+import { Panel, PanelProps } from '@formalizer/components';
 import DoubleArrowIcon from '@mui/icons-material/DoubleArrow';
 import EditNoteIcon from '@mui/icons-material/EditNote';
 import HandymanIcon from '@mui/icons-material/Handyman';
@@ -43,16 +43,17 @@ const panelContentVariants: Variants = {
     opacity: 1,
     x: 0,
     y: 0,
-    transition: { type: 'spring', stiffness: 350, damping: 28 },
+    transition: { delay: 0.275, duration: 0.3 },
   },
   exit: {
-    opacity: 0,
-    x: '100%',
+    opacity: 0.2,
+    x: '200%',
     y: 0,
+    transition: { duration: 0.6 },
   },
 };
 
-export const Utilities = () => {
+export const Utilities = ({ ...props }: PanelProps) => {
   const {
     activeModelId,
     utilities: { activeTab, collapsed },
@@ -64,7 +65,7 @@ export const Utilities = () => {
   const activeModel = formalizer?.getModel(activeModelId);
 
   const handleTabClick = (id: UtilityTab) => {
-    updateUiContext({ utilities: { activeTab: id, collapsed } });
+    updateUiContext({ utilities: { activeTab: id, collapsed: false } });
   };
 
   const handleItemEditCancel = () => {
@@ -77,7 +78,7 @@ export const Utilities = () => {
 
   return (
     <Panel
-      sx={{ height: '100%' }}
+      {...props}
       square
       elevation={2}
       barPosition="vertical"
@@ -113,13 +114,13 @@ export const Utilities = () => {
       }
     >
       <Styled.ContentMotion
+        initial="closed"
         animate={collapsed ? 'closed' : 'open'}
         variants={contentCollapseVariants}
       >
         <Styled.Content>
           <Styled.AnimatedContentPanel
             key="layer-panel"
-            initial="enter"
             variants={panelContentVariants}
             animate={activeTab === UtilityTab.Layer ? 'enter' : 'exit'}
           >
@@ -127,7 +128,6 @@ export const Utilities = () => {
           </Styled.AnimatedContentPanel>
           <Styled.AnimatedContentPanel
             key="toolbox-panel"
-            initial="exit"
             variants={panelContentVariants}
             animate={activeTab === UtilityTab.Toolbox ? 'enter' : 'exit'}
           >
@@ -135,11 +135,11 @@ export const Utilities = () => {
           </Styled.AnimatedContentPanel>
           <Styled.AnimatedContentPanel
             key="properties-panel"
-            initial="exit"
             variants={panelContentVariants}
             animate={activeTab === UtilityTab.Properties ? 'enter' : 'exit'}
           >
             <PropertiesPanel model={activeModel} />
+            {/*<PropertiesPanel model={activeModel} /> */}
           </Styled.AnimatedContentPanel>
         </Styled.Content>
       </Styled.ContentMotion>

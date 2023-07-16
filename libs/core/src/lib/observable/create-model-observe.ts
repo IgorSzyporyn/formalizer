@@ -5,9 +5,7 @@ import {
   FormalizerCoreOptions,
 } from '../typings/formalizer-types';
 import {
-  ClientPropertyType,
   FormalizedModel,
-  FormalizedPropertyType,
   Listener,
   ListenerCallback,
   ListenerProps,
@@ -28,6 +26,31 @@ type CreateObservableModelProps = {
   path?: string;
 };
 
+export const addListener = (
+  listener: Listener,
+  listenerMap: Record<string, Listener>
+) => {
+  if (!listenerMap[listener.id]) {
+    listenerMap[listener.id] = listener;
+  }
+};
+
+export const removeListener = (
+  id: string,
+  listenerMap: Record<string, Listener>
+) => {
+  delete listenerMap[id];
+};
+
+export const removeListeners = (
+  listenerIds: string[],
+  listenerMap: Record<string, Listener>
+) => {
+  listenerIds.forEach((id) => {
+    removeListener(id, listenerMap);
+  });
+};
+
 export const createModelObserve = ({
   model,
   onModelItemChange,
@@ -36,25 +59,19 @@ export const createModelObserve = ({
   const listenerMap: Record<string, Listener> = {};
 
   model.listeners?.forEach((listener) => {
-    if (!listenerMap[listener.id]) {
-      listenerMap[listener.id] = listener;
-    }
+    addListener(listener, listenerMap);
   });
 
   model.addListener = (listener) => {
-    if (!listenerMap[listener.id]) {
-      listenerMap[listener.id] = listener;
-    }
+    addListener(listener, listenerMap);
   };
 
   model.removeListener = (id: string) => {
-    delete listenerMap[id];
+    removeListener(id, listenerMap);
   };
 
   model.removeListeners = (listenerIds: string[]) => {
-    listenerIds.forEach((id) => {
-      delete listenerMap[id];
-    });
+    removeListeners(listenerIds, listenerMap);
   };
 
   const handler = createObjectObserveHandler(
@@ -75,6 +92,12 @@ export const createModelObserve = ({
   return model;
 };
 
+const propertyHandlers = {
+  value: setValueProperty,
+  type: setTypeProperty,
+  items: setItemsProperty,
+};
+
 const createObjectObserveHandler = (
   onChange: ListenerCallback,
   props: CreateObjectObserveHandlerProps
@@ -82,33 +105,21 @@ const createObjectObserveHandler = (
   return {
     set(
       model: FormalizedModel,
-      property: ClientPropertyType | FormalizedPropertyType,
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      value: any
+      property: keyof FormalizedModel,
+      value: unknown
     ) {
       const oldValue = model[property];
 
       if (!isEqual(oldValue, value)) {
-        if (property === 'value') {
-          setValueProperty({
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        const handlers = propertyHandlers as any;
+        const handler = handlers[property];
+        if (handler) {
+          handler({
             ...props,
             model,
             onChange,
-            value,
-          });
-        } else if (property === 'type') {
-          setTypeProperty({
-            ...props,
-            model,
-            onChange,
-            type: value,
-          });
-        } else if (property === 'items') {
-          setItemsProperty({
-            ...props,
-            model,
-            onChange,
-            items: value,
+            [property]: value,
           });
         } else {
           model[property] = value;

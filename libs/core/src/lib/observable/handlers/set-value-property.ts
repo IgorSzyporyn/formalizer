@@ -1,17 +1,24 @@
 import { isEqual } from 'lodash';
-import { ApiModelType, ListenerCallback } from '../../typings/model-types';
+import {
+  ApiModelType,
+  FormalizedModel,
+  ListenerCallback,
+} from '../../typings/model-types';
 import { propagateValueProperty } from '../utils/propagate-value-property';
 import { CreateObjectObserveHandlerProps } from '../typings/shared-types';
+import { FormalizedModelFlat } from '../../typings/formalizer-types';
+
+type CheckValueDirtyProps = {
+  apiType?: ApiModelType;
+  newValue?: unknown;
+  oldValue?: unknown;
+};
 
 const checkValueDirty = ({
   apiType,
   newValue,
   oldValue,
-}: {
-  apiType?: ApiModelType;
-  newValue?: unknown;
-  oldValue?: unknown;
-}) => {
+}: CheckValueDirtyProps) => {
   let dirty = false;
 
   switch (apiType) {
@@ -28,10 +35,46 @@ const checkValueDirty = ({
 };
 
 type SetValuePropertyProps = {
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  value: any;
+  value: unknown;
   onChange: ListenerCallback;
 } & CreateObjectObserveHandlerProps;
+
+type SetItemsPropertyProps = {
+  model: FormalizedModel;
+  value: unknown;
+  modelIdMap: FormalizedModelFlat;
+};
+
+const setArrayItemsProperty = ({
+  model,
+  value,
+  modelIdMap,
+}: SetItemsPropertyProps) => {
+  model.items?.forEach((item, index) => {
+    const _value = (value || []) as [];
+    if (item.id && modelIdMap) {
+      modelIdMap[item.id].value = _value[index];
+    }
+  });
+};
+
+const setObjectItemsProperty = ({
+  model,
+  value,
+  modelIdMap,
+}: SetItemsPropertyProps) => {
+  model.items?.forEach((item) => {
+    if (modelIdMap && item.id) {
+      const _value = (value || {}) as Record<string, unknown>;
+      modelIdMap[item.id].value = _value[item.name];
+    }
+  });
+};
+
+const apiTypeHandlers = {
+  array: setArrayItemsProperty,
+  object: setObjectItemsProperty,
+};
 
 export const setValueProperty = ({
   model,
@@ -42,6 +85,7 @@ export const setValueProperty = ({
   ...rest
 }: SetValuePropertyProps) => {
   const newValue = model.valueToRaw?.({ value, model, options });
+
   const dirty = checkValueDirty({
     apiType: model.apiType,
     newValue,
@@ -59,25 +103,12 @@ export const setValueProperty = ({
 
     onChange({ model, property: 'value', value: newValue });
 
-    switch (model.apiType) {
-      case 'array':
-        model.items?.forEach((item, index) => {
-          const _value = (value || []) as [];
-          if (item.id && modelIdMap) {
-            modelIdMap[item.id].value = _value[index];
-          }
-        });
-        break;
-      case 'object':
-        model.items?.forEach((item) => {
-          if (modelIdMap && item.id) {
-            const _value = (value || {}) as Record<string, unknown>;
-            modelIdMap[item.id].value = _value[item.name];
-          }
-        });
-        break;
-      default:
-        break;
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const handlers = apiTypeHandlers as any;
+    const handler = handlers[model.apiType || ''];
+
+    if (handler) {
+      handler({ model, value, modelIdMap });
     }
 
     // Propagate the value change up to the dataParent

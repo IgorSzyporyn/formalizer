@@ -82,11 +82,9 @@ export const setItemsProperty = ({
 
             if (formalized.model) {
               applyDependencies({
+                ...rest,
                 model: item,
-                modelIdMap: formalized.modelIdMap,
               });
-
-              applyValues(rest);
 
               preparedModelsArray[index] = formalized.model;
             }
@@ -108,6 +106,11 @@ export const setItemsProperty = ({
             });
           }
         });
+
+      // Make sure the values are maintained in the tree
+      // Apply values last or arrays and objects will fault in trying
+      // to set values for items that are no longer there
+      applyValues(rest);
 
       newItems = preparedModelsArray;
       model.items = newItems;
@@ -156,14 +159,14 @@ export const setItemsProperty = ({
         });
       });
 
-      newItems = items;
-      model.items = newItems;
-      onChange({ model, property: 'items', value: newItems });
-
       // Make sure the values are maintained in the tree
       // Apply values last or arrays and objects will fault in trying
       // to set values for items that are no longer there
       applyValues(rest);
+
+      newItems = items;
+      model.items = newItems;
+      onChange({ model, property: 'items', value: newItems });
     } else if (isShuffling) {
       // We could be given new client models as well as models
       // from other parents - no way of knowing for sure
@@ -191,8 +194,6 @@ export const setItemsProperty = ({
               model: item,
               modelIdMap: formalized.modelIdMap,
             });
-
-            applyValues(rest);
 
             preparedModelsArray[index] = formalized.model;
           }
@@ -232,6 +233,11 @@ export const setItemsProperty = ({
           }
         }
       });
+
+      // Make sure the values are maintained in the tree
+      // Apply values last or arrays and objects will fault in trying
+      // to set values for items that are no longer there
+      applyValues(rest);
 
       newItems = preparedModelsArray;
       model.items = newItems;

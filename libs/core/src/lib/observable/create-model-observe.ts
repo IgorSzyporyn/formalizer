@@ -11,7 +11,6 @@ import {
   Listener,
   ListenerCallback,
   ListenerProps,
-  formalizedPropertyTypes,
 } from '../typings/model-types';
 import { setItemsProperty } from './handlers/set-items-property';
 import { setTypeProperty } from './handlers/set-type-property';

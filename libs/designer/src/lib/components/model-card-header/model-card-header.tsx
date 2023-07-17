@@ -2,7 +2,7 @@ import { getUiModels } from '@formalizer/models';
 import { useListener } from '@formalizer/react';
 import { CardHeader, CardHeaderProps } from '@mui/material';
 import { useContext } from 'react';
-import { DesignerContext } from '../../context';
+import { DesignerContext } from '../../designer-context';
 
 type ModelCardHeaderProps = {
   modelId?: string;

@@ -2,7 +2,7 @@ import { ExtraProperties } from '@formalizer/core';
 import { ChangeEvent, ReactNode, useCallback, useContext } from 'react';
 import { FormalizerContext } from '../../context/formalizer-context';
 import { useListener } from '../../hooks/use-listener';
-import { FieldChildRenderProps } from '../../types';
+import { FieldChildRenderProps } from '../../typings';
 
 type FieldProps = {
   id?: string;

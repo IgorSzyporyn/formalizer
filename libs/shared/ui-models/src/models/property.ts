@@ -68,6 +68,12 @@ export const uiProperties: UiPropertiesInterface = {
     size: 'small',
     group: 'ui',
   },
+  collapsible: {
+    icon: ExpandIcon,
+    fullWidth: true,
+    size: 'small',
+    group: 'ui',
+  },
   collapsed: {
     icon: ExpandIcon,
     fullWidth: true,

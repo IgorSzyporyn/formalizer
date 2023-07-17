@@ -40,25 +40,26 @@ export const apiModelTypes = [
 
 export const propertyModelTypes = [
   'apiType',
+  'collapsible',
   'collapsed',
   'columns',
   'defaultValue',
   'description',
+  'direction',
   'emptyValue',
   'fullWidth',
   'group',
   'hidden',
   'hint',
   'icon',
+  'initialValue',
   'inline',
   'items',
+  'layoutOnly',
+  'multiple',
   'name',
   'nullable',
-  'layoutOnly',
   'options',
-  'width',
-  'direction',
-  'initialValue',
   'readonly',
   'serialize',
   'serializeDelimiter',
@@ -67,7 +68,7 @@ export const propertyModelTypes = [
   'type',
   'uiType',
   'value',
-  'multiple',
+  'width',
 ] as const;
 
 export const formalizedPropertyTypes = [
@@ -199,6 +200,7 @@ export type ClientModel = {
   description?: string;
   hint?: string;
   size?: string;
+  collapsible?: boolean;
   collapsed?: boolean;
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   icon?: any;

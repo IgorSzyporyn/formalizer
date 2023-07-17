@@ -1,8 +1,8 @@
 import { ReactNode } from 'react';
 import cx from 'classnames';
-import { FormalizerComponentProps } from '../../../types';
+import { FieldComponentProps } from '../../../typings';
 
-type FieldWrapperProps = FormalizerComponentProps & {
+type FieldWrapperProps = FieldComponentProps & {
   children?: ReactNode;
 };
 

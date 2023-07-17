@@ -3,73 +3,105 @@ import { Designer } from '@formalizer/designer';
 
 export function App() {
   const model: ClientModel = {
-    name: 'my-project',
+    name: 'root',
     type: 'root',
+    title: 'Main Form',
     items: [
       {
-        type: 'array',
-        name: 'test',
-        items: [
-          { type: 'text', name: 'number1' },
-          { type: 'text', name: 'number2' },
-          { type: 'text', name: 'number3' },
-        ],
-      },
-      {
-        name: 'my-form',
+        name: 'personalInformation',
         type: 'form',
-        title: 'Form #1',
+        title: 'Personal Information Form',
+        description: 'Please fill in your personal details',
         items: [
           {
-            name: 'details',
+            name: 'fullName',
             type: 'group',
-            title: 'Personals',
+            title: 'Full Name',
+            description: 'Your Full Name',
             items: [
               {
-                name: 'firstname',
+                name: 'firstName',
                 type: 'text',
                 title: 'First Name',
               },
               {
-                name: 'lastname',
+                name: 'lastName',
                 type: 'text',
                 title: 'Last Name',
-              },
-              {
-                name: 'gender',
-                type: 'options',
-                title: 'Gender',
-                options: ['Female', 'Male', 'Other'],
-              },
-              {
-                name: 'dob',
-                type: 'date',
-                title: 'Date of Birth',
               },
             ],
           },
           {
-            name: 'address',
-            type: 'object',
-            title: 'Address',
+            name: 'contactDetails',
+            type: 'grid',
+            title: 'Contact Details',
+            description: 'Your Contact Details',
+            collapsible: true,
+            columns: 2,
             items: [
               {
-                name: 'streetname',
-                type: 'text',
-                title: 'Street Name',
-                fullWidth: true,
+                name: 'email',
+                type: 'email',
+                title: 'Email',
               },
               {
-                name: 'zipcode',
+                name: 'telephone',
+                type: 'telephone',
+                title: 'Telephone',
+              },
+            ],
+          },
+          {
+            name: 'dateOfBirth',
+            type: 'date',
+            title: 'Date of Birth',
+          },
+        ],
+      },
+      {
+        name: 'productDelivery',
+        type: 'form',
+        title: 'Product Delivery Form',
+        description: 'Please provide the delivery details for the product',
+        items: [
+          {
+            name: 'deliveryDetails',
+            type: 'group',
+            title: 'Delivery Details',
+            items: [
+              {
+                name: 'deliveryAddress',
                 type: 'text',
-                title: 'Zipcode',
-                inline: true,
+                title: 'Delivery Address',
               },
               {
                 name: 'city',
                 type: 'text',
                 title: 'City',
-                fullWidth: true,
+              },
+              {
+                name: 'zipCode',
+                type: 'text',
+                title: 'Zip Code',
+              },
+            ],
+          },
+          {
+            name: 'deliveryPreferences',
+            type: 'grid',
+            title: 'Preferred Delivery Time',
+            description: 'When do you prefer the product to be delivered?',
+            columns: 2,
+            items: [
+              {
+                name: 'deliveryDate',
+                type: 'date',
+                title: 'Date',
+              },
+              {
+                name: 'deliveryTime',
+                type: 'time',
+                title: 'Time',
               },
             ],
           },

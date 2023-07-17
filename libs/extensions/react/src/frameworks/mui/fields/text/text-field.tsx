@@ -4,19 +4,22 @@ import {
   InputAdornment,
   TextField as MuiTextField,
 } from '@mui/material';
-import { FieldComponentProps } from '../../../../types';
+import { FieldComponentProps } from '../../../../typings';
 
 export const TextField = ({ model, ...props }: FieldComponentProps) => {
-  const Icon = model?.icon;
+  const Icon = model.icon;
 
   return (
-    <FormControl fullWidth={model?.fullWidth} sx={{ mb: 2 }}>
+    <FormControl
+      fullWidth={model.fullWidth}
+      sx={{ mb: 2, display: model.inline ? 'inline-flex' : 'block' }}
+    >
       <MuiTextField
         {...props}
-        label={model?.title}
-        size={model?.size === 'small' ? 'small' : 'medium'}
-        type={model?.type}
-        fullWidth={model?.fullWidth}
+        label={model.title}
+        size={model.size === 'small' ? 'small' : 'medium'}
+        type={model.type}
+        fullWidth={model.fullWidth}
         InputProps={
           Icon
             ? {
@@ -29,7 +32,7 @@ export const TextField = ({ model, ...props }: FieldComponentProps) => {
             : {}
         }
       />
-      {model?.hint && <FormHelperText>{model.hint}</FormHelperText>}
+      {model.hint && <FormHelperText>{model.hint}</FormHelperText>}
     </FormControl>
   );
 };

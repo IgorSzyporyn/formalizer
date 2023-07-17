@@ -5,8 +5,9 @@ import * as Styled from './styled';
 
 type PanelHeaderProps = {
   children?: ReactNode;
-  Icon: OverridableComponent<SvgIconTypeMap<Record<string, unknown>, 'svg'>>;
-  title: string;
+  Icon?: OverridableComponent<SvgIconTypeMap<Record<string, unknown>, 'svg'>>;
+  Info?: ReactNode;
+  title?: string;
   Action?: ReactNode;
   description?: ReactNode;
 } & BoxProps;
@@ -14,20 +15,28 @@ type PanelHeaderProps = {
 export const PanelHeader = ({
   children,
   Icon,
+  Info,
   title,
   Action: action,
   description,
   ...rest
 }: PanelHeaderProps) => {
+  const hasInfo = Info || Icon || title;
+
   return (
     <Styled.Wrapper {...rest}>
-      <Styled.Header sx={{ p: 2, mb: 1, height: 80 }}>
-        <Styled.Info>
-          <Icon />
-          <Styled.Title variant="h6" sx={{ pl: 1 }}>
-            {title}
-          </Styled.Title>
-        </Styled.Info>
+      <Styled.Header sx={{ p: 2, pt: 6, pb: 6 }}>
+        {hasInfo && (
+          <Styled.Info>
+            {Icon && <Icon />}
+            {title && (
+              <Styled.Title variant="h6" sx={{ pl: 1 }}>
+                {title}
+              </Styled.Title>
+            )}
+            {Info}
+          </Styled.Info>
+        )}
         <Styled.Action>{action}</Styled.Action>
       </Styled.Header>
       {description && (
@@ -35,7 +44,7 @@ export const PanelHeader = ({
           {description}
         </Styled.Description>
       )}
-      <Styled.Content sx={{ pt: 3 }}>{children}</Styled.Content>
+      {children && <Styled.Content sx={{ pt: 3 }}>{children}</Styled.Content>}
     </Styled.Wrapper>
   );
 };

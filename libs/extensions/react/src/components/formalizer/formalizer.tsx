@@ -1,6 +1,6 @@
 import { ReactNode } from 'react';
 import { FormalizerContext } from '../../context/formalizer-context';
-import { FormalizerPayload } from '../../types';
+import { FormalizerPayload } from '../../typings';
 import { CreateChild } from '../create-child/create-child';
 
 type FormalizerProps = {
@@ -26,7 +26,7 @@ export const Formalizer = ({ children, formalizer, auto }: FormalizerProps) => {
         framework: formalizer.framework,
       }}
     >
-      {auto ? <CreateChild model={rootModel} /> : children}
+      {auto && rootModel ? <CreateChild model={rootModel} /> : children}
     </FormalizerContext.Provider>
   );
 };

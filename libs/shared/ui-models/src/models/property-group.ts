@@ -10,10 +10,10 @@ export const uiPropertyGroups: UiPropertyGroupInterface = {
     name: 'core',
     type: 'group',
     title: 'Model Types',
-    hint: 'The model types determines how the model renders and how it interacts with API',
     icon: MonitorHeartIcon,
     items: [],
     fullWidth: true,
+    collapsible: true,
     collapsed: false,
   },
   basic: {
@@ -24,7 +24,8 @@ export const uiPropertyGroups: UiPropertyGroupInterface = {
     icon: ChatIcon,
     items: [],
     fullWidth: true,
-    collapsed: false,
+    collapsible: true,
+    collapsed: true,
   },
   api: {
     name: 'api',
@@ -34,6 +35,7 @@ export const uiPropertyGroups: UiPropertyGroupInterface = {
     icon: WebhookIcon,
     items: [],
     fullWidth: true,
+    collapsible: true,
     collapsed: true,
   },
   ui: {
@@ -44,6 +46,7 @@ export const uiPropertyGroups: UiPropertyGroupInterface = {
     icon: BrushIcon,
     items: [],
     fullWidth: true,
+    collapsible: true,
     collapsed: true,
   },
   value: {
@@ -54,6 +57,7 @@ export const uiPropertyGroups: UiPropertyGroupInterface = {
     icon: JoinRightIcon,
     items: [],
     fullWidth: true,
+    collapsible: true,
     collapsed: true,
   },
 };

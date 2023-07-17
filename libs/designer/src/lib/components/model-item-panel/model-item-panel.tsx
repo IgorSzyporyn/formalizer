@@ -4,7 +4,7 @@ import { useListener } from '@formalizer/react';
 import { SvgIconTypeMap } from '@mui/material';
 import { OverridableComponent } from '@mui/material/OverridableComponent';
 import { forwardRef, useContext, useEffect, useState } from 'react';
-import { DesignerContext } from '../../context';
+import { DesignerContext } from '../../designer-context';
 import { ActionPanel, ActionPanelProps } from '../action-panel/action-panel';
 
 const checkIsGroup = (model?: FormalizedModel) => {

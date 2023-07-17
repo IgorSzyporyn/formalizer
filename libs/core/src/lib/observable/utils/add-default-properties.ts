@@ -10,7 +10,6 @@ import { getPropertyModel } from '../../utils/get-property-model';
 type AddDefaultPropertiesProps = {
   model: FormalizedModel;
   onChange: ListenerCallback;
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   type: CoreModelType;
 };
 

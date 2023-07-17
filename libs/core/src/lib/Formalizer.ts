@@ -2,8 +2,11 @@
  * FormalizerCore is a powerful utility for managing the state of complex form models.
  * It handles the nitty-gritty of updating and maintaining the state of the form model
  * so that you can focus on implementing the business logic of your application.
+ *
+ * Each core model type represents a specific type of data or input element in the
+ * formalizer framework, allowing you to define and configure different types of models
+ * for your application forms or data structures.
  */
-import { arrayMoveImmutable } from 'array-move';
 import deepmerge from 'deepmerge';
 import dot from 'dot-object';
 import {
@@ -286,27 +289,60 @@ export class FormalizerCore {
     const model = this.getModel(modelId);
     const parentModel = this.getModel(parentId);
 
-    if (model && parentModel) {
-      if (model.parentId === parentModel.id) {
-        // if parentId is models current parentId then we move inside same items array
-        const currentPosition = parentModel.items
-          ?.map((item, index) => ({ item, index }))
-          .filter(({ item }) => item.id === model.id)
-          .map(({ index }) => index)[0];
+    if (!model || !parentModel) {
+      return;
+    }
 
-        if (currentPosition !== undefined && parentModel.items) {
-          const newItems = arrayMoveImmutable(
-            parentModel.items,
-            currentPosition,
-            newPosition
-          );
-
-          parentModel.items = newItems;
-        }
-      } else {
-        // if parentId is not models current parentId then we first remove from original
-        // item array and then add to new parent items array
+    if (model.parentId === parentModel.id) {
+      // Move inside the same items array
+      const parentItems = parentModel.items;
+      if (!parentItems) {
+        return;
       }
+
+      const currentPosition = parentItems.findIndex(
+        (item) => item.id === modelId
+      );
+
+      if (currentPosition === -1) {
+        return;
+      }
+
+      const newItems = [...parentItems];
+      newItems.splice(newPosition, 0, newItems.splice(currentPosition, 1)[0]);
+      parentModel.items = newItems;
+    } else {
+      // Move to a different parent
+      const sourceParentModel = this.getModel(model.parentId);
+      if (!sourceParentModel || !sourceParentModel.items) {
+        return;
+      }
+
+      const sourceItems = sourceParentModel.items;
+      const targetItems = parentModel.items;
+
+      if (!targetItems) {
+        return;
+      }
+
+      const sourceIndex = sourceItems.findIndex((item) => item.id === modelId);
+
+      if (sourceIndex === -1) {
+        return;
+      }
+
+      const sourceItem = sourceItems[sourceIndex];
+
+      // Remove from the source parent's items array
+      sourceParentModel.items = sourceItems.filter(
+        (item) => item.id !== modelId
+      );
+
+      // Insert into the target parent's items array at the specified position
+      targetItems.splice(newPosition, 0, sourceItem);
+
+      // Update the model's parentId
+      model.parentId = parentId;
     }
   };
 }

@@ -6,10 +6,10 @@ type PanelBodyProps = {
   children: ReactNode;
 } & BoxProps;
 
-export const PanelBody = ({ children, sx = {}, ...rest }: PanelBodyProps) => {
+export const PanelBody = ({ children, ...rest }: PanelBodyProps) => {
   return (
     <Styled.Wrapper {...rest}>
-      <Styled.Inner sx={{ pl: 2, pr: 2 }}>{children}</Styled.Inner>
+      <Styled.Inner sx={{ p: 2, pt: 1, pb: 4 }}>{children}</Styled.Inner>
     </Styled.Wrapper>
   );
 };

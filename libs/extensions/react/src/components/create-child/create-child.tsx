@@ -2,7 +2,7 @@ import { FormalizedModel } from '@formalizer/core';
 import { Field } from '../field/field';
 
 type CreateChildProps = {
-  model?: FormalizedModel;
+  model: FormalizedModel;
 };
 
 export const CreateChild = ({ model }: CreateChildProps) => {

@@ -1,8 +1,8 @@
 import { FieldWrapper } from '../../field-wrapper/field-wrapper';
-import { FormalizerComponentProps } from '../../../../types';
+import { FieldComponentProps } from '../../../../typings';
 import * as Styled from './styled';
 
-export const OptionsField = (props: FormalizerComponentProps) => {
+export const OptionsField = (props: FieldComponentProps) => {
   const { model } = props;
 
   return (

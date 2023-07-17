@@ -37,12 +37,8 @@ import {
 } from '../../utils/sortable-tree';
 import { SortableTreeItem } from '../sortable-tree-item/sortable-tree-item';
 import * as Styled from './styled';
-import { DesignerContext } from '../../../../context';
-
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-const toJSON = (json: Record<string, any>) => {
-  return JSON.parse(JSON.stringify(json));
-};
+import { DesignerContext } from '../../../../designer-context';
+import { useListener } from '@formalizer/react';
 
 const measuring = {
   droppable: {
@@ -86,8 +82,11 @@ export function SortableTree({
   removable,
   model,
 }: SortableTreeProps) {
-  const modelJSON = toJSON(model || {}) as TreeItem;
+  const { formalizer } = useContext(DesignerContext);
+  const modelJSON = formalizer?.getModelJSON(model?.id) as TreeItem;
+
   const [items, setItems] = useState<TreeItem[]>(modelJSON.items || []);
+
   const [activeId, setActiveId] = useState<UniqueIdentifier | null>(null);
   const [overId, setOverId] = useState<UniqueIdentifier | null>(null);
   const [offsetLeft, setOffsetLeft] = useState(0);
@@ -264,6 +263,17 @@ export function SortableTree({
       clonedItems[activeIndex] = { ...activeTreeItem, depth, parentId };
 
       const sortedItems = arrayMove(clonedItems, activeIndex, overIndex);
+
+      /*
+      const parentModel =
+        parentId === null
+          ? formalizer?.getRootModel()
+          : formalizer?.getModel(parentId as string);
+
+      const overModelIndex =
+        parentModel?.items?.findIndex((item) => item.id === overId) || 0;
+      */
+
       const newItems = buildTree(sortedItems);
 
       setItems(newItems);

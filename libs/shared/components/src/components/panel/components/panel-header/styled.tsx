@@ -8,7 +8,6 @@ export const Header = styled(Box)`
   align-items: center;
   line-height: 0;
   justify-content: space-between;
-  min-height: 72px;
 `;
 
 export const Info = styled.div`

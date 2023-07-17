@@ -1,9 +1,9 @@
-import { FormalizerComponentProps } from '../../../../types';
+import { FieldComponentProps } from '../../../../typings';
 import * as Styled from './styled';
 import { FieldWrapper } from '../../field-wrapper/field-wrapper';
 import { ChangeEvent } from 'react';
 
-export const TextField = (props: FormalizerComponentProps) => {
+export const TextField = (props: FieldComponentProps) => {
   const { model } = props;
 
   const handleChange = (e: ChangeEvent<HTMLInputElement>) => {

@@ -111,7 +111,6 @@ const createObjectObserveHandler = (
       const oldValue = model[property];
 
       if (!isEqual(oldValue, value)) {
-        console.log('setter', property, value, model.id);
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         const handlers = propertyHandlers as any;
         const handler = handlers[property];

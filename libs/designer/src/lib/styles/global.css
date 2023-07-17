@@ -21,3 +21,7 @@ option {
   background-color: #222;
 }
 */
+
+body {
+  overflow: hidden;
+}

@@ -1,6 +1,6 @@
 import { Checkbox, FormControlLabel } from '@mui/material';
 import { ChangeEvent } from 'react';
-import { FieldComponentProps } from '../../../../types';
+import { FieldComponentProps } from '../../../../typings';
 
 export const BooleanField = ({ model, ...props }: FieldComponentProps) => {
   const handleChange = (e: ChangeEvent<HTMLInputElement>) => {

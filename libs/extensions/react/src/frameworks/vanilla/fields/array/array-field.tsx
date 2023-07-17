@@ -1,8 +1,8 @@
 import { FieldWrapper } from '../../field-wrapper/field-wrapper';
-import { FormalizerComponentProps } from '../../../../types';
+import { FieldComponentProps } from '../../../../typings';
 import { CreateChildren } from '../../../../components/create-children/create-children';
 
-export const ArrayField = (props: FormalizerComponentProps) => {
+export const ArrayField = (props: FieldComponentProps) => {
   return (
     <FieldWrapper {...props}>
       <CreateChildren {...props} />

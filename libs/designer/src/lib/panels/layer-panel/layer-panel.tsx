@@ -5,7 +5,7 @@ import LayersIcon from '@mui/icons-material/Layers';
 import { Box, Button } from '@mui/material';
 import { Fragment, HTMLAttributes, useContext } from 'react';
 import { SortableTree } from './components/sortable-tree/sortable-tree';
-import { DesignerContext } from '../../context';
+import { DesignerContext } from '../../designer-context';
 
 type LayerPanelProps = HTMLAttributes<HTMLDivElement>;
 

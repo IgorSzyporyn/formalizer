@@ -1,6 +1,6 @@
 import { FormalizerCore } from '@formalizer/core';
 import { createContext } from 'react';
-import { FormalizerPayload } from '../types';
+import { FormalizerPayload } from '../typings';
 
 export const defaultContext: FormalizerContextProps = {
   framework: undefined,

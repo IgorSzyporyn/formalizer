@@ -8,7 +8,10 @@ import cx from 'classnames';
 import deepmerge from 'deepmerge';
 import { Fragment, HTMLAttributes, forwardRef, useContext } from 'react';
 import { ModelCardHeader } from '../../../../components/model-card-header/model-card-header';
-import { DesignerContext, DesignerUiContext } from '../../../../context';
+import {
+  DesignerContext,
+  DesignerUiContext,
+} from '../../../../designer-context';
 import * as Styled from './styled';
 import { UtilityTab } from '../../../../typings/designer-types';
 
@@ -66,7 +69,7 @@ export const TreeItem = forwardRef<HTMLDivElement, TreeItemProps>(
     const handleEditClick = () => {
       updateUiContext({
         activeModelId: modelId,
-        activeTab: UtilityTab.Properties,
+        activeUtilityTab: UtilityTab.Properties,
       });
     };
 

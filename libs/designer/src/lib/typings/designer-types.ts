@@ -7,9 +7,19 @@ export enum UtilityTab {
   Properties = 3,
 }
 
-export type UtilityTabType = {
+export enum CanvasMode {
+  Illustration = 'illustration',
+  Example = 'example',
+}
+
+export enum CanvasTab {
+  Illustration = 1,
+  Example = 2,
+}
+
+export type TabType<T> = {
   icon: OverridableComponent<SvgIconTypeMap<Record<string, unknown>, 'svg'>>;
-  tabId: UtilityTab;
+  tabId: T;
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   Panel: any;
 };

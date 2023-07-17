@@ -9,14 +9,14 @@ export const Brand = ({ size = 'medium' }: BrandProps) => {
     <Styled.Wrapper>
       <Styled.LogoBox sx={{ mr: 1.5 }}>
         <Styled.Logo
-          src={`data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABYAAAAiCAYAAABbXymAAAAAAXNSR0IArs4c6QAAAHJJREFUSEvtljEKgDAUQ5NruAie1uN5AsHFa3yppb+DSxD+lswhw6NJP9ctAoKuk2y2OCD56eBB1SjyfRnFRCGU7pflrWmFGBC7D/St2EW/g3MrjMIoPuWtq3TFTrRM3tDuigX9rlDl4PmDmHFuhVEMFA86dI9rH3tb2wAAAABJRU5ErkJggg==`}
+          src={`data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAAAAXNSR0IArs4c6QAAAH5JREFUWEdjZMAB7K3//8clhyx+8Cgj4/9rKkSpZdS6w4huJoYATMGoA0ZDYDQERkNgwEOAmFKQGmpwloT/DQyIK14vXGD8P5GBOLX5DMQXxaMOGA2B0RAYDYEBDwFqFLPEmIGzKH7GQFyrWIqBEacZow4YDYHREBgNgSERAgArh7QhceN8pwAAAABJRU5ErkJggg==`}
           alt="Formalizer Logo"
         />
       </Styled.LogoBox>
-      <Styled.Text>
-        <Styled.Title>Formalizer</Styled.Title>
-        <Styled.Subtitle>Automated form generation</Styled.Subtitle>
-      </Styled.Text>
+      <Styled.Text></Styled.Text>
     </Styled.Wrapper>
   );
 };
+
+// <Styled.Title>Formalizer</Styled.Title>
+// <Styled.Subtitle>Automated form generation</Styled.Subtitle>

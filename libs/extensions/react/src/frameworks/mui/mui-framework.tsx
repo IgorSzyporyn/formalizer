@@ -6,6 +6,8 @@ import { RootField } from './fields/root/root';
 import { BooleanField } from './fields/boolean/boolean';
 import { OptionsField } from './fields/options/options-field';
 import { GroupField } from './fields/group/group';
+import { GridField } from './fields/grid/grid';
+import { FormField } from './fields/form/form';
 
 export const muiFrameworkModel: ComponentMap<unknown> = {
   array: {
@@ -44,7 +46,7 @@ export const muiFrameworkModel: ComponentMap<unknown> = {
     map: {},
   },
   grid: {
-    Component: ArrayField,
+    Component: GridField,
     properties: {},
     map: {},
   },
@@ -74,7 +76,7 @@ export const muiFrameworkModel: ComponentMap<unknown> = {
     map: {},
   },
   form: {
-    Component: ObjectField,
+    Component: FormField,
     properties: {},
     map: {},
   },

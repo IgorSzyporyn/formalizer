@@ -7,7 +7,7 @@ import {
   Select,
   SelectChangeEvent,
 } from '@mui/material';
-import { FieldComponentProps } from '../../../../types';
+import { FieldComponentProps } from '../../../../typings';
 
 export const OptionsField = ({ model, ...props }: FieldComponentProps) => {
   const handleChange = (e: SelectChangeEvent<string>) => {

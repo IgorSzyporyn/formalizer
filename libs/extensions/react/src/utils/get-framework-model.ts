@@ -6,7 +6,7 @@ import {
   FormalizedModel,
   CoreModelType,
 } from '@formalizer/core';
-import { FrameworkType } from '../types';
+import { FrameworkType } from '../typings';
 import { vanillaFrameworkModel } from '../frameworks/vanilla/vanilla-framework';
 import deepmerge from 'deepmerge';
 import { muiFrameworkModel } from '../frameworks/mui/mui-framework';

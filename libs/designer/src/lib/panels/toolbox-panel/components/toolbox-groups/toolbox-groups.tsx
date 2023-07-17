@@ -1,26 +1,23 @@
 import { UiGroupModel, getUiGroups, getUiModels } from '@formalizer/models';
+import { Box } from '@mui/material';
 import { ToolboxGroup } from '../toolbox-group/toolbox-group';
-import * as Styled from './styled';
 
 export const ToolboxGroups = () => {
   const uiGroupModels = createGroupedUiModels();
 
   return (
-    <Styled.Wrapper>
+    <Box>
       {uiGroupModels.map((uiGroupModel) => {
         return (
-          <Styled.Group
-            key={`toolbox-groups-${uiGroupModel.type}`}
-            sx={{ mb: 1 }}
-          >
+          <Box key={`toolbox-groups-${uiGroupModel.type}`} sx={{ mb: 1 }}>
             <ToolboxGroup
               key={`toolbox-group-${uiGroupModel.type}`}
               uiGroupModel={uiGroupModel}
             />
-          </Styled.Group>
+          </Box>
         );
       })}
-    </Styled.Wrapper>
+    </Box>
   );
 };
 
@@ -29,7 +26,7 @@ const createGroupedUiModels = () => {
   const uiGroupModels = getUiGroups();
   const uiGroupsArray: UiGroupModel[] = [];
 
-  for (const [_, value] of Object.entries(uiModels)) {
+  for (const value of Object.values(uiModels)) {
     if (typeof value.group === 'string') {
       uiGroupModels[value.group].items.push(value);
     } else if (Array.isArray(value.group)) {
@@ -39,7 +36,7 @@ const createGroupedUiModels = () => {
     }
   }
 
-  for (const [_, value] of Object.entries(uiGroupModels)) {
+  for (const value of Object.values(uiGroupModels)) {
     uiGroupsArray.push(value);
   }
 

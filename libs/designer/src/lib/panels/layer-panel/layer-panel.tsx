@@ -3,23 +3,21 @@ import AddCircleIcon from '@mui/icons-material/AddCircle';
 import EditIcon from '@mui/icons-material/Edit';
 import LayersIcon from '@mui/icons-material/Layers';
 import { Box, Button } from '@mui/material';
-import { Fragment, HTMLAttributes, useContext } from 'react';
-import { SortableTree } from './components/sortable-tree/sortable-tree';
+import { Fragment, useContext } from 'react';
 import { DesignerContext } from '../../designer-context';
+import { SortableTree } from './components/sortable-tree/sortable-tree';
 
-type LayerPanelProps = HTMLAttributes<HTMLDivElement>;
-
-export const LayerPanel = ({ ...props }: LayerPanelProps) => {
+export const LayerPanel = () => {
   const { formalizer } = useContext(DesignerContext);
   const model = formalizer?.getRootModel();
 
   return (
-    <div {...props}>
+    <Box>
       <PanelHeader
         Icon={LayersIcon}
         title="Model Structure"
         Action={
-          <Fragment key="layer-panel-action">
+          <Fragment>
             <Button color="primary" sx={{ mr: 1 }} startIcon={<EditIcon />}>
               Edit
             </Button>
@@ -29,7 +27,7 @@ export const LayerPanel = ({ ...props }: LayerPanelProps) => {
           </Fragment>
         }
         description={
-          <Fragment key="layer-panel-description">
+          <Fragment>
             <Box component="span" sx={{ pb: 1 }}>
               The model as a tree sortable tree structure.
             </Box>
@@ -43,6 +41,6 @@ export const LayerPanel = ({ ...props }: LayerPanelProps) => {
       <PanelBody>
         <SortableTree model={model} collapsible indentationWidth={16} />
       </PanelBody>
-    </div>
+    </Box>
   );
 };

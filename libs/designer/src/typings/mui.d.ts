@@ -1,6 +1,7 @@
 import {
   Palette as MuiPalette,
   PaletteOptions as MuiPaletteOptions,
+  ButtonPropsColorOverrides as MuiButtonPropsColorOverrides,
 } from '@mui/material';
 
 declare module '@mui/material' {
@@ -10,5 +11,9 @@ declare module '@mui/material' {
 
   interface PaletteOptions extends MuiPaletteOptions {
     neutral: PaletteOptions['primary'];
+  }
+
+  interface ButtonPropsColorOverrides extends MuiButtonPropsColorOverrides {
+    neutral: true;
   }
 }

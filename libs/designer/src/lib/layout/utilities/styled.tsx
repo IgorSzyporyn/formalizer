@@ -3,14 +3,13 @@ import { motion } from 'framer-motion';
 
 export const ContentMotion = styled(motion.div)`
   height: 100%;
+  overflow: hidden;
 `;
 
 export const ContentMotionInner = styled.div`
   position: relative;
   height: 100%;
   width: 500px;
-  overflow-y: auto;
-  overflow-x: hidden;
 `;
 
 export const ContentMotionChild = styled(motion.div)`
@@ -19,4 +18,6 @@ export const ContentMotionChild = styled(motion.div)`
   left: 0;
   right: 0;
   bottom: 0;
+  overflow-y: auto;
+  overflow-x: hidden;
 `;

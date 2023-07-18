@@ -1,9 +1,7 @@
-import { CollapseButton } from '@formalizer/components';
-import EditNoteIcon from '@mui/icons-material/EditNote';
-import { Box, Collapse, IconButton } from '@mui/material';
-import { Fragment, useContext, useState } from 'react';
+import { Box, Collapse } from '@mui/material';
+import { useContext, useState } from 'react';
+import { ModelCardHeader } from '../../../../components/model-card-header/model-card-header';
 import { DesignerContext } from '../../../../designer-context';
-import { ModelItemPanel } from '../../../../components/model-item-panel/model-item-panel';
 import { CreateIllustrations } from '../create-illustrations/create-illustrations';
 
 type IllustrationNestedProps = {
@@ -21,27 +19,11 @@ export const IllustrationNested = ({ modelId }: IllustrationNestedProps) => {
 
   return (
     <Box sx={{ m: 1.5 }}>
-      <ModelItemPanel
-        noShadow
-        bordered
-        id={`illustration-nested-${modelId}`}
-        modelId={modelId}
-        Action={
-          <Fragment key="form-illustration-action">
-            <IconButton sx={{ mr: 1 }}>
-              <EditNoteIcon />
-            </IconButton>
-            <CollapseButton
-              onCollapseToggle={handleCollapsed}
-              collapsed={collapsed}
-            />
-          </Fragment>
-        }
-      >
+      <ModelCardHeader modelId={modelId}>
         <Collapse in={!collapsed}>
           <CreateIllustrations items={model?.items} />
         </Collapse>
-      </ModelItemPanel>
+      </ModelCardHeader>
     </Box>
   );
 };

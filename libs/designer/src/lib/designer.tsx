@@ -30,6 +30,8 @@ export const Designer = ({ model }: DesignerProps) => {
     [uiState]
   );
 
+  window.A = formalizer.current;
+
   return (
     <ThemeProvider theme={theme}>
       <CssBaseline />

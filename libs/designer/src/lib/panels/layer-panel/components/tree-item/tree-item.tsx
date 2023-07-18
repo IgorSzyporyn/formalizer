@@ -3,6 +3,7 @@ import { FormalizedModel } from '@formalizer/core';
 import { getUiModels } from '@formalizer/models';
 import DragIndicatorIcon from '@mui/icons-material/DragIndicator';
 import EditNoteIcon from '@mui/icons-material/EditNote';
+import RemoveRedEyeIcon from '@mui/icons-material/RemoveRedEye';
 import { Box, Button, Card, IconButton } from '@mui/material';
 import cx from 'classnames';
 import deepmerge from 'deepmerge';
@@ -13,7 +14,7 @@ import {
   DesignerUiContext,
 } from '../../../../designer-context';
 import * as Styled from './styled';
-import { UtilityTab } from '../../../../typings/designer-types';
+import { CanvasTab, UtilityTab } from '../../../../typings/designer-types';
 
 export type TreeItemProps = {
   modelId?: string;
@@ -73,6 +74,13 @@ export const TreeItem = forwardRef<HTMLDivElement, TreeItemProps>(
       });
     };
 
+    const handleExampleClick = () => {
+      updateUiContext({
+        activeModelId: modelId,
+        activeCanvasTab: CanvasTab.Example,
+      });
+    };
+
     const wrapperCx = cx('designer-layer-card-wrapper', {
       'designer-layer-card-wrapper--ghost': ghost,
       'designer-layer-card-wrapper--clone': clone,
@@ -120,6 +128,9 @@ export const TreeItem = forwardRef<HTMLDivElement, TreeItemProps>(
                       onCollapseToggle={onCollapse}
                       style={{ visibility: hasItems ? 'visible' : 'hidden' }}
                     />
+                    <IconButton size="medium" onClick={handleExampleClick}>
+                      <RemoveRedEyeIcon />
+                    </IconButton>
                     <IconButton size="medium" onClick={handleEditClick}>
                       <EditNoteIcon />
                     </IconButton>

@@ -1,33 +1,14 @@
-import EditNoteIcon from '@mui/icons-material/EditNote';
-import { Box, IconButton } from '@mui/material';
-import { Fragment } from 'react';
-import { ModelItemPanel } from '../../../../components/model-item-panel/model-item-panel';
+import { Box } from '@mui/material';
+import { ModelCardHeader } from '../../../../components/model-card-header/model-card-header';
 
 type IllustrationSingleProps = {
   modelId?: string;
-  elevation: number;
 };
 
-export const IllustrationSingle = ({
-  modelId,
-  elevation,
-}: IllustrationSingleProps) => {
+export const IllustrationSingle = ({ modelId }: IllustrationSingleProps) => {
   return (
     <Box sx={{ m: 1.5 }}>
-      <ModelItemPanel
-        size="small"
-        noShadow
-        bordered
-        id={`illustration-single-${modelId}`}
-        modelId={modelId}
-        Action={
-          <Fragment key="form-illustration-action">
-            <IconButton sx={{ mr: 1 }}>
-              <EditNoteIcon />
-            </IconButton>
-          </Fragment>
-        }
-      />
+      <ModelCardHeader modelId={modelId} />
     </Box>
   );
 };

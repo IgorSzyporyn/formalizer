@@ -99,9 +99,8 @@ const handleAddingItems = ({
   newItems = preparedModelsArray;
   model.items = newItems;
 
-  applyValues(rest);
   onChange({ model, property: 'items', value: newItems });
-  setValueProperty({ ...rest, model, value: model.value, onChange });
+  applyValues(rest);
 };
 
 const handleRemovingItems = ({
@@ -153,9 +152,8 @@ const handleRemovingItems = ({
 
   model.items = items;
 
-  applyValues(rest);
   onChange({ model, property: 'items', value: items });
-  setValueProperty({ ...rest, model, value: preparedValue, onChange });
+  applyValues(rest);
 };
 
 const handleShufflingItems = ({
@@ -211,9 +209,8 @@ const handleShufflingItems = ({
 
   model.items = preparedModelsArray;
 
-  applyValues(rest);
   onChange({ model, property: 'items', value: preparedModelsArray });
-  setValueProperty({ ...rest, model, value: preparedValue, onChange });
+  applyValues(rest);
 };
 
 const updateRelations = ({

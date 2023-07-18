@@ -209,7 +209,7 @@ export function SortableTree({
             <DragOverlay dropAnimation={dropAnimationConfig}>
               {activeId && activeItem ? (
                 <SortableTreeItem
-                  key="sortable-tree-item-clone"
+                  key={`sortable-tree-item-clone`}
                   // eslint-disable-next-line @typescript-eslint/no-explicit-any
                   modelId={activeId as any}
                   id={activeId}

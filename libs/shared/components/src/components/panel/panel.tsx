@@ -37,7 +37,7 @@ export const Panel = forwardRef<HTMLDivElement, PanelProps>(
       medium: {
         wrapper: { ...sx },
         utilities: {
-          vertical: { p: 0.75, pt: 6, pb: 6 },
+          vertical: { p: 0.75, pt: 4, pb: 0 },
           horizontal: { p: 0.75, pl: 2, pr: 2 },
         },
       },
@@ -45,7 +45,7 @@ export const Panel = forwardRef<HTMLDivElement, PanelProps>(
         wrapper: { ...sx },
         utilities: {
           vertical: { p: 0.75, pt: 4.75, pb: 4.75 },
-          horizontal: { p: 2, pl: 3, pr: 3 },
+          horizontal: { p: 2, pl: 2.5, pr: 2.5 },
         },
       },
     };

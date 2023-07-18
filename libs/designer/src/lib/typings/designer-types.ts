@@ -10,11 +10,13 @@ export enum UtilityTab {
 export enum CanvasMode {
   Illustration = 'illustration',
   Example = 'example',
+  Overview = 'overview',
 }
 
 export enum CanvasTab {
-  Illustration = 1,
-  Example = 2,
+  Overview = 1,
+  Illustration = 2,
+  Example = 3,
 }
 
 export type TabType<T> = {

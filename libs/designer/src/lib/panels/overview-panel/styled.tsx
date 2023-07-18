@@ -1,0 +1,8 @@
+import styled from '@emotion/styled';
+import { Box } from '@mui/material';
+
+export const Wrapper = styled(Box)`
+  display: flex;
+  overflow-x: hidden;
+  overflow-y: auto;
+`;

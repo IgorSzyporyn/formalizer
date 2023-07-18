@@ -9,7 +9,7 @@ type PanelBodyProps = {
 export const PanelBody = ({ children, ...rest }: PanelBodyProps) => {
   return (
     <Styled.Wrapper {...rest}>
-      <Styled.Inner sx={{ p: 2, pt: 1, pb: 4 }}>{children}</Styled.Inner>
+      <Styled.Inner sx={{ p: 2, pl: 3, pr: 3 }}>{children}</Styled.Inner>
     </Styled.Wrapper>
   );
 };

@@ -21,8 +21,8 @@ export const CollapseTab = ({
 
   const iconCollapseVariants: Variants = isVertical
     ? {
-        open: { rotate: 90 },
-        closed: { rotate: -90 },
+        open: { rotate: -90 },
+        closed: { rotate: 90 },
       }
     : {
         open: { rotate: 0 },

@@ -1,10 +1,7 @@
-import { CollapseButton } from '@formalizer/components';
-import DataObjectIcon from '@mui/icons-material/DataObject';
-import EditNoteIcon from '@mui/icons-material/EditNote';
-import { Box, Button, Collapse, IconButton } from '@mui/material';
-import { Fragment, useContext, useState } from 'react';
+import { Collapse } from '@mui/material';
+import { useContext, useState } from 'react';
+import { ModelCardHeader } from '../../../../components/model-card-header/model-card-header';
 import { DesignerContext } from '../../../../designer-context';
-import { ModelItemPanel } from '../../../../components/model-item-panel/model-item-panel';
 import { CreateIllustrations } from '../create-illustrations/create-illustrations';
 
 type FormIllustrationProps = {
@@ -21,34 +18,10 @@ export const FormIllustration = ({ modelId }: FormIllustrationProps) => {
   };
 
   return (
-    <ModelItemPanel
-      bordered
-      elevation={4}
-      id={`illustration-form-${modelId}`}
-      modelId={modelId}
-      Optional={
-        <Fragment key="illustration-form-optional">
-          <Box sx={{ p: 1 }} />
-        </Fragment>
-      }
-      Action={
-        <Fragment key="form-illustration-action">
-          <Button sx={{ mr: 1 }} startIcon={<DataObjectIcon />}>
-            Show Data
-          </Button>
-          <IconButton>
-            <EditNoteIcon />
-          </IconButton>
-          <CollapseButton
-            onCollapseToggle={handleCollapsed}
-            collapsed={collapsed}
-          />
-        </Fragment>
-      }
-    >
+    <ModelCardHeader modelId={modelId}>
       <Collapse in={!collapsed}>
         <CreateIllustrations items={model?.items} />
       </Collapse>
-    </ModelItemPanel>
+    </ModelCardHeader>
   );
 };

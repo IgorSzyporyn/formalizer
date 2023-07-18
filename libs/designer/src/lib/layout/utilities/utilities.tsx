@@ -2,9 +2,12 @@ import { Panel } from '@formalizer/components';
 import EditNoteIcon from '@mui/icons-material/EditNote';
 import HandymanIcon from '@mui/icons-material/Handyman';
 import LayersIcon from '@mui/icons-material/Layers';
-import { Variants } from 'framer-motion';
+import { AnimatePresence, Variants } from 'framer-motion';
 import { Fragment, useContext } from 'react';
-import { DesignerUiContext } from '../../designer-context';
+import {
+  DesignerUiContext,
+  defaultDesignerUiContextValue,
+} from '../../designer-context';
 import { LayerPanel } from '../../panels/layer-panel/layer-panel';
 import { PropertiesPanel } from '../../panels/properties-panel/properties-panel';
 import { ToolboxPanel } from '../../panels/toolbox-panel/toolbox-panel';
@@ -37,22 +40,17 @@ const contentCollapseVariants: Variants = {
 };
 
 const panelContentVariants: Variants = {
-  initial: {
-    opacity: 0,
-    x: '-100%',
-    y: 0,
-  },
   enter: {
     opacity: 1,
     x: 0,
     y: 0,
-    transition: { duration: 0.375, type: 'spring' },
+    transition: { delay: 0.375, duration: 0.375 },
   },
   exit: {
-    opacity: 0,
+    opacity: 1,
     x: '100%',
     y: 0,
-    transition: { duration: 0.275 },
+    transition: { duration: 0.375 },
   },
 };
 
@@ -73,14 +71,18 @@ export const Utilities = () => {
 
   return (
     <Panel
-      square
       elevation={2}
       barPosition="vertical"
-      sx={{ height: '100%' }}
+      sx={{
+        height: '100%',
+        borderTopRightRadius: 0,
+        borderBottomLeftRadius: 0,
+        borderBottomRightRadius: 0,
+      }}
       bar={
         <Fragment key="designer-utilities-bar">
           <CollapseTab
-            sx={{ mb: 6 }}
+            sx={{ mb: 4 }}
             collapsed={utilitiesCollapsed}
             onCollapseToggle={handleCollapsedToggle}
           />
@@ -101,8 +103,13 @@ export const Utilities = () => {
             return (
               <Styled.ContentMotionChild
                 key={`content-main-item-${tabId}`}
-                initial="initial"
                 animate={tabId === activeTab ? 'enter' : 'exit'}
+                initial={
+                  tabId === defaultDesignerUiContextValue.activeUtilityTab
+                    ? 'enter'
+                    : 'exit'
+                }
+                exit="exit"
                 variants={panelContentVariants}
               >
                 <Panel />

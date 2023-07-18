@@ -22,9 +22,9 @@ export type DesignerUiContextValueSafe = {
 export const defaultDesignerUiContextValue: DesignerUiContextValue = {
   activeModelId: undefined,
   activeUtilityTab: UtilityTab.Layer,
-  activeCanvasTab: CanvasTab.Illustration,
+  activeCanvasTab: CanvasTab.Overview,
   utilitiesCollapsed: false,
-  canvasCollapsed: false,
+  canvasCollapsed: true,
   canvasMode: CanvasMode.Illustration,
   // eslint-disable-next-line @typescript-eslint/no-empty-function
   updateUiContext: () => {},

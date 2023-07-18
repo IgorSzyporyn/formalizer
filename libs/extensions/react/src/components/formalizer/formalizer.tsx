@@ -7,16 +7,24 @@ type FormalizerProps = {
   children?: ReactNode;
   auto?: boolean;
   formalizer: FormalizerPayload;
+  modelId?: string;
 };
 
-export const Formalizer = ({ children, formalizer, auto }: FormalizerProps) => {
+export const Formalizer = ({
+  children,
+  formalizer,
+  modelId,
+  auto,
+}: FormalizerProps) => {
   const handlers = {
     handleChange: formalizer.handleChange,
     handleBlur: formalizer.handleBlur,
     handleSubmit: formalizer.handleSubmit,
   };
 
-  const rootModel = formalizer.formalizer?.getRootModel();
+  const model = modelId
+    ? formalizer.formalizer?.getModel(modelId)
+    : formalizer.formalizer?.getRootModel();
 
   return (
     <FormalizerContext.Provider
@@ -26,7 +34,7 @@ export const Formalizer = ({ children, formalizer, auto }: FormalizerProps) => {
         framework: formalizer.framework,
       }}
     >
-      {auto && rootModel ? <CreateChild model={rootModel} /> : children}
+      {auto && model ? <CreateChild model={model} /> : children}
     </FormalizerContext.Provider>
   );
 };

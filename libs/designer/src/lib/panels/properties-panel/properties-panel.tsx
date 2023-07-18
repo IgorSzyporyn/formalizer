@@ -30,7 +30,7 @@ export const PropertiesPanel = (props: PropertiesPanelProps) => {
       <PanelHeader
         title="Model Properties"
         Icon={EditNoteIcon}
-        description="Edit the properties"
+        description="Customize properties and see real-time previews for effortless model design."
       />
       <PanelBody>
         {model && (

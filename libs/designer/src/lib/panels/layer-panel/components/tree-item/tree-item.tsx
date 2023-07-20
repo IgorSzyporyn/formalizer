@@ -1,21 +1,20 @@
 import { CollapseButton } from '@formalizer/components';
 import { FormalizedModel } from '@formalizer/core';
 import { getUiModels } from '@formalizer/models';
+import DeleteIcon from '@mui/icons-material/Delete';
+import DeleteForeverIcon from '@mui/icons-material/DeleteForever';
 import DragIndicatorIcon from '@mui/icons-material/DragIndicator';
 import EditNoteIcon from '@mui/icons-material/EditNote';
+import HighlightOffIcon from '@mui/icons-material/HighlightOff';
 import RemoveRedEyeIcon from '@mui/icons-material/RemoveRedEye';
 import { Box, Button, Card, IconButton } from '@mui/material';
 import cx from 'classnames';
-import deepmerge from 'deepmerge';
-import { Fragment, HTMLAttributes, forwardRef, useContext, useState } from 'react';
-import { ModelCardHeader } from '../../../../components/model-card-header/model-card-header';
-import DeleteIcon from '@mui/icons-material/Delete';
-import HighlightOffIcon from '@mui/icons-material/HighlightOff';
-import { FormalizerContext, UiContext } from '../../../../context/designer-context';
-import DeleteForeverIcon from '@mui/icons-material/DeleteForever';
-import * as Styled from './styled';
-import { CanvasTab, UtilityTab } from '../../../../typings/designer-types';
 import { Variants } from 'framer-motion';
+import { HTMLAttributes, forwardRef, memo, useCallback, useContext, useState } from 'react';
+import { ModelCardHeader } from '../../../../components/model-card-header/model-card-header';
+import { FormalizerContext, UiContext } from '../../../../context/designer-context';
+import { CanvasTab, UtilityTab } from '../../../../typings/designer-types';
+import * as Styled from './styled';
 
 export type TreeItemProps = {
   modelId?: string;
@@ -39,6 +38,11 @@ const cardPanelVariants: Variants = {
   closed: { width: '100%' },
 };
 
+const cardEditVariants: Variants = {
+  open: { scale: 1 },
+  closed: { scale: 0.7 },
+};
+
 const cardButtonVariants: Variants = {
   closed: { opacity: 1, visibility: 'visible' },
   open: { opacity: 0, visibility: 'hidden' },
@@ -57,7 +61,7 @@ const checkIsGroup = (model?: FormalizedModel) => {
   return isGroup;
 };
 
-export const TreeItem = forwardRef<HTMLDivElement, TreeItemProps>(
+const _TreeItem = forwardRef<HTMLDivElement, TreeItemProps>(
   (
     {
       clone,
@@ -95,17 +99,22 @@ export const TreeItem = forwardRef<HTMLDivElement, TreeItemProps>(
       });
     };
 
-    const handleRemoveClick = () => {
+    const handleRemoveClick = useCallback(() => {
       setCardOpen((state) => !state);
-    };
+    }, []);
 
-    const handleRemoveAcceptClick = () => {
+    const handleRemoveAcceptClick = useCallback(() => {
       setCardOpen(false);
       onRemove?.();
-    };
+    }, [onRemove]);
 
-    const handleRemoveCancelClick = () => {
+    const handleRemoveCancelClick = useCallback(() => {
       setCardOpen(false);
+    }, []);
+
+    const style = {
+      ...props.style,
+      paddingLeft: indentationWidth * depth,
     };
 
     const wrapperCx = cx('designer-layer-card-wrapper', {
@@ -137,17 +146,14 @@ export const TreeItem = forwardRef<HTMLDivElement, TreeItemProps>(
     }
 
     return (
-      <Styled.TreeWrapper
-        {...props}
-        className={wrapperCx}
-        ref={wrapperRef}
-        style={deepmerge(props.style || {}, {
-          paddingLeft: indentationWidth * depth,
-        })}
-      >
+      <Styled.TreeWrapper {...props} className={wrapperCx} ref={wrapperRef} style={style}>
         <Styled.TreeItem ref={ref} className={treeItemCx}>
           <Styled.TreeItemInner>
-            <Styled.TreemItemEditPanel>
+            <Styled.TreemItemEditPanel
+              variants={cardEditVariants}
+              initial="closed"
+              animate={cardOpen ? 'open' : 'closed'}
+            >
               <IconButton
                 onClick={handleRemoveCancelClick}
                 title="Cancel and close"
@@ -231,3 +237,5 @@ export const TreeItem = forwardRef<HTMLDivElement, TreeItemProps>(
     );
   }
 );
+
+export const TreeItem = memo(_TreeItem);

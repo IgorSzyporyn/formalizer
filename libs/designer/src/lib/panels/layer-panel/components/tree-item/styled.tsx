@@ -1,5 +1,5 @@
 import styled from '@emotion/styled';
-import { Card, IconButton } from '@mui/material';
+import { IconButton } from '@mui/material';
 import { motion } from 'framer-motion';
 
 export const FocusButton = styled(IconButton)`
@@ -75,7 +75,6 @@ export const TreemItemEditPanel = styled(motion.div)`
 
 export const TreeItemCardPanel = styled(motion.div)`
   position: relative;
-  background-color: ${({ theme }) => theme.palette.neutral.dark};
   overflow: hidden;
   border-radius: ${({ theme }) => theme.shape.borderRadius}px;
 `;

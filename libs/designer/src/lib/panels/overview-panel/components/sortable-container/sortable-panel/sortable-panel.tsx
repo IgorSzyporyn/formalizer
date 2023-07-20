@@ -24,7 +24,7 @@ import {
 } from '@dnd-kit/sortable';
 import { FormalizedModel } from '@formalizer/core';
 import { useListener } from '@formalizer/react';
-import { useEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { createPortal } from 'react-dom';
 import { createRange } from '../../../utils/create-range';
 import { SortablePanelItem } from '../sortable-panel-item/sortable-panel-item';
@@ -126,25 +126,13 @@ export const SortablePanel = ({
     },
   };
 
-  const listener = useListener(model);
-
   useEffect(() => {
     if (!activeId) {
       isFirstAnnouncement.current = true;
     }
   }, [activeId]);
 
-  useEffect(() => {
-    if (listener.property === 'items') {
-      const newModelIndexes = createRange<UniqueIdentifier>(
-        modelCount,
-        (index: number) => index + 1
-      );
-
-      setModelIndexes(newModelIndexes);
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [listener]);
+  useListener(model);
 
   return (
     <DndContext

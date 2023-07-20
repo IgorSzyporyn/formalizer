@@ -1,9 +1,4 @@
-import {
-  ClientModel,
-  ClientPropertyType,
-  CoreModelType,
-  FormalizedModel,
-} from '@formalizer/core';
+import { ClientModel, ClientPropertyType, CoreModelType, FormalizedModel } from '@formalizer/core';
 import {
   UiPropertyGroupType,
   getUiModels,
@@ -15,12 +10,16 @@ type CreatePropertiesModelProps = {
   model?: FormalizedModel;
 };
 
-export const createPropertiesClientModel = ({
-  model,
-}: CreatePropertiesModelProps) => {
+export const createPropertiesClientModel = ({ model }: CreatePropertiesModelProps) => {
+  const rootModel: ClientModel = {
+    name: 'root',
+    type: 'root',
+    items: [],
+  };
+
   const propertiesModel: ClientModel = {
     name: `${model?.name}`,
-    type: 'root',
+    type: 'form',
     items: [],
   };
 
@@ -40,8 +39,7 @@ export const createPropertiesClientModel = ({
 
       const uiGroupModel = uiPropertiesGroupModel[uiPropertyGroupType];
 
-      const allowedProperty =
-        !uiModel.preventedProperties?.includes(property) && !_value.readonly;
+      const allowedProperty = !uiModel.preventedProperties?.includes(property) && !_value.readonly;
 
       const typeOverride = _value?.inheritType ? model.type : uiPropertyType;
 
@@ -72,5 +70,7 @@ export const createPropertiesClientModel = ({
     });
   }
 
-  return propertiesModel;
+  rootModel.items = [propertiesModel];
+
+  return rootModel;
 };

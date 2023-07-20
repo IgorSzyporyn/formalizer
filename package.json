@@ -30,7 +30,7 @@
   },
   "devDependencies": {
     "@babel/preset-react": "^7.14.5",
-    "@emotion/babel-plugin": "11.10.6",
+    "@emotion/babel-plugin": "^11.10.6",
     "@nx/cypress": "^16.2.2",
     "@nx/eslint-plugin": "^16.2.2",
     "@nx/jest": "16.4.2",
@@ -63,6 +63,7 @@
     "babel-jest": "^29.6.1",
     "babel-plugin-styled-components": "^2.1.4",
     "cypress": "^12.11.0",
+    "emotion-swc-plugin": "^0.0.5",
     "eslint": "~8.15.0",
     "eslint-config-prettier": "8.1.0",
     "eslint-plugin-cypress": "^2.10.3",

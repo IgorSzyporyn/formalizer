@@ -17,7 +17,6 @@ export interface SortablePanelItemProps {
   listeners?: DraggableSyntheticListeners;
   sorting?: boolean;
   style?: CSSProperties;
-  handleRef?: (element: HTMLElement | null) => void;
   transition?: string | null;
   wrapperStyle?: CSSProperties;
   itemWidth: number;
@@ -31,7 +30,6 @@ export const SortablePanelItem = memo(
         dragOverlay,
         dragging,
         fadeIn,
-        handleRef,
         index,
         listeners,
         sorting,
@@ -86,12 +84,9 @@ export const SortablePanelItem = memo(
           ref={ref}
         >
           <Styled.Content className={contentClassName} style={style} {...props} tabIndex={0}>
-            <OverviewForm
-              model={model}
-              width={itemWidth}
-              height={itemHeight}
-              handleProps={handleRef ? { ...listeners, ref: handleRef } : undefined}
-            />
+            <div {...listeners}>
+              <OverviewForm model={model} width={itemWidth} height={itemHeight} />
+            </div>
           </Styled.Content>
         </Styled.Wrapper>
       );

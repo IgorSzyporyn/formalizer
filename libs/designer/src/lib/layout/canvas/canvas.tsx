@@ -1,17 +1,20 @@
 import { Panel, PanelBody, PanelProps } from '@formalizer/components';
-import RemoveRedEyeIcon from '@mui/icons-material/RemoveRedEye';
+import AccountTreeIcon from '@mui/icons-material/AccountTree';
+import EditNoteIcon from '@mui/icons-material/EditNote';
+import PreviewIcon from '@mui/icons-material/Preview';
 import SaveAsIcon from '@mui/icons-material/SaveAs';
 import TableChartIcon from '@mui/icons-material/TableChart';
-import { Box, IconButton } from '@mui/material';
+import { Box, Card, IconButton } from '@mui/material';
 import { Variants, motion } from 'framer-motion';
 import { useContext } from 'react';
 import { CollapseTab } from '../../components/collapse-tab/collapse-tab';
 import { ContentTabs } from '../../components/content-tabs/content-tabs';
-import { UiContext, defaultUiContext } from '../../context/designer-context';
+import { ModelBreadcrumbs } from '../../components/model-breadcrumb/model-breadcrumb';
+import { FormalizerContext, UiContext, defaultUiContext } from '../../context/designer-context';
 import { ExamplePanel } from '../../panels/example-panel/example-panel';
 import { IllustrationPanel } from '../../panels/illustration-panel/illustration-panel';
-import { CanvasTab, TabType } from '../../typings/designer-types';
 import { OverviewPanel } from '../../panels/overview-panel/overview-panel';
+import { CanvasTab, TabType } from '../../typings/designer-types';
 
 const tabs: TabType<CanvasTab>[] = [
   {
@@ -20,7 +23,7 @@ const tabs: TabType<CanvasTab>[] = [
     Panel: IllustrationPanel,
   },
   {
-    icon: RemoveRedEyeIcon,
+    icon: PreviewIcon,
     tabId: CanvasTab.Example,
     Panel: ExamplePanel,
   },
@@ -32,7 +35,15 @@ const menuVariants: Variants = {
 };
 
 export const Canvas = (props: PanelProps) => {
-  const { activeCanvasTab, updateUi: updateUiContext, canvasCollapsed } = useContext(UiContext);
+  const formalizer = useContext(FormalizerContext);
+  const {
+    activeCanvasTab,
+    updateUi: updateUiContext,
+    canvasCollapsed,
+    activeExampleModelId,
+  } = useContext(UiContext);
+
+  const rootModel = formalizer?.getRootModel();
 
   const handleCollapseToggle = () => {
     updateUiContext({ canvasCollapsed: !canvasCollapsed });
@@ -40,6 +51,10 @@ export const Canvas = (props: PanelProps) => {
 
   const handleTabClick = (tabId: CanvasTab) => {
     updateUiContext({ activeCanvasTab: tabId });
+  };
+
+  const handleHomeButtonClick = () => {
+    updateUiContext({ activeExampleModelId: undefined });
   };
 
   return (
@@ -60,12 +75,9 @@ export const Canvas = (props: PanelProps) => {
             </IconButton>
           </motion.div>
           <Box sx={{ display: 'flex', alignItems: 'center' }}>
-            <ContentTabs<CanvasTab>
-              direction="horizontal"
-              tabs={tabs}
-              activeTab={activeCanvasTab}
-              onTabClick={handleTabClick}
-            />
+            <IconButton onClick={handleHomeButtonClick} sx={{ mr: 1 }}>
+              <AccountTreeIcon />
+            </IconButton>
             <CollapseTab
               direction="vertical"
               onCollapseToggle={handleCollapseToggle}
@@ -76,13 +88,52 @@ export const Canvas = (props: PanelProps) => {
       }
     >
       <PanelBody noPadding sx={{ display: 'flex', justifyContent: 'space-between' }}>
-        <Box sx={{ p: 4, pl: 2 }}>
+        <Box sx={{ p: 4, pl: 2.5, pr: 2.5 }}>
           <OverviewPanel />
         </Box>
-        <Box sx={{ flexGrow: 1 }}>
-          {tabs.map(({ Panel, tabId }) => {
-            return tabId === activeCanvasTab ? <Panel key={tabId} /> : null;
-          })}
+        <Box sx={{ flexGrow: 1 }} style={{ height: '100%' }}>
+          <Card style={{ height: '100%' }} sx={{ mt: 4 }}>
+            <Box
+              sx={{
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'space-between',
+                p: 2,
+                pl: 2.5,
+                pr: 2.5,
+              }}
+              style={{ minHeight: 64 }}
+            >
+              <Box>
+                {activeExampleModelId ? (
+                  <ModelBreadcrumbs shift modelId={activeExampleModelId} />
+                ) : (
+                  <ModelBreadcrumbs modelId={rootModel?.id} />
+                )}
+              </Box>
+              <Box sx={{ display: 'flex', alignItems: 'center' }}>
+                {activeExampleModelId && (
+                  <ContentTabs<CanvasTab>
+                    direction="horizontal"
+                    tabs={tabs}
+                    activeTab={activeCanvasTab}
+                    onTabClick={handleTabClick}
+                  />
+                )}
+                {activeExampleModelId && (
+                  <IconButton>
+                    <EditNoteIcon />
+                  </IconButton>
+                )}
+              </Box>
+            </Box>
+            <Box>
+              {activeExampleModelId &&
+                tabs.map(({ Panel, tabId }) => {
+                  return tabId === activeCanvasTab ? <Panel key={tabId} /> : null;
+                })}
+            </Box>
+          </Card>
         </Box>
       </PanelBody>
     </Panel>

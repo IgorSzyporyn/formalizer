@@ -8,21 +8,25 @@ import { PropertiesPanelItem } from './components/properties-panel-item/properti
 type PropertiesPanelProps = HTMLAttributes<HTMLDivElement>;
 
 export const PropertiesPanel = (props: PropertiesPanelProps) => {
-  const { activeEditModelId: activeModelId } = useContext(UiContext);
+  const { activeEditModelId } = useContext(UiContext);
   const formalizer = useContext(FormalizerContext);
-  const model = formalizer?.getModel(activeModelId);
+  const model = formalizer?.getModel(activeEditModelId);
 
   const handleModelChange = useCallback(
     ({ props }: FormalizerModelChange) => {
       if (props && props.model) {
-        const property = props.model.name as keyof FormalizedModel;
+        const formModel = formalizer?.getModel(model?.id);
 
-        if (model && property) {
-          model[property] = props.value;
+        if (formModel) {
+          const property = props.model.name as keyof FormalizedModel;
+
+          if (formModel && property) {
+            formModel[property] = props.value;
+          }
         }
       }
     },
-    [model]
+    [formalizer, model]
   );
 
   return (
@@ -35,7 +39,7 @@ export const PropertiesPanel = (props: PropertiesPanelProps) => {
       <PanelBody>
         {model && (
           <PropertiesPanelItem
-            key={activeModelId}
+            key={activeEditModelId}
             model={model}
             onModelChange={handleModelChange}
           />

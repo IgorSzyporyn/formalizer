@@ -33,7 +33,7 @@ import {
 } from '../../utils/sortable-tree';
 import { SortableTreeItem } from '../sortable-tree-item/sortable-tree-item';
 import * as Styled from './styled';
-import { FormalizerContext } from '../../../../context/designer-context';
+import { FormalizerContext, UiContext } from '../../../../context/designer-context';
 import { useListener } from '@formalizer/react';
 
 const measuring = {
@@ -66,13 +66,13 @@ const dropAnimationConfig: DropAnimation = {
 };
 
 type SortableTreeProps = {
-  collapsible?: boolean;
   indentationWidth?: number;
-  removable?: boolean;
   model?: FormalizedModel;
 };
 
-export function SortableTree({ collapsible, indentationWidth = 32, model }: SortableTreeProps) {
+export function SortableTree({ indentationWidth = 32, model }: SortableTreeProps) {
+  const { activeDataModelId, activeEditModelId, activeExampleModelId, updateUi } =
+    useContext(UiContext);
   const initial = useRef(true);
 
   const formalizer = useContext(FormalizerContext);
@@ -201,9 +201,7 @@ export function SortableTree({ collapsible, indentationWidth = 32, model }: Sort
                 depth={itemDepth}
                 indentationWidth={indentationWidth}
                 disallowedMove={projected?.disallowedMove}
-                onCollapse={
-                  collapsible && _items && _items.length ? () => handleCollapse(id) : undefined
-                }
+                onCollapse={_items && _items.length ? () => handleCollapse(id) : undefined}
                 onRemove={() => {
                   handleRemove(id);
                 }}
@@ -259,25 +257,27 @@ export function SortableTree({ collapsible, indentationWidth = 32, model }: Sort
     resetState();
 
     if (projected && over) {
-      const { depth, parentId } = projected;
+      const { depth, parentId: _parentId } = projected;
       const { items: clonedItems } = flattenTree({ items: treeItems, oldTree: oldTree.current });
       const overIndex = clonedItems.findIndex(({ id }) => id === over.id);
       const activeIndex = clonedItems.findIndex(({ id }) => id === active.id);
       const activeTreeItem = clonedItems[activeIndex];
+
+      const parentId = _parentId === null ? (model?.id as UniqueIdentifier) : _parentId;
 
       clonedItems[activeIndex] = { ...activeTreeItem, depth, parentId };
       const sortedItems = arrayMove(clonedItems, activeIndex, overIndex);
 
       if (model && !projected.disallowedMove) {
         const previousItem = projected.previousItem;
-        const previousIsParent = previousItem.id === parentId;
+        const previousIsParent = previousItem?.id === parentId;
         let newIndex = 0;
 
         if (!previousIsParent) {
           const parentModel = formalizer?.getModel(parentId as string);
 
           parentModel?.items?.some((item, index) => {
-            const isFound = item.id === previousItem.id;
+            const isFound = item.id === previousItem?.id;
             newIndex = isFound ? index + 1 : newIndex;
             return isFound;
           });
@@ -307,6 +307,16 @@ export function SortableTree({ collapsible, indentationWidth = 32, model }: Sort
 
   function handleRemove(id: UniqueIdentifier) {
     setTreeItems((items) => removeItem(items, id));
+
+    const newUiState = { activeDataModelId, activeEditModelId, activeExampleModelId };
+
+    if (activeExampleModelId === id) {
+      newUiState.activeExampleModelId = undefined;
+    }
+
+    updateUi(newUiState);
+
+    formalizer?.removeModel(id as string);
   }
 
   function handleCollapse(id: UniqueIdentifier) {

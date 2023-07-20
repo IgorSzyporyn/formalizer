@@ -5,7 +5,7 @@ export function App() {
   const model: ClientModel = {
     name: 'root',
     type: 'root',
-    title: 'Main Form',
+    title: 'Form Project',
     items: [
       {
         name: 'personalInformation',

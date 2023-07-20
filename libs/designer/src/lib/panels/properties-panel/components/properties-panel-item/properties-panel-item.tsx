@@ -8,10 +8,7 @@ type PropertiesPanelItemProps = {
   onModelChange: ((change: FormalizerModelChange) => void) | undefined;
 };
 
-export const PropertiesPanelItem = ({
-  model,
-  onModelChange,
-}: PropertiesPanelItemProps) => {
+export const PropertiesPanelItem = ({ model, onModelChange }: PropertiesPanelItemProps) => {
   const clientModel = createPropertiesClientModel({ model });
 
   const formalizer = useFormalizer({
@@ -22,7 +19,7 @@ export const PropertiesPanelItem = ({
 
   return (
     <Box>
-      <Formalizer formalizer={formalizer} auto />
+      <Formalizer formalizer={formalizer} auto modelId={model?.id} />
     </Box>
   );
 };

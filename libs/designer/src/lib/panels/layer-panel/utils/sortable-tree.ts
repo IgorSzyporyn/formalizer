@@ -10,6 +10,17 @@ function getDragDepth(offset: number, indentationWidth: number) {
   return Math.round(offset / indentationWidth);
 }
 
+type ProjectionResult = {
+  depth: number;
+  maxDepth: number;
+  minDepth: number;
+  parentId: UniqueIdentifier | null;
+  disallowedMove: boolean;
+  previousItem?: FlattenedItem;
+  previousItemIndex: number;
+  nextItemIndex: number;
+};
+
 export function getProjection(
   items: FlattenedItem[],
   activeId: UniqueIdentifier,
@@ -17,7 +28,7 @@ export function getProjection(
   dragOffset: number,
   indentationWidth: number,
   model?: FormalizedModel
-) {
+): ProjectionResult {
   const overItemIndex = items.findIndex(({ id }) => id === overId);
   const activeItemIndex = items.findIndex(({ id }) => id === activeId);
   const activeItem = items[activeItemIndex];

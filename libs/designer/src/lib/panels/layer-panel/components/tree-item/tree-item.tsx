@@ -7,11 +7,15 @@ import RemoveRedEyeIcon from '@mui/icons-material/RemoveRedEye';
 import { Box, Button, Card, IconButton } from '@mui/material';
 import cx from 'classnames';
 import deepmerge from 'deepmerge';
-import { Fragment, HTMLAttributes, forwardRef, useContext } from 'react';
+import { Fragment, HTMLAttributes, forwardRef, useContext, useState } from 'react';
 import { ModelCardHeader } from '../../../../components/model-card-header/model-card-header';
+import DeleteIcon from '@mui/icons-material/Delete';
+import HighlightOffIcon from '@mui/icons-material/HighlightOff';
 import { FormalizerContext, UiContext } from '../../../../context/designer-context';
+import DeleteForeverIcon from '@mui/icons-material/DeleteForever';
 import * as Styled from './styled';
 import { CanvasTab, UtilityTab } from '../../../../typings/designer-types';
+import { Variants } from 'framer-motion';
 
 export type TreeItemProps = {
   modelId?: string;
@@ -29,6 +33,16 @@ export type TreeItemProps = {
   onRemove?: () => void;
   wrapperRef?(node: HTMLLIElement): void;
 } & Omit<HTMLAttributes<HTMLLIElement>, 'id'>;
+
+const cardPanelVariants: Variants = {
+  open: { width: 'calc(100% - 80px)' },
+  closed: { width: '100%' },
+};
+
+const cardButtonVariants: Variants = {
+  closed: { opacity: 1, visibility: 'visible' },
+  open: { opacity: 0, visibility: 'hidden' },
+};
 
 const checkIsGroup = (model?: FormalizedModel) => {
   const type = model?.type;
@@ -61,10 +75,11 @@ export const TreeItem = forwardRef<HTMLDivElement, TreeItemProps>(
     },
     ref
   ) => {
-    const { updateUi, activeExampleModelId } = useContext(UiContext);
-
     const formalizer = useContext(FormalizerContext);
     const model = formalizer?.getModel?.(modelId);
+
+    const { updateUi, activeExampleModelId } = useContext(UiContext);
+    const [cardOpen, setCardOpen] = useState(false);
 
     const handleEditClick = () => {
       updateUi({
@@ -78,6 +93,19 @@ export const TreeItem = forwardRef<HTMLDivElement, TreeItemProps>(
         activeExampleModelId: modelId,
         activeCanvasTab: CanvasTab.Example,
       });
+    };
+
+    const handleRemoveClick = () => {
+      setCardOpen((state) => !state);
+    };
+
+    const handleRemoveAcceptClick = () => {
+      setCardOpen(false);
+      onRemove?.();
+    };
+
+    const handleRemoveCancelClick = () => {
+      setCardOpen(false);
     };
 
     const wrapperCx = cx('designer-layer-card-wrapper', {
@@ -118,42 +146,86 @@ export const TreeItem = forwardRef<HTMLDivElement, TreeItemProps>(
         })}
       >
         <Styled.TreeItem ref={ref} className={treeItemCx}>
-          <Card sx={{ display: 'flex' }}>
-            <Button
-              {...handleProps}
-              color={handleColor}
-              sx={{
-                width: 18,
-                minWidth: 18,
-                borderTopRightRadius: 0,
-                borderBottomRightRadius: 0,
-              }}
+          <Styled.TreeItemInner>
+            <Styled.TreemItemEditPanel>
+              <IconButton
+                onClick={handleRemoveCancelClick}
+                title="Cancel and close"
+                sx={{ mt: 1.5 }}
+              >
+                <HighlightOffIcon />
+              </IconButton>
+              <IconButton
+                onClick={handleRemoveAcceptClick}
+                title="irrevocably delete this model"
+                sx={{ mt: 1.5, mr: 1 }}
+              >
+                <DeleteForeverIcon />
+              </IconButton>
+            </Styled.TreemItemEditPanel>
+            <Styled.TreeItemCardPanel
+              variants={cardPanelVariants}
+              initial="closed"
+              animate={cardOpen && !ghost ? 'open' : 'closed'}
             >
-              <DragIndicatorIcon />
-            </Button>
-            <Box sx={{ flexGrow: 1 }}>
-              <ModelCardHeader
-                modelId={model?.id}
-                action={
-                  <Fragment>
-                    <CollapseButton
-                      collapsed={collapsed}
-                      onCollapseToggle={onCollapse}
-                      style={{ visibility: hasItems ? 'visible' : 'hidden' }}
-                    />
-                    {isGroup && (
-                      <IconButton onClick={handleExampleClick}>
-                        <RemoveRedEyeIcon />
-                      </IconButton>
-                    )}
-                    <IconButton onClick={handleEditClick}>
-                      <EditNoteIcon />
-                    </IconButton>
-                  </Fragment>
-                }
-              />
-            </Box>
-          </Card>
+              <Card sx={{ display: 'flex' }}>
+                <Button
+                  {...handleProps}
+                  color={handleColor}
+                  sx={{
+                    width: 18,
+                    minWidth: 18,
+                    borderTopRightRadius: 0,
+                    borderBottomRightRadius: 0,
+                  }}
+                >
+                  <DragIndicatorIcon />
+                </Button>
+                <Box sx={{ flexGrow: 1 }}>
+                  <ModelCardHeader
+                    sx={{ p: 2 }}
+                    modelId={model?.id}
+                    action={
+                      <Styled.CardButtons
+                        animate={cardOpen || ghost ? 'open' : 'closed'}
+                        variants={cardButtonVariants}
+                      >
+                        {isGroup && (
+                          <Styled.FocusButton
+                            className="designer-layer-card__focus-button"
+                            title="Focus the model"
+                            onClick={handleExampleClick}
+                          >
+                            <RemoveRedEyeIcon />
+                          </Styled.FocusButton>
+                        )}
+
+                        <Styled.PropertiesButton
+                          className="designer-layer-card__properties-button"
+                          onClick={handleEditClick}
+                          title="Edit model properties"
+                        >
+                          <EditNoteIcon />
+                        </Styled.PropertiesButton>
+
+                        <Styled.RemoveButton
+                          className="designer-layer-card__remove-button"
+                          title="Delete the model"
+                          onClick={handleRemoveClick}
+                        >
+                          <DeleteIcon />
+                        </Styled.RemoveButton>
+
+                        {hasItems && (
+                          <CollapseButton collapsed={collapsed} onCollapseToggle={onCollapse} />
+                        )}
+                      </Styled.CardButtons>
+                    }
+                  />
+                </Box>
+              </Card>
+            </Styled.TreeItemCardPanel>
+          </Styled.TreeItemInner>
         </Styled.TreeItem>
       </Styled.TreeWrapper>
     );

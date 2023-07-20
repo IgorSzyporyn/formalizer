@@ -83,7 +83,7 @@ export const ModelCardHeader = ({
     },
     icon: {
       small: '1.25rem',
-      medium: '0.875rem',
+      medium: '1.5rem',
       large: 16,
     },
   };

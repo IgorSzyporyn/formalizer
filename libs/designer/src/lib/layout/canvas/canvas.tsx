@@ -14,7 +14,7 @@ import { FormalizerContext, UiContext, defaultUiContext } from '../../context/de
 import { ExamplePanel } from '../../panels/example-panel/example-panel';
 import { IllustrationPanel } from '../../panels/illustration-panel/illustration-panel';
 import { OverviewPanel } from '../../panels/overview-panel/overview-panel';
-import { CanvasTab, TabType } from '../../typings/designer-types';
+import { CanvasTab, TabType, UtilityTab } from '../../typings/designer-types';
 
 const tabs: TabType<CanvasTab>[] = [
   {
@@ -55,6 +55,14 @@ export const Canvas = (props: PanelProps) => {
 
   const handleHomeButtonClick = () => {
     updateUiContext({ activeExampleModelId: undefined });
+  };
+
+  const handleEditPropertiesClick = () => {
+    updateUiContext({
+      activeEditModelId: activeExampleModelId || rootModel?.id,
+      utilitiesCollapsed: false,
+      activeUtilityTab: UtilityTab.Properties,
+    });
   };
 
   return (
@@ -120,11 +128,9 @@ export const Canvas = (props: PanelProps) => {
                     onTabClick={handleTabClick}
                   />
                 )}
-                {activeExampleModelId && (
-                  <IconButton>
-                    <EditNoteIcon />
-                  </IconButton>
-                )}
+                <IconButton onClick={handleEditPropertiesClick}>
+                  <EditNoteIcon />
+                </IconButton>
               </Box>
             </Box>
             <Box>

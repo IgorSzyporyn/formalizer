@@ -1,5 +1,5 @@
 import { useContext } from 'react';
-import { DesignerContext } from '../../../../designer-context';
+import { FormalizerContext } from '../../../../context/designer-context';
 import { CreateIllustrations } from '../create-illustrations/create-illustrations';
 import * as Styled from './styled';
 import { ModelCardHeader } from '../../../../components/model-card-header/model-card-header';
@@ -9,7 +9,7 @@ type GridIllustrationProps = {
 };
 
 export const GridIllustration = ({ modelId }: GridIllustrationProps) => {
-  const { formalizer } = useContext(DesignerContext);
+  const formalizer = useContext(FormalizerContext);
   const model = formalizer?.getModel(modelId);
 
   return (

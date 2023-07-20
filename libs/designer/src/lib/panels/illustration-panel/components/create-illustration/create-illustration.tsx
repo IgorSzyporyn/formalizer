@@ -1,5 +1,5 @@
 import { useContext } from 'react';
-import { DesignerContext } from '../../../../designer-context';
+import { FormalizerContext } from '../../../../context/designer-context';
 import { illustrationModels } from '../../models/illustration-panel-model';
 
 type CreateIllustrationProps = {
@@ -7,7 +7,7 @@ type CreateIllustrationProps = {
 };
 
 export const CreateIllustration = ({ modelId }: CreateIllustrationProps) => {
-  const { formalizer } = useContext(DesignerContext);
+  const formalizer = useContext(FormalizerContext);
   const model = formalizer?.getModel(modelId);
 
   let Component;

@@ -14,9 +14,8 @@ export enum CanvasMode {
 }
 
 export enum CanvasTab {
-  Overview = 1,
-  Illustration = 2,
-  Example = 3,
+  Illustration = 1,
+  Example = 2,
 }
 
 export type TabType<T> = {

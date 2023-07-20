@@ -10,17 +10,10 @@ interface SortableTreeItemProps extends TreeItemProps {
   modelId: string;
 }
 
-const animateLayoutChanges: AnimateLayoutChanges = ({
-  isSorting,
-  wasDragging,
-}) => (isSorting || wasDragging ? false : true);
+const animateLayoutChanges: AnimateLayoutChanges = ({ isSorting, wasDragging }) =>
+  isSorting || wasDragging ? false : true;
 
-export function SortableTreeItem({
-  id,
-  depth,
-  modelId,
-  ...props
-}: SortableTreeItemProps) {
+export function SortableTreeItem({ id, depth, modelId, ...props }: SortableTreeItemProps) {
   const {
     attributes,
     isDragging,

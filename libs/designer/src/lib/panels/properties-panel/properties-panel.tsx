@@ -2,14 +2,14 @@ import { PanelBody, PanelHeader } from '@formalizer/components';
 import { FormalizedModel, FormalizerModelChange } from '@formalizer/core';
 import EditNoteIcon from '@mui/icons-material/EditNote';
 import { HTMLAttributes, useCallback, useContext } from 'react';
-import { DesignerContext, DesignerUiContext } from '../../designer-context';
+import { FormalizerContext, UiContext } from '../../context/designer-context';
 import { PropertiesPanelItem } from './components/properties-panel-item/properties-panel-item';
 
 type PropertiesPanelProps = HTMLAttributes<HTMLDivElement>;
 
 export const PropertiesPanel = (props: PropertiesPanelProps) => {
-  const { activeModelId } = useContext(DesignerUiContext);
-  const { formalizer } = useContext(DesignerContext);
+  const { activeEditModelId: activeModelId } = useContext(UiContext);
+  const formalizer = useContext(FormalizerContext);
   const model = formalizer?.getModel(activeModelId);
 
   const handleModelChange = useCallback(

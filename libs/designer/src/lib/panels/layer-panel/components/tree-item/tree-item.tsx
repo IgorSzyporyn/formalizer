@@ -9,10 +9,7 @@ import cx from 'classnames';
 import deepmerge from 'deepmerge';
 import { Fragment, HTMLAttributes, forwardRef, useContext } from 'react';
 import { ModelCardHeader } from '../../../../components/model-card-header/model-card-header';
-import {
-  DesignerContext,
-  DesignerUiContext,
-} from '../../../../designer-context';
+import { FormalizerContext, UiContext } from '../../../../context/designer-context';
 import * as Styled from './styled';
 import { CanvasTab, UtilityTab } from '../../../../typings/designer-types';
 
@@ -22,13 +19,14 @@ export type TreeItemProps = {
   clone?: boolean;
   ghost?: boolean;
   disableInteraction?: boolean;
+  disallowedMove?: boolean;
   depth: number;
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   handleProps?: any;
   indentationWidth: number;
   collapsed?: boolean;
-  onCollapse?(): void;
-  onRemove?(): void;
+  onCollapse?: () => void;
+  onRemove?: () => void;
   wrapperRef?(node: HTMLLIElement): void;
 } & Omit<HTMLAttributes<HTMLLIElement>, 'id'>;
 
@@ -55,6 +53,7 @@ export const TreeItem = forwardRef<HTMLDivElement, TreeItemProps>(
       indentationWidth,
       onCollapse,
       onRemove,
+      disallowedMove,
       wrapperRef,
       collapsed,
       modelId,
@@ -62,21 +61,21 @@ export const TreeItem = forwardRef<HTMLDivElement, TreeItemProps>(
     },
     ref
   ) => {
-    const { updateUiContext } = useContext(DesignerUiContext);
+    const { updateUi, activeExampleModelId } = useContext(UiContext);
 
-    const { formalizer } = useContext(DesignerContext);
+    const formalizer = useContext(FormalizerContext);
     const model = formalizer?.getModel?.(modelId);
 
     const handleEditClick = () => {
-      updateUiContext({
-        activeModelId: modelId,
+      updateUi({
+        activeEditModelId: modelId,
         activeUtilityTab: UtilityTab.Properties,
       });
     };
 
     const handleExampleClick = () => {
-      updateUiContext({
-        activeModelId: modelId,
+      updateUi({
+        activeExampleModelId: modelId,
         activeCanvasTab: CanvasTab.Example,
       });
     };
@@ -89,10 +88,25 @@ export const TreeItem = forwardRef<HTMLDivElement, TreeItemProps>(
     const treeItemCx = cx('designer-layer-card', {
       'designer-layer-card--ghost': ghost,
       'designer-layer-card--clone': clone,
+      'designer-layer-card--disallowed': disallowedMove,
     });
 
     const isGroup = checkIsGroup(model);
     const hasItems = model?.items && model.items.length > 0;
+    const isParentOfActiveExampleId = formalizer?.isChildOfParent({
+      modelId: activeExampleModelId,
+      parentId: model?.id,
+    });
+
+    let handleColor = isGroup ? 'primary' : 'neutral';
+
+    if (activeExampleModelId === model?.id || (collapsed && isParentOfActiveExampleId)) {
+      handleColor = 'secondary';
+    }
+
+    if (ghost && disallowedMove) {
+      handleColor = 'error';
+    }
 
     return (
       <Styled.TreeWrapper
@@ -107,7 +121,7 @@ export const TreeItem = forwardRef<HTMLDivElement, TreeItemProps>(
           <Card sx={{ display: 'flex' }}>
             <Button
               {...handleProps}
-              color={isGroup ? 'primary' : 'neutral'}
+              color={handleColor}
               sx={{
                 width: 18,
                 minWidth: 18,
@@ -123,15 +137,16 @@ export const TreeItem = forwardRef<HTMLDivElement, TreeItemProps>(
                 action={
                   <Fragment>
                     <CollapseButton
-                      size="medium"
                       collapsed={collapsed}
                       onCollapseToggle={onCollapse}
                       style={{ visibility: hasItems ? 'visible' : 'hidden' }}
                     />
-                    <IconButton size="medium" onClick={handleExampleClick}>
-                      <RemoveRedEyeIcon />
-                    </IconButton>
-                    <IconButton size="medium" onClick={handleEditClick}>
+                    {isGroup && (
+                      <IconButton onClick={handleExampleClick}>
+                        <RemoveRedEyeIcon />
+                      </IconButton>
+                    )}
+                    <IconButton onClick={handleEditClick}>
                       <EditNoteIcon />
                     </IconButton>
                   </Fragment>

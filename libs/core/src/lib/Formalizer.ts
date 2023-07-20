@@ -207,13 +207,7 @@ export class FormalizerCore {
     return { model, flattened, keyProperty };
   };
 
-  updateModel = ({
-    id,
-    properties,
-  }: {
-    id?: string;
-    properties?: ClientModel;
-  }) => {
+  updateModel = ({ id, properties }: { id?: string; properties?: ClientModel }) => {
     const model = this.getModel(id);
 
     if (
@@ -266,9 +260,7 @@ export class FormalizerCore {
     const parentModelId = modelToRemove.parentId;
 
     if (!parentModelId) {
-      throw new Error(
-        `No parent model found for the model with id: ${modelId}`
-      );
+      throw new Error(`No parent model found for the model with id: ${modelId}`);
     }
 
     const parentModel = this.getModel(parentModelId);
@@ -300,9 +292,7 @@ export class FormalizerCore {
         return;
       }
 
-      const currentPosition = parentItems.findIndex(
-        (item) => item.id === modelId
-      );
+      const currentPosition = parentItems.findIndex((item) => item.id === modelId);
 
       if (currentPosition === -1) {
         return;
@@ -334,9 +324,7 @@ export class FormalizerCore {
       const sourceItem = sourceItems[sourceIndex];
 
       // Remove from the source parent's items array
-      sourceParentModel.items = sourceItems.filter(
-        (item) => item.id !== modelId
-      );
+      sourceParentModel.items = sourceItems.filter((item) => item.id !== modelId);
 
       // Insert into the target parent's items array at the specified position
       targetItems.splice(newPosition, 0, sourceItem);
@@ -344,6 +332,17 @@ export class FormalizerCore {
       // Update the model's parentId
       model.parentId = parentId;
     }
+  };
+
+  isChildOfParent = ({ modelId, parentId }: { modelId?: string; parentId?: string }) => {
+    let _isChildOfParent = false;
+
+    if (modelId && parentId) {
+      const modelIdSplit = modelId.split(parentId);
+      _isChildOfParent = modelIdSplit.length > 1;
+    }
+
+    return _isChildOfParent;
   };
 }
 

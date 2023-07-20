@@ -14,6 +14,19 @@ export function App() {
         description: 'Please fill in your personal details',
         items: [
           {
+            name: 'nationality',
+            type: 'radiogroup',
+            title: 'Nationality',
+            items: [
+              {
+                type: 'radioItem',
+                name: 'danish',
+                title: 'Danish',
+              },
+              { type: 'radioItem', name: 'other', title: 'Other' },
+            ],
+          },
+          {
             name: 'fullName',
             type: 'group',
             title: 'Full Name',
@@ -28,6 +41,19 @@ export function App() {
                 name: 'lastName',
                 type: 'text',
                 title: 'Last Name',
+              },
+              {
+                name: 'gender',
+                type: 'radiogroup',
+                title: 'Gender',
+                items: [
+                  {
+                    type: 'radioItem',
+                    name: 'male',
+                    title: 'Male',
+                  },
+                  { type: 'radioItem', name: 'female', title: 'Female' },
+                ],
               },
             ],
           },

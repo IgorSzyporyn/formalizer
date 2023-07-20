@@ -2,17 +2,15 @@ import styled from '@emotion/styled';
 import './keyframes.css';
 
 const focusedOutlineColor = '#4c9ffe';
-const boxShadowBorder =
-  '0 0 0 calc(1px / var(--scale-x, 1)) rgba(63, 63, 68, 0.05)';
-const boxShadowCommon =
-  '0 1px calc(3px / var(--scale-x, 1)) 0 rgba(34, 33, 81, 0.15)';
+const boxShadowBorder = '0 0 0 calc(1px / var(--scale-x, 1)) rgba(63, 63, 68, 0.05)';
+const boxShadowCommon = '0 1px calc(3px / var(--scale-x, 1)) 0 rgba(34, 33, 81, 0.15)';
 const boxShadow = `${boxShadowBorder},${boxShadowCommon}`;
 
 export const Wrapper = styled.li`
   display: flex;
   box-sizing: border-box;
-  transform: translate3d(var(--translate-x, 0), var(--translate-y, 0), 0)
-    scaleX(var(--scale-x, 1)) scaleY(var(--scale-y, 1));
+  transform: translate3d(var(--translate-x, 0), var(--translate-y, 0), 0) scaleX(var(--scale-x, 1))
+    scaleY(var(--scale-y, 1));
   transform-origin: 0 0;
   touch-action: manipulation;
 
@@ -23,8 +21,7 @@ export const Wrapper = styled.li`
   &.sortable-panel-item-wrapper--drag-overlay {
     --scale: 1.05;
     --box-shadow: ${boxShadow};
-    --box-shadow-picked-up: ${boxShadowBorder},
-      -1px 0 15px 0 rgba(34, 33, 81, 0.01),
+    --box-shadow-picked-up: ${boxShadowBorder}, -1px 0 15px 0 rgba(34, 33, 81, 0.01),
       0px 15px 15px 0 rgba(34, 33, 81, 0.25);
     z-index: 999;
   }
@@ -50,24 +47,13 @@ export const Content = styled.div`
     box-shadow: 0 0px 4px 1px ${focusedOutlineColor}, ${boxShadow};
   }
 
-  &.sortable-panel-item-content--dragging:not(
-      .sortable-panel-item-content--drag-overlay
-    ) {
+  &.sortable-panel-item-content--dragging:not(.sortable-panel-item-content--drag-overlay) {
     opacity: var(--dragging-opacity, 0.5);
     z-index: 0;
 
     &:focus {
       box-shadow: ${boxShadow};
     }
-  }
-
-  &.sortable-panel-item-content--disabled {
-    color: #999;
-    background-color: #f1f1f1;
-    &:focus {
-      box-shadow: 0 0px 4px 1px rgba(0, 0, 0, 0.1), ${boxShadow};
-    }
-    cursor: not-allowed;
   }
 
   &.sortable-panel-item-content--drag-overlay {

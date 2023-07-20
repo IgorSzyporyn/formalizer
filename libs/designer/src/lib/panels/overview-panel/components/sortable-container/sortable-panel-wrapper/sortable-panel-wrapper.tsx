@@ -8,11 +8,7 @@ type SortablePanelWrapperProps = {
   style?: CSSProperties;
 };
 
-export function SortablePanelWrapper({
-  children,
-  center,
-  style,
-}: SortablePanelWrapperProps) {
+export function SortablePanelWrapper({ children, center, style }: SortablePanelWrapperProps) {
   const className = cx('sortable-panel-wrapper', {
     'sortable-panel-wrapper--center': center,
   });

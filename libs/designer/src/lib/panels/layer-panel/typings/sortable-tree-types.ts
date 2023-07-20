@@ -4,15 +4,16 @@ import type { MutableRefObject } from 'react';
 
 export type TreeItem = {
   id: UniqueIdentifier;
-  modelId: string;
+  parentId?: UniqueIdentifier | null;
   collapsed?: boolean;
-  editing?: boolean;
   items: TreeItem[];
   accepts?: CoreModelType[];
-  type?: CoreModelType;
+  type: CoreModelType;
 };
 
 export type TreeItems = TreeItem[];
+
+export type FlatTree = Record<UniqueIdentifier, TreeItem>;
 
 export interface FlattenedItem extends TreeItem {
   parentId: UniqueIdentifier | null;

@@ -4,11 +4,11 @@ import EditIcon from '@mui/icons-material/Edit';
 import LayersIcon from '@mui/icons-material/Layers';
 import { Box, Button } from '@mui/material';
 import { Fragment, useContext } from 'react';
-import { DesignerContext } from '../../designer-context';
+import { FormalizerContext } from '../../context/designer-context';
 import { SortableTree } from './components/sortable-tree/sortable-tree';
 
 export const LayerPanel = () => {
-  const { formalizer } = useContext(DesignerContext);
+  const formalizer = useContext(FormalizerContext);
   const model = formalizer?.getRootModel();
 
   return (
@@ -32,8 +32,8 @@ export const LayerPanel = () => {
               The model as a tree sortable tree structure.
             </Box>
             <Box component="span">
-              Adding new models to the model via button will place the new model
-              last, and clicking edit will let you edit root
+              Adding new models to the model via button will place the new model last, and clicking
+              edit will let you edit root
             </Box>
           </Fragment>
         }

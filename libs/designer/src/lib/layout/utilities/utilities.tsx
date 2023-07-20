@@ -2,18 +2,15 @@ import { Panel } from '@formalizer/components';
 import EditNoteIcon from '@mui/icons-material/EditNote';
 import HandymanIcon from '@mui/icons-material/Handyman';
 import LayersIcon from '@mui/icons-material/Layers';
-import { AnimatePresence, Variants } from 'framer-motion';
+import { Variants } from 'framer-motion';
 import { Fragment, useContext } from 'react';
-import {
-  DesignerUiContext,
-  defaultDesignerUiContextValue,
-} from '../../designer-context';
+import { CollapseTab } from '../../components/collapse-tab/collapse-tab';
+import { ContentTabs } from '../../components/content-tabs/content-tabs';
+import { UiContext, defaultUiContext } from '../../context/designer-context';
 import { LayerPanel } from '../../panels/layer-panel/layer-panel';
 import { PropertiesPanel } from '../../panels/properties-panel/properties-panel';
 import { ToolboxPanel } from '../../panels/toolbox-panel/toolbox-panel';
-import { UtilityTab, TabType } from '../../typings/designer-types';
-import { CollapseTab } from '../../components/collapse-tab/collapse-tab';
-import { ContentTabs } from '../../components/content-tabs/content-tabs';
+import { TabType, UtilityTab } from '../../typings/designer-types';
 import * as Styled from './styled';
 
 const tabs: TabType<UtilityTab>[] = [
@@ -58,8 +55,10 @@ export const Utilities = () => {
   const {
     activeUtilityTab: activeTab,
     utilitiesCollapsed,
-    updateUiContext,
-  } = useContext(DesignerUiContext);
+    utilitiesWidth,
+    utilitiesMinWidth,
+    updateUi: updateUiContext,
+  } = useContext(UiContext);
 
   const handleTabClick = (tabId: UtilityTab) => {
     updateUiContext({ activeUtilityTab: tabId });
@@ -86,11 +85,7 @@ export const Utilities = () => {
             collapsed={utilitiesCollapsed}
             onCollapseToggle={handleCollapsedToggle}
           />
-          <ContentTabs<UtilityTab>
-            tabs={tabs}
-            activeTab={activeTab}
-            onTabClick={handleTabClick}
-          />
+          <ContentTabs<UtilityTab> tabs={tabs} activeTab={activeTab} onTabClick={handleTabClick} />
         </Fragment>
       }
     >
@@ -98,17 +93,13 @@ export const Utilities = () => {
         animate={utilitiesCollapsed ? 'closed' : 'open'}
         variants={contentCollapseVariants}
       >
-        <Styled.ContentMotionInner>
+        <Styled.ContentMotionInner style={{ width: utilitiesWidth, minWidth: utilitiesMinWidth }}>
           {tabs.map(({ tabId, Panel }) => {
             return (
               <Styled.ContentMotionChild
                 key={`content-main-item-${tabId}`}
                 animate={tabId === activeTab ? 'enter' : 'exit'}
-                initial={
-                  tabId === defaultDesignerUiContextValue.activeUtilityTab
-                    ? 'enter'
-                    : 'exit'
-                }
+                initial={tabId === defaultUiContext.activeUtilityTab ? 'enter' : 'exit'}
                 exit="exit"
                 variants={panelContentVariants}
               >

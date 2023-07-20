@@ -3,10 +3,7 @@ import { Box, Button } from '@mui/material';
 import { Variants, motion } from 'framer-motion';
 import { useContext } from 'react';
 import { BrandLogo } from '../../components/brand-logo/brand-logo';
-import {
-  DesignerUiContext,
-  defaultDesignerUiContextValue,
-} from '../../designer-context';
+import { UiContext, defaultUiContext } from '../../context/designer-context';
 import { Canvas } from '../canvas/canvas';
 import * as Styled from './styled';
 
@@ -33,37 +30,23 @@ const contentVariants: Variants = {
 };
 
 export const Main = () => {
-  const { canvasCollapsed } = useContext(DesignerUiContext);
+  const { canvasCollapsed } = useContext(UiContext);
 
   return (
     <>
-      <BrandLogo
-        style={{ position: 'absolute', top: 32, left: 44, zIndex: 900 }}
-      />
+      <BrandLogo style={{ position: 'absolute', top: 32, left: 44, zIndex: 900 }} />
       <motion.div
         style={{ height: '100%', position: 'relative' }}
-        initial={
-          defaultDesignerUiContextValue.canvasCollapsed
-            ? 'collapsed'
-            : 'expanded'
-        }
+        initial={defaultUiContext.canvasCollapsed ? 'collapsed' : 'expanded'}
         animate={canvasCollapsed ? 'collapsed' : 'expanded'}
       >
-        <Styled.Header
-          style={{ left: 64, right: 20, top: 8 }}
-          variants={headerVariants}
-        >
+        <Styled.Header style={{ left: 64, right: 20, top: 8 }} variants={headerVariants}>
           <Styled.Text>
             <Styled.Title>Formalizer</Styled.Title>
             <Styled.Subtitle>Automated form generation</Styled.Subtitle>
           </Styled.Text>
           <Box>
-            <Button
-              color="neutral"
-              variant="text"
-              startIcon={<PersonIcon />}
-              size="small"
-            >
+            <Button color="neutral" variant="text" startIcon={<PersonIcon />} size="small">
               Profile
             </Button>
           </Box>

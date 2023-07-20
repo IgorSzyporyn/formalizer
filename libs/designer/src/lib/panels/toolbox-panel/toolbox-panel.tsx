@@ -11,8 +11,7 @@ export const ToolboxPanel = ({ ...props }: ToolboxPanelProps) => {
       <PanelHeader
         title="Toolbox"
         Icon={HandymanIcon}
-        description="Choose among the various types of UI fields and simply drag and drop
-      into the form."
+        description="Choose among the various types of UI fields and simply drag and drop into the form."
       />
       <PanelBody>
         <ToolboxGroups />

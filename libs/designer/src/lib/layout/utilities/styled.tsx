@@ -9,7 +9,6 @@ export const ContentMotion = styled(motion.div)`
 export const ContentMotionInner = styled.div`
   position: relative;
   height: 100%;
-  width: 500px;
 `;
 
 export const ContentMotionChild = styled(motion.div)`

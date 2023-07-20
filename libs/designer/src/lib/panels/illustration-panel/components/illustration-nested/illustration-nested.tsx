@@ -1,7 +1,7 @@
 import { Box, Collapse } from '@mui/material';
 import { useContext, useState } from 'react';
 import { ModelCardHeader } from '../../../../components/model-card-header/model-card-header';
-import { DesignerContext } from '../../../../designer-context';
+import { FormalizerContext } from '../../../../context/designer-context';
 import { CreateIllustrations } from '../create-illustrations/create-illustrations';
 
 type IllustrationNestedProps = {
@@ -9,7 +9,7 @@ type IllustrationNestedProps = {
 };
 
 export const IllustrationNested = ({ modelId }: IllustrationNestedProps) => {
-  const { formalizer } = useContext(DesignerContext);
+  const formalizer = useContext(FormalizerContext);
   const model = formalizer?.getModel(modelId);
   const [collapsed, setCollapsed] = useState(true);
 

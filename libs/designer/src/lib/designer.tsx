@@ -5,11 +5,11 @@ import { CssBaseline } from '@mui/material';
 import { useCallback, useRef, useState } from 'react';
 import { DesignerApp } from './designer-app';
 import {
-  DesignerContext,
-  DesignerUiContext,
-  DesignerUiContextValueSafe,
-  defaultDesignerUiContextValue,
-} from './designer-context';
+  FormalizerContext,
+  UiContext,
+  UiContextValueSafe,
+  defaultUiContext,
+} from './context/designer-context';
 import './styles/global.css';
 
 export type DesignerProps = {
@@ -19,12 +19,10 @@ export type DesignerProps = {
 export const Designer = ({ model }: DesignerProps) => {
   const formalizer = useRef(new FormalizerCore({ model }));
 
-  const [uiState, setUiState] = useState<DesignerUiContextValueSafe>(
-    defaultDesignerUiContextValue
-  );
+  const [uiState, setUiState] = useState<UiContextValueSafe>(defaultUiContext);
 
   const updateUiContext = useCallback(
-    (value: Partial<DesignerUiContextValueSafe>) => {
+    (value: Partial<UiContextValueSafe>) => {
       setUiState({ ...uiState, ...value });
     },
     [uiState]
@@ -35,11 +33,11 @@ export const Designer = ({ model }: DesignerProps) => {
   return (
     <ThemeProvider theme={theme}>
       <CssBaseline />
-      <DesignerContext.Provider value={{ formalizer: formalizer.current }}>
-        <DesignerUiContext.Provider value={{ ...uiState, updateUiContext }}>
+      <FormalizerContext.Provider value={formalizer.current}>
+        <UiContext.Provider value={{ ...uiState, updateUi: updateUiContext }}>
           <DesignerApp />
-        </DesignerUiContext.Provider>
-      </DesignerContext.Provider>
+        </UiContext.Provider>
+      </FormalizerContext.Provider>
     </ThemeProvider>
   );
 };

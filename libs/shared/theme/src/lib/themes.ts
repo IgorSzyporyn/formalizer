@@ -1,5 +1,5 @@
 import { PaletteOptions, createTheme } from '@mui/material';
-import { blue, green, grey, purple } from '@mui/material/colors';
+import { blue, green, grey, purple, red } from '@mui/material/colors';
 
 const palette: PaletteOptions = {
   mode: 'dark',
@@ -12,6 +12,7 @@ const palette: PaletteOptions = {
     contrastText: '#fff',
   },
   success: { main: green[600] },
+  error: { main: red[600] },
 };
 
 export const theme = createTheme({

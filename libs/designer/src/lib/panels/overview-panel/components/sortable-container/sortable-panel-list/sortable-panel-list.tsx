@@ -7,14 +7,22 @@ export type SortablePanelListProps = {
   columns?: number;
   style?: CSSProperties;
   horizontal?: boolean;
+  itemWidth: number;
+  gap: number;
+  itemHeight: number;
 };
 
-export const SortablePanelList = forwardRef<
-  HTMLUListElement,
-  SortablePanelListProps
->(
+export const SortablePanelList = forwardRef<HTMLUListElement, SortablePanelListProps>(
   (
-    { children, columns = 1, horizontal, style }: SortablePanelListProps,
+    {
+      children,
+      columns = 1,
+      horizontal,
+      style,
+      itemWidth,
+      itemHeight,
+      gap,
+    }: SortablePanelListProps,
     ref
   ) => {
     const className = cx('sortable-panel-list', {
@@ -24,7 +32,15 @@ export const SortablePanelList = forwardRef<
     return (
       <Styled.Wrapper
         ref={ref}
-        style={{ ...style, '--columns': columns } as CSSProperties}
+        style={
+          {
+            ...style,
+            '--columns': columns,
+            minWidth: itemWidth,
+            minHeight: itemHeight,
+            gridGap: gap,
+          } as CSSProperties
+        }
         className={className}
       >
         {children}

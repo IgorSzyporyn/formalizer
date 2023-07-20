@@ -2,7 +2,7 @@ import { getUiModels } from '@formalizer/models';
 import { useListener } from '@formalizer/react';
 import { CardHeader, CardHeaderProps } from '@mui/material';
 import { useContext } from 'react';
-import { DesignerContext } from '../../designer-context';
+import { FormalizerContext } from '../../context/designer-context';
 import cx from 'classnames';
 
 type ModelCardHeaderProps = {
@@ -16,7 +16,7 @@ export const ModelCardHeader = ({
   size = 'medium',
   ...rest
 }: ModelCardHeaderProps) => {
-  const { formalizer } = useContext(DesignerContext);
+  const formalizer = useContext(FormalizerContext);
   const model = formalizer?.getModel(modelId);
 
   const type = model?.type;
@@ -40,7 +40,7 @@ export const ModelCardHeader = ({
       className={className}
       title={model?.title || model?.name}
       subheader={uiModel?.title}
-      avatar={<Icon />}
+      avatar={Icon && <Icon />}
     />
   );
 };

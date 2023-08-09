@@ -1,6 +1,7 @@
 import { Checkbox, FormControlLabel } from '@mui/material';
 import { ChangeEvent } from 'react';
 import { FieldComponentProps } from '../../../../typings';
+import { Field } from '../../components/field/field';
 
 export const BooleanField = ({ model, ...props }: FieldComponentProps) => {
   const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
@@ -13,11 +14,15 @@ export const BooleanField = ({ model, ...props }: FieldComponentProps) => {
   };
 
   return (
-    <FormControlLabel
-      control={
-        <Checkbox {...props} checked={!!props.value} onChange={handleChange} />
-      }
-      label={model?.title}
-    />
+    <Field model={model}>
+      {() => {
+        return (
+          <FormControlLabel
+            control={<Checkbox {...props} checked={!!props.value} onChange={handleChange} />}
+            label={model?.title}
+          />
+        );
+      }}
+    </Field>
   );
 };

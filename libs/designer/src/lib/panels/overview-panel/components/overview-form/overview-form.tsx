@@ -1,7 +1,6 @@
 import { useTheme } from '@emotion/react';
 import { Panel } from '@formalizer/components';
 import { FormalizedModel } from '@formalizer/core';
-import { useListener } from '@formalizer/react';
 import { Box, Typography } from '@mui/material';
 import { useContext } from 'react';
 import { FormalizerContext, UiContext } from '../../../../context/designer-context';
@@ -14,17 +13,17 @@ type OverviewFormProps = {
 };
 
 export const OverviewForm = ({ model, width, height }: OverviewFormProps) => {
-  const { activeExampleModelId } = useContext(UiContext);
+  const { activeFocusModelId } = useContext(UiContext);
   const formalizer = useContext(FormalizerContext);
   const { palette } = useTheme();
 
   const isParentOfActiveExampleModelId = formalizer?.isChildOfParent({
-    modelId: activeExampleModelId,
+    modelId: activeFocusModelId,
     parentId: model.id,
   });
 
   const backgroundColor =
-    activeExampleModelId === model.id || isParentOfActiveExampleModelId
+    activeFocusModelId === model.id || isParentOfActiveExampleModelId
       ? palette.secondary.main
       : palette.primary.main;
 

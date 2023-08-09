@@ -1,10 +1,10 @@
 import { getUiModels } from '@formalizer/models';
 import { useListener } from '@formalizer/react';
 import { CardHeaderProps } from '@mui/material';
+import cx from 'classnames';
 import { CSSProperties, useContext } from 'react';
 import { FormalizerContext } from '../../context/designer-context';
 import * as Styled from './styled';
-import cx from 'classnames';
 
 type TypographyMapType = {
   title: {
@@ -48,7 +48,7 @@ export const ModelCardHeader = ({
   const uiModel = uiModels?.[type!];
   const Icon = uiModel?.icon;
 
-  useListener(model);
+  useListener({ model, property: ['title', 'name', 'type'], id: 'model-card-header' });
 
   const typographyMap: TypographyMapType = {
     title: {
@@ -114,11 +114,17 @@ export const ModelCardHeader = ({
           display: 'block',
           overflow: 'hidden',
         },
+        '& .MuiCardHeader-action': {
+          marginRight: 0,
+          paddingLeft: 1,
+        },
       }}
       className={className}
       title={model?.title || model?.name}
       subheader={!noSubheader && uiModel?.title}
-      avatar={Icon && !noAvatar && <Icon style={{ fontSize: typographyMap.icon[size] }} />}
+      avatar={
+        Icon && !noAvatar && <Icon style={{ fontSize: typographyMap.icon[size] }} />
+      }
     />
   );
 };

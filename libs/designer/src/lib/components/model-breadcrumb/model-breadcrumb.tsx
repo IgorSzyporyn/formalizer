@@ -22,7 +22,7 @@ export const ModelBreadcrumbs = ({ shift, modelId }: ModelBreadcrumbsProps) => {
   }
 
   const handleBreadcrumbClick = (id: string) => {
-    updateUi({ activeExampleModelId: id });
+    updateUi({ activeFocusModelId: id });
   };
 
   return (

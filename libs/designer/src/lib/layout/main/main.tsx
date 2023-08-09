@@ -13,7 +13,7 @@ const headerVariants: Variants = {
     transition: { duration: 0.3 },
   },
   collapsed: {
-    opacity: 0,
+    opacity: 1,
     transition: { duration: 0.4 },
   },
 };

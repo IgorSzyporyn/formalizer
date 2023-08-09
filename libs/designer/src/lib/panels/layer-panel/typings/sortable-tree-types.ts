@@ -5,6 +5,7 @@ import type { MutableRefObject } from 'react';
 export type TreeItem = {
   id: UniqueIdentifier;
   parentId?: UniqueIdentifier | null;
+  hasCollapsedParent?: boolean;
   collapsed?: boolean;
   items: TreeItem[];
   accepts?: CoreModelType[];

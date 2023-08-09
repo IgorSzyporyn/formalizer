@@ -12,8 +12,11 @@ import {
 } from '../typings/model-types';
 import { setItemsProperty } from './handlers/set-items-property';
 import { setTypeProperty } from './handlers/set-type-property';
+import { setNameProperty } from './handlers/set-name-property';
 import { setValueProperty } from './handlers/set-value-property';
 import { CreateObjectObserveHandlerProps } from './typings/shared-types';
+
+const LISTENER_MAP: Record<string, Listener> = {};
 
 type CreateObservableModelProps = {
   config: FormalizerCoreConfig;
@@ -35,10 +38,7 @@ export const addListener = (
   }
 };
 
-export const removeListener = (
-  id: string,
-  listenerMap: Record<string, Listener>
-) => {
+export const removeListener = (id: string, listenerMap: Record<string, Listener>) => {
   delete listenerMap[id];
 };
 
@@ -56,29 +56,27 @@ export const createModelObserve = ({
   onModelItemChange,
   ...rest
 }: CreateObservableModelProps) => {
-  const listenerMap: Record<string, Listener> = {};
-
   model.listeners?.forEach((listener) => {
-    addListener(listener, listenerMap);
+    addListener(listener, LISTENER_MAP);
   });
 
   model.addListener = (listener) => {
-    addListener(listener, listenerMap);
+    addListener(listener, LISTENER_MAP);
   };
 
   model.removeListener = (id: string) => {
-    removeListener(id, listenerMap);
+    removeListener(id, LISTENER_MAP);
   };
 
   model.removeListeners = (listenerIds: string[]) => {
-    removeListeners(listenerIds, listenerMap);
+    removeListeners(listenerIds, LISTENER_MAP);
   };
 
   const handler = createObjectObserveHandler(
     (args) => {
       onModelItemChange?.(args);
 
-      for (const listener of Object.values(listenerMap)) {
+      for (const listener of Object.values(LISTENER_MAP)) {
         if (args.property === listener.property || listener.property === '*') {
           listener.callback(args);
         }
@@ -95,6 +93,7 @@ export const createModelObserve = ({
 const propertyHandlers = {
   value: setValueProperty,
   type: setTypeProperty,
+  name: setNameProperty,
   items: setItemsProperty,
 };
 
@@ -103,11 +102,7 @@ const createObjectObserveHandler = (
   props: CreateObjectObserveHandlerProps
 ) => {
   return {
-    set(
-      model: FormalizedModel,
-      property: keyof FormalizedModel,
-      value: unknown
-    ) {
+    set(model: FormalizedModel, property: keyof FormalizedModel, value: unknown) {
       const oldValue = model[property];
 
       if (!isEqual(oldValue, value)) {

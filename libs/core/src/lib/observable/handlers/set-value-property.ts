@@ -14,11 +14,7 @@ type CheckValueDirtyProps = {
   oldValue?: unknown;
 };
 
-const checkValueDirty = ({
-  apiType,
-  newValue,
-  oldValue,
-}: CheckValueDirtyProps) => {
+const checkValueDirty = ({ apiType, newValue, oldValue }: CheckValueDirtyProps) => {
   let dirty = false;
 
   switch (apiType) {
@@ -45,11 +41,7 @@ type SetItemsPropertyProps = {
   modelIdMap: FormalizedModelFlat;
 };
 
-const setArrayItemsProperty = ({
-  model,
-  value,
-  modelIdMap,
-}: SetItemsPropertyProps) => {
+const setArrayItemsProperty = ({ model, value, modelIdMap }: SetItemsPropertyProps) => {
   model.items?.forEach((item, index) => {
     const _value = (value || []) as [];
     if (item.id && modelIdMap) {
@@ -58,11 +50,7 @@ const setArrayItemsProperty = ({
   });
 };
 
-const setObjectItemsProperty = ({
-  model,
-  value,
-  modelIdMap,
-}: SetItemsPropertyProps) => {
+const setObjectItemsProperty = ({ model, value, modelIdMap }: SetItemsPropertyProps) => {
   model.items?.forEach((item) => {
     if (modelIdMap && item.id) {
       const _value = (value || {}) as Record<string, unknown>;

@@ -11,6 +11,12 @@ const palette: PaletteOptions = {
     dark: grey[600],
     contrastText: '#fff',
   },
+  panel: {
+    main: '#232323',
+    light: '#2a2a2a',
+    dark: '#1e1e1e',
+    contrastText: '#fff',
+  },
   success: { main: green[600] },
   error: { main: red[600] },
 };

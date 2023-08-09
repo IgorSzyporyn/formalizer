@@ -36,50 +36,61 @@ export const Header = ({
   preventInfo,
   ...rest
 }: HeaderProps) => {
-  const { collapsible, description, hint, icon, title } = model;
+  const { collapsible, description, hint, icon, title, layoutOnly } = model;
 
   const Icon = _icon || icon;
   const Title = _title || title;
   const Hint = _hint || hint;
   const Description = _description || description;
 
+  const hasHeader = title || hint || description || collapsible;
+
   const typography = typographyMap[size];
 
-  return (
-    <Styled.Wrapper {...rest}>
-      <Styled.Main>
-        <Styled.Info>
-          {Icon && !preventInfo && <Icon sx={{ mr: 1 }} />}
+  return !layoutOnly && hasHeader ? (
+    <Styled.Wrapper {...rest} className="field__header">
+      <Styled.Main className="field__header-main">
+        <Styled.Info className="field__header-main-info">
+          {Icon && !preventInfo && <Icon className="field__header-icon" sx={{ mr: 1 }} />}
           {Title &&
             !preventInfo &&
             (_title || (
-              <Styled.Title variant={typography.title}>{title}</Styled.Title>
+              <Styled.Title className="field__header-title" variant={typography.title}>
+                {title}
+              </Styled.Title>
             ))}
         </Styled.Info>
         {Hint &&
           !preventInfo &&
           (_hint || (
-            <Styled.Hint variant={typography.hint}>{hint}</Styled.Hint>
+            <Styled.Hint className="field__header-hint" variant={typography.hint}>
+              {hint}
+            </Styled.Hint>
           ))}
         {Description &&
           !preventInfo &&
           (_description || (
-            <Styled.Description variant={typography.description}>
+            <Styled.Description
+              className="field__header-description"
+              variant={typography.description}
+            >
               {description}
             </Styled.Description>
           ))}
       </Styled.Main>
-      <Styled.Action>
+      <Styled.Action className="field__header-action">
         {collapsible && (
-          <Styled.AnimatedCollapse
-            sx={{ rotate: collapsed ? '0deg' : '90deg' }}
-          >
-            <Styled.CollapseButton size={size} onClick={onCollapseToggle}>
+          <Styled.AnimatedCollapse sx={{ rotate: collapsed ? '0deg' : '90deg' }}>
+            <Styled.CollapseButton
+              className="field__header-collapse"
+              size={size}
+              onClick={onCollapseToggle}
+            >
               <ChevronRight />
             </Styled.CollapseButton>
           </Styled.AnimatedCollapse>
         )}
       </Styled.Action>
     </Styled.Wrapper>
-  );
+  ) : null;
 };

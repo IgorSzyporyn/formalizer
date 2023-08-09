@@ -1,14 +1,18 @@
-import { Box } from '@mui/material';
-import { ModelCardHeader } from '../../../../components/model-card-header/model-card-header';
+import { useTheme } from '@emotion/react';
+import { IllustrationProps } from '../../typings/illustration-panel-types';
+import { IllustrationHeader } from '../illustration-header/illustration-header';
+import { IllustrationWrapper } from '../illustration-wrapper/illustration-wrapper';
 
-type IllustrationSingleProps = {
-  modelId?: string;
-};
+export const IllustrationSingle = (props: IllustrationProps) => {
+  const theme = useTheme();
 
-export const IllustrationSingle = ({ modelId }: IllustrationSingleProps) => {
   return (
-    <Box sx={{ m: 1.5 }}>
-      <ModelCardHeader modelId={modelId} />
-    </Box>
+    <IllustrationWrapper
+      single
+      fullWidth={props.model.fullWidth}
+      sx={{ boxShadow: theme.shadows[2] }}
+    >
+      <IllustrationHeader {...props} allowFocus={false} size="small" />
+    </IllustrationWrapper>
   );
 };

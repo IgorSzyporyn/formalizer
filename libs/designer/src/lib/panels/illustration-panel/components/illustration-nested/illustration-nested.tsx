@@ -1,29 +1,20 @@
-import { Box, Collapse } from '@mui/material';
-import { useContext, useState } from 'react';
-import { ModelCardHeader } from '../../../../components/model-card-header/model-card-header';
-import { FormalizerContext } from '../../../../context/designer-context';
+import { IllustrationProps } from '../../typings/illustration-panel-types';
 import { CreateIllustrations } from '../create-illustrations/create-illustrations';
+import { IllustrationContainer } from '../illustration-container/illustration-container';
+import { IllustrationHeader } from '../illustration-header/illustration-header';
+import { IllustrationWrapper } from '../illustration-wrapper/illustration-wrapper';
 
-type IllustrationNestedProps = {
-  modelId?: string;
-};
-
-export const IllustrationNested = ({ modelId }: IllustrationNestedProps) => {
-  const formalizer = useContext(FormalizerContext);
-  const model = formalizer?.getModel(modelId);
-  const [collapsed, setCollapsed] = useState(true);
-
-  const handleCollapsed = () => {
-    setCollapsed((state) => !state);
-  };
-
+export const IllustrationNested = (props: IllustrationProps) => {
   return (
-    <Box sx={{ m: 1.5 }}>
-      <ModelCardHeader modelId={modelId}>
-        <Collapse in={!collapsed}>
-          <CreateIllustrations items={model?.items} />
-        </Collapse>
-      </ModelCardHeader>
-    </Box>
+    <IllustrationWrapper
+      fullWidth={props.model.fullWidth}
+      isRoot={props.isRoot}
+      sx={{ border: '1px solid rgba(50, 50, 50, 0.7)' }}
+    >
+      <IllustrationHeader {...props} />
+      <IllustrationContainer model={props.model}>
+        <CreateIllustrations items={props.model.items} />
+      </IllustrationContainer>
+    </IllustrationWrapper>
   );
 };

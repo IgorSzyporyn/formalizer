@@ -309,7 +309,7 @@ export class FormalizerCore {
       }
 
       const sourceItems = sourceParentModel.items;
-      const targetItems = parentModel.items;
+      const targetItems = parentModel.items || [];
 
       if (!targetItems) {
         return;
@@ -327,7 +327,23 @@ export class FormalizerCore {
       sourceParentModel.items = sourceItems.filter((item) => item.id !== modelId);
 
       // Insert into the target parent's items array at the specified position
-      targetItems.splice(newPosition, 0, sourceItem);
+      const newTargetItems: FormalizedModel[] = new Array(targetItems.length + 1);
+
+      targetItems.forEach((item, index) => {
+        let newIndex = index;
+
+        if (index >= newPosition) {
+          newIndex = index + 1;
+        } else {
+          newIndex = index;
+        }
+
+        newTargetItems[newIndex] = item;
+      });
+
+      newTargetItems[newPosition] = sourceItem;
+
+      parentModel.items = newTargetItems;
 
       // Update the model's parentId
       model.parentId = parentId;

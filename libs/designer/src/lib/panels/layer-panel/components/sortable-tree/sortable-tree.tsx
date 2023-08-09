@@ -19,8 +19,10 @@ import {
 import { SortableContext, arrayMove, rectSortingStrategy } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
 import { FormalizedModel } from '@formalizer/core';
+import { useListener } from '@formalizer/react';
 import { useContext, useEffect, useMemo, useRef, useState } from 'react';
 import { createPortal } from 'react-dom';
+import { FormalizerContext, UiContext } from '../../../../context/designer-context';
 import { FlatTree, FlattenedItem, TreeItem } from '../../typings/sortable-tree-types';
 import { sortableTreeKeyboardCoordinates } from '../../utils/keyboard-coordinates';
 import {
@@ -33,8 +35,6 @@ import {
 } from '../../utils/sortable-tree';
 import { SortableTreeItem } from '../sortable-tree-item/sortable-tree-item';
 import * as Styled from './styled';
-import { FormalizerContext, UiContext } from '../../../../context/designer-context';
-import { useListener } from '@formalizer/react';
 
 const measuring = {
   droppable: {
@@ -71,12 +71,12 @@ type SortableTreeProps = {
 };
 
 export function SortableTree({ indentationWidth = 32, model }: SortableTreeProps) {
-  const { activeDataModelId, activeEditModelId, activeExampleModelId, updateUi } =
+  const { activeDataModelId, activeEditModelId, activeFocusModelId, updateUi } =
     useContext(UiContext);
   const initial = useRef(true);
 
   const formalizer = useContext(FormalizerContext);
-  const modelJSON = formalizer?.getModelJSON(model?.id) as TreeItem;
+  const modelJSON = formalizer?.getModelJSON(model?.id);
 
   const oldTree = useRef<FlatTree>({});
 
@@ -118,7 +118,14 @@ export function SortableTree({ indentationWidth = 32, model }: SortableTreeProps
 
   const projected =
     activeId && overId
-      ? getProjection(flattenedItems, activeId, overId, offsetLeft, indentationWidth, model)
+      ? getProjection(
+          flattenedItems,
+          activeId,
+          overId,
+          offsetLeft,
+          indentationWidth,
+          model
+        )
       : null;
 
   const sensorContext = useRef({
@@ -165,12 +172,12 @@ export function SortableTree({ indentationWidth = 32, model }: SortableTreeProps
     },
   };
 
-  const listener = useListener(model);
+  const listener = useListener({ model, property: 'items', id: 'sortable-tree' });
 
   useEffect(() => {
     setTreeItems(formalizer?.getModelJSON(model?.id).items);
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [listener]);
+  }, [model, listener]);
 
   return (
     <DndContext
@@ -189,19 +196,19 @@ export function SortableTree({ indentationWidth = 32, model }: SortableTreeProps
           {flattenedItems.map((flattenedItem) => {
             const { id, items: _items, depth, collapsed } = flattenedItem;
             const itemDepth = id === activeId && projected ? projected.depth : depth;
-            // itemDepth = allowedMove ? itemDepth : depth;
 
             return (
               <SortableTreeItem
-                // eslint-disable-next-line @typescript-eslint/no-explicit-any
-                modelId={id as any}
+                modelId={id as string}
                 key={`sortable-tree-item-${id}`}
                 id={id}
                 collapsed={collapsed}
                 depth={itemDepth}
                 indentationWidth={indentationWidth}
                 disallowedMove={projected?.disallowedMove}
-                onCollapse={_items && _items.length ? () => handleCollapse(id) : undefined}
+                onCollapse={
+                  _items && _items.length ? () => handleCollapse(id) : undefined
+                }
                 onRemove={() => {
                   handleRemove(id);
                 }}
@@ -213,8 +220,7 @@ export function SortableTree({ indentationWidth = 32, model }: SortableTreeProps
               {activeId && activeItem ? (
                 <SortableTreeItem
                   key={`sortable-tree-item-clone-${activeId}`}
-                  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-                  modelId={activeId as any}
+                  modelId={activeId as string}
                   id={activeId}
                   depth={activeItem.depth}
                   clone
@@ -258,7 +264,10 @@ export function SortableTree({ indentationWidth = 32, model }: SortableTreeProps
 
     if (projected && over) {
       const { depth, parentId: _parentId } = projected;
-      const { items: clonedItems } = flattenTree({ items: treeItems, oldTree: oldTree.current });
+      const { items: clonedItems } = flattenTree({
+        items: treeItems,
+        oldTree: oldTree.current,
+      });
       const overIndex = clonedItems.findIndex(({ id }) => id === over.id);
       const activeIndex = clonedItems.findIndex(({ id }) => id === active.id);
       const activeTreeItem = clonedItems[activeIndex];
@@ -283,9 +292,22 @@ export function SortableTree({ indentationWidth = 32, model }: SortableTreeProps
           });
         }
 
-        formalizer?.moveModel(active.id as string, parentId as string, newIndex);
+        const isMovingParent = depth !== activeItem?.depth;
+        const parentModel = formalizer?.getModel(parentId as string);
+        const parentItems = parentModel?.items || [];
+        const parentLastIndex = parentItems.length;
+
         const { items: newItems } = buildTree(sortedItems, model, oldTree.current);
+
+        const delta = activeIndex - overIndex < 0 ? 1 : 0;
+
         setTreeItems(newItems);
+
+        formalizer?.moveModel(
+          active.id as string,
+          parentId as string,
+          isMovingParent ? parentLastIndex : newIndex - delta
+        );
       } else if (projected.disallowedMove) {
         resetState();
       }
@@ -308,10 +330,10 @@ export function SortableTree({ indentationWidth = 32, model }: SortableTreeProps
   function handleRemove(id: UniqueIdentifier) {
     setTreeItems((items) => removeItem(items, id));
 
-    const newUiState = { activeDataModelId, activeEditModelId, activeExampleModelId };
+    const newUiState = { activeDataModelId, activeEditModelId, activeFocusModelId };
 
-    if (activeExampleModelId === id) {
-      newUiState.activeExampleModelId = undefined;
+    if (activeFocusModelId === id) {
+      newUiState.activeFocusModelId = undefined;
     }
 
     updateUi(newUiState);

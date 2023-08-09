@@ -1,16 +1,18 @@
 import { CreateChildren } from '../../../../components/create-children/create-children';
 import { FieldComponentProps } from '../../../../typings';
-import { CollapsibleField } from '../../components/collapsible-field/collapsible-field';
-import * as Styled from './styled';
+import { FieldNested } from '../../components/field-nested/field-nested';
 
 export const GridField = ({ model }: FieldComponentProps) => {
   const { columns = 2 } = model;
 
   return (
-    <CollapsibleField model={model}>
-      <Styled.Content columns={columns}>
-        <CreateChildren model={model} />
-      </Styled.Content>
-    </CollapsibleField>
+    <FieldNested
+      model={model}
+      ContentProps={{ style: { display: 'grid', gridTemplateColumns: '1fr '.repeat(columns) } }}
+    >
+      {(overrides) => {
+        return <CreateChildren model={model} overrides={overrides} />;
+      }}
+    </FieldNested>
   );
 };

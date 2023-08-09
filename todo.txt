@@ -1,0 +1,41 @@
+DONE - Make <Formalizer /> take a model instead of formalizer and root only
+DONE - Re-kick off <IllustrationPanel />
+DONE - Kick off <ExamplePanel />
+DONE - Remove scale from delete panel in layer item animation
+DONE - Layer item model header needs ellipsis when hover and buttons needs space
+NOT POSSIBLE - Use stagger children for collapsed items in layer tree
+DONE - When moving items relations gets broken for the model header
+DONE - setItemsProperty does not handle names
+
+==========================================
+
+Change "direction" to "layout"
+
+Enable layout for group item components in frameworks
+
+Implement "width" property
+
+Implement "minLength", "length" & "maxLength" properties
+
+Implement start of "validation" property - use JSON Schema
+Implement courtesy properties for validation at model root level
+i.e "mandatory" etc..
+
+Create dependency component for Properties Editor
+
+
+useFormalizer needs to take UIFramework as model option
+
+Make component selectors work in emotion using babel plugin and/or swc plugin - figure it out
+
+Link between properties editor and focus panel and example panel is broken
+
+Use framer motion to move items in layer when sorting
+
+==========================================
+
+Add in some fail safes when it comes to ID's and relations when moving & shuffling items
+- Add name property handler for observable w/fail safe
+- Add id property handler for observable w/fail safe
+
+

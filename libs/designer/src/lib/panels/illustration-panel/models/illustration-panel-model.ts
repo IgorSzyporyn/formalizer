@@ -1,8 +1,7 @@
 import { CoreModelType } from '@formalizer/core';
-import { GridIllustration } from '../components/grid-illustration/grid-illustration';
+import { GridIllustration } from '../fields/grid-illustration/grid-illustration';
 import { IllustrationSingle } from '../components/illustration-single/illustration-single';
 import { IllustrationNested } from '../components/illustration-nested/illustration-nested';
-import { FormIllustration } from '../components/form-illustration/form-illustration';
 
 export type IllustrationModel = {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -11,7 +10,7 @@ export type IllustrationModel = {
 
 export const illustrationModels: Record<CoreModelType, IllustrationModel> = {
   form: {
-    Component: FormIllustration,
+    Component: IllustrationNested,
   },
   uiArray: {
     Component: IllustrationSingle,

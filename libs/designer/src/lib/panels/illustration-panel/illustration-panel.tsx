@@ -1,16 +1,12 @@
-import { RootIllustration } from './components/root/root-illustration';
-import * as Styled from './styled';
+import { Box } from '@mui/material';
+import { useContext } from 'react';
+import { FormalizerContext, UiContext } from '../../context/designer-context';
+import { RootIllustration } from './fields/root/root-illustration';
 
-type IllustrationPanelProps = {
-  id?: string;
-};
+export const IllustrationPanel = () => {
+  const formalizer = useContext(FormalizerContext);
+  const { activeFocusModelId } = useContext(UiContext);
+  const model = formalizer?.getModel(activeFocusModelId);
 
-export const IllustrationPanel = ({ id }: IllustrationPanelProps) => {
-  return (
-    <Styled.Wrapper>
-      <Styled.Box>
-        <RootIllustration modelId={id} />
-      </Styled.Box>
-    </Styled.Wrapper>
-  );
+  return <Box sx={{ pr: 2.5, pl: 2.5 }}>{model && <RootIllustration model={model} />}</Box>;
 };

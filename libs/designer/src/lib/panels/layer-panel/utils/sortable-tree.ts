@@ -1,7 +1,12 @@
 import type { UniqueIdentifier } from '@dnd-kit/core';
 import { arrayMove } from '@dnd-kit/sortable';
 
-import type { FlatTree, FlattenedItem, TreeItem, TreeItems } from '../typings/sortable-tree-types';
+import type {
+  FlatTree,
+  FlattenedItem,
+  TreeItem,
+  TreeItems,
+} from '../typings/sortable-tree-types';
 import { FormalizedModel } from '@formalizer/core';
 
 export const iOS = /iPad|iPhone|iPod/.test(navigator.platform);
@@ -207,7 +212,10 @@ export function findItem(items: TreeItem[], itemId: UniqueIdentifier) {
   return items.find(({ id }) => id === itemId);
 }
 
-export function findItemDeep(items: TreeItems, itemId: UniqueIdentifier): TreeItem | undefined {
+export function findItemDeep(
+  items: TreeItems,
+  itemId: UniqueIdentifier
+): TreeItem | undefined {
   for (const item of items) {
     const { id, items } = item;
 
@@ -293,6 +301,24 @@ export function removeChildrenOf(items: FlattenedItem[], ids: UniqueIdentifier[]
     }
 
     return true;
+  });
+}
+
+export function setHasCollapsedParent(items: FlattenedItem[], ids: UniqueIdentifier[]) {
+  const excludeParentIds = [...ids];
+
+  return items.map((item) => {
+    if (item.parentId && excludeParentIds.includes(item.parentId)) {
+      if (item.items?.length) {
+        excludeParentIds.push(item.id);
+      }
+
+      item.hasCollapsedParent = true;
+    } else {
+      item.hasCollapsedParent = false;
+    }
+
+    return item;
   });
 }
 

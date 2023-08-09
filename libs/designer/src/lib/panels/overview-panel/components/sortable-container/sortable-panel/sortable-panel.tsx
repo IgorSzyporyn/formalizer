@@ -24,7 +24,7 @@ import {
 } from '@dnd-kit/sortable';
 import { FormalizedModel } from '@formalizer/core';
 import { useListener } from '@formalizer/react';
-import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { createPortal } from 'react-dom';
 import { createRange } from '../../../utils/create-range';
 import { SortablePanelItem } from '../sortable-panel-item/sortable-panel-item';
@@ -91,7 +91,9 @@ export const SortablePanel = ({
     onDragStart({ active: { id } }) {
       return `Picked up sortable item ${String(
         id
-      )}. Sortable item ${id} is in position ${getPosition(id)} of ${modelIndexes.length}`;
+      )}. Sortable item ${id} is in position ${getPosition(id)} of ${
+        modelIndexes.length
+      }`;
     },
     onDragOver({ active, over }) {
       // In this specific use-case, the picked up item's `id` is always the same as the first `over` id.
@@ -103,18 +105,18 @@ export const SortablePanel = ({
       }
 
       if (over) {
-        return `Sortable item ${active.id} was moved into position ${getPosition(over.id)} of ${
-          modelIndexes.length
-        }`;
+        return `Sortable item ${active.id} was moved into position ${getPosition(
+          over.id
+        )} of ${modelIndexes.length}`;
       }
 
       return;
     },
     onDragEnd({ active, over }) {
       if (over) {
-        return `Sortable item ${active.id} was dropped at position ${getPosition(over.id)} of ${
-          modelIndexes.length
-        }`;
+        return `Sortable item ${active.id} was dropped at position ${getPosition(
+          over.id
+        )} of ${modelIndexes.length}`;
       }
 
       return;
@@ -132,7 +134,7 @@ export const SortablePanel = ({
     }
   }, [activeId]);
 
-  useListener(model);
+  useListener({ model, id: 'sortable-panel' });
 
   return (
     <DndContext
@@ -234,7 +236,6 @@ function SortableItem({
     setNodeRef,
     transform,
     transition,
-    setActivatorNodeRef,
   } = useSortable({
     id,
   });
@@ -251,7 +252,6 @@ function SortableItem({
       listeners={listeners}
       itemHeight={itemHeight}
       itemWidth={itemWidth}
-      handleRef={setActivatorNodeRef}
       data-index={index}
       data-id={id}
       dragOverlay={!useDragOverlay && isDragging}

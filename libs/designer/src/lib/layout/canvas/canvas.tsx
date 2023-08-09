@@ -40,7 +40,7 @@ export const Canvas = (props: PanelProps) => {
     activeCanvasTab,
     updateUi: updateUiContext,
     canvasCollapsed,
-    activeExampleModelId,
+    activeFocusModelId,
   } = useContext(UiContext);
 
   const rootModel = formalizer?.getRootModel();
@@ -54,12 +54,12 @@ export const Canvas = (props: PanelProps) => {
   };
 
   const handleHomeButtonClick = () => {
-    updateUiContext({ activeExampleModelId: undefined });
+    updateUiContext({ activeFocusModelId: undefined });
   };
 
   const handleEditPropertiesClick = () => {
     updateUiContext({
-      activeEditModelId: activeExampleModelId || rootModel?.id,
+      activeEditModelId: activeFocusModelId || rootModel?.id,
       utilitiesCollapsed: false,
       activeUtilityTab: UtilityTab.Properties,
     });
@@ -99,8 +99,8 @@ export const Canvas = (props: PanelProps) => {
         <Box sx={{ p: 4, pl: 2.5, pr: 2.5 }}>
           <OverviewPanel />
         </Box>
-        <Box sx={{ flexGrow: 1 }} style={{ height: '100%' }}>
-          <Card style={{ height: '100%' }} sx={{ mt: 4 }}>
+        <Box sx={{ flexGrow: 1 }}>
+          <Card sx={{ mt: 4 }} style={{ height: '100%' }}>
             <Box
               sx={{
                 display: 'flex',
@@ -113,14 +113,14 @@ export const Canvas = (props: PanelProps) => {
               style={{ minHeight: 64 }}
             >
               <Box>
-                {activeExampleModelId ? (
-                  <ModelBreadcrumbs shift modelId={activeExampleModelId} />
+                {activeFocusModelId ? (
+                  <ModelBreadcrumbs shift modelId={activeFocusModelId} />
                 ) : (
                   <ModelBreadcrumbs modelId={rootModel?.id} />
                 )}
               </Box>
               <Box sx={{ display: 'flex', alignItems: 'center' }}>
-                {activeExampleModelId && (
+                {activeFocusModelId && (
                   <ContentTabs<CanvasTab>
                     direction="horizontal"
                     tabs={tabs}
@@ -133,8 +133,8 @@ export const Canvas = (props: PanelProps) => {
                 </IconButton>
               </Box>
             </Box>
-            <Box>
-              {activeExampleModelId &&
+            <Box style={{ overflowY: 'auto' }}>
+              {activeFocusModelId &&
                 tabs.map(({ Panel, tabId }) => {
                   return tabId === activeCanvasTab ? <Panel key={tabId} /> : null;
                 })}

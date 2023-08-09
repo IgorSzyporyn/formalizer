@@ -22,9 +22,7 @@ const bailReports = (model: FormalizedModel, parentModel?: FormalizedModel) => {
 
   // If trying to create a type that does not exist
   if (!coreModelTypes.includes(model.type)) {
-    console.warn(
-      `The model: "${model.name}" has an invalid type: "${model.type}"`
-    );
+    console.warn(`The model: "${model.name}" has an invalid type: "${model.type}"`);
 
     bailEarly = true;
   }
@@ -116,10 +114,7 @@ export const createFormalizerModel = ({
   }
 
   // Ensure value property is set if a defaultValue is provided but no value
-  if (
-    instanceModel.defaultValue !== undefined &&
-    instanceModel.value === undefined
-  ) {
+  if (instanceModel.defaultValue !== undefined && instanceModel.value === undefined) {
     instanceModel.value = instanceModel.defaultValue;
   }
 

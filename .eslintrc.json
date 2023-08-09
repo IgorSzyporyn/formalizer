@@ -8,7 +8,7 @@
       "rules": {
         "max-len": [
           "error",
-          { "code": 100, "ignoreTemplateLiterals": true, "ignoreStrings": true }
+          { "code": 90, "ignoreTemplateLiterals": true, "ignoreStrings": true }
         ],
         "@typescript-eslint/no-unused-vars": [
           "warn",

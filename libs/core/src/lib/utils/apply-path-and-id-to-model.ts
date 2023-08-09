@@ -21,13 +21,15 @@ export const applyPathAndIdToModel = ({
   const parentModel = modelIdMap?.[parentId || ''];
   const dataParentModel = modelIdMap?.[dataParentId || ''];
 
-  // Setup ID with default value
   model.id = model.name;
 
-  // Add dot notated ID if parented
   if (parentModel) {
-    model.id = `${parentModel.id}.${model.id}`;
+    // Add dot notated ID if parented
+    model.id = `${parentModel.id}.${model.name}`;
   }
+
+  model.parentId = parentModel?.id;
+  model.dataParentId = dataParentModel?.id;
 
   // Handle the model path value and the path value we return
   if (dataParentModel && model.apiType !== 'none') {
@@ -47,9 +49,6 @@ export const applyPathAndIdToModel = ({
   } else if (model.apiType !== 'none') {
     switch (model.apiType) {
       case 'array':
-        model.path = model.name;
-        path = model.path;
-        break;
       case 'object':
         model.path = model.name;
         path = model.path;

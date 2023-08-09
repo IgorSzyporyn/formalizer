@@ -28,9 +28,7 @@ export const applyDependencies = ({
   });
 
   // Iterate over the model's items
-  model.items?.forEach((item) =>
-    applyDependencies({ model: item, modelIdMap })
-  );
+  model.items?.forEach((item) => applyDependencies({ model: item, modelIdMap }));
 
   return true;
 };

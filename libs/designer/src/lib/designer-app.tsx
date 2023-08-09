@@ -1,13 +1,20 @@
 import { Box } from '@mui/material';
-import { Utilities } from './layout/utilities/utilities';
 import { Main } from './layout/main/main';
+import { Utilities } from './layout/utilities/utilities';
 
 export const DesignerApp = () => {
   return (
-    <Box sx={{ display: 'flex', flexGrow: 1, height: '100%' }}>
-      <Box sx={{ flexGrow: '1', height: '100%', ml: 3, mr: 3 }}>
-        <Main />
-      </Box>
+    <Box
+      sx={{
+        display: 'grid',
+        flexGrow: 1,
+        height: '100vh',
+        width: '100vw',
+        gap: 2,
+        gridTemplateColumns: 'minmax(0, 1fr) auto',
+      }}
+    >
+      <Box sx={{ height: '100%' }}></Box>
       <Box sx={{ height: '100%' }}>
         <Utilities />
       </Box>
@@ -15,4 +22,4 @@ export const DesignerApp = () => {
   );
 };
 
-// <Header />
+// <Header /> <Main />

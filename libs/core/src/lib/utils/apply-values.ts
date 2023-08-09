@@ -26,9 +26,7 @@ export const applyValues = ({
   const valueMap = getModelValueMap({ modelIdMap, options });
   const defaultValue = dot.object(valueMap) as Record<string, unknown>;
 
-  const values = initialValue
-    ? deepmerge(defaultValue, initialValue)
-    : defaultValue;
+  const values = initialValue ? deepmerge(defaultValue, initialValue) : defaultValue;
 
   applyValueToModel(values, modelPathMap);
 
@@ -82,6 +80,7 @@ const looper = ({
       // eslint-disable-next-line no-prototype-builtins
       if ((value as Record<string, unknown>).hasOwnProperty(_key)) {
         const _value = (value as Record<string, unknown>)[_key];
+
         looper({
           value: _value,
           path: path ? `${path}.${_key}` : _key,

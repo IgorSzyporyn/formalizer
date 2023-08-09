@@ -1,21 +1,53 @@
-import { useContext } from 'react';
-import { FormalizerContext } from '../../../../context/designer-context';
+import { FormalizedModel } from '@formalizer/core';
 import { illustrationModels } from '../../models/illustration-panel-model';
+import { useContext } from 'react';
+import { UiContext } from '../../../../context/designer-context';
+import { UtilityTab } from '../../../../typings/designer-types';
+import { useListener } from '@formalizer/react';
 
 type CreateIllustrationProps = {
-  modelId?: string;
+  model: FormalizedModel;
+  allowFocus?: boolean;
+  allowEdit?: boolean;
+  isRoot?: boolean;
 };
 
-export const CreateIllustration = ({ modelId }: CreateIllustrationProps) => {
-  const formalizer = useContext(FormalizerContext);
-  const model = formalizer?.getModel(modelId);
-
+export const CreateIllustration = ({
+  model,
+  allowFocus,
+  allowEdit,
+  isRoot,
+}: CreateIllustrationProps) => {
+  const { updateUi } = useContext(UiContext);
   let Component;
+
+  const handleEditClick = () => {
+    updateUi({
+      activeEditModelId: model.id,
+      utilitiesCollapsed: false,
+      activeUtilityTab: UtilityTab.Properties,
+    });
+  };
+
+  const handleFocusClick = () => {
+    updateUi({ activeFocusModelId: model.id });
+  };
 
   if (model) {
     const illustrationModel = illustrationModels[model?.type];
     Component = illustrationModel.Component;
   }
 
-  return Component ? <Component modelId={model?.id} /> : null;
+  useListener({ model, id: 'create-illustration' });
+
+  return Component ? (
+    <Component
+      model={model}
+      onEditClick={handleEditClick}
+      onFocusClick={handleFocusClick}
+      allowFocus={allowFocus}
+      allowEdit={allowEdit}
+      isRoot={isRoot}
+    />
+  ) : null;
 };

@@ -1,17 +1,13 @@
-import {
-  Dependency,
-  FormalizedModel,
-  ListenerProps,
-} from '../../typings/model-types';
+import { Dependency, FormalizedModel, ListenerProps } from '../../typings/model-types';
 import {
   applyDependencies,
   createDependencyListenerId,
 } from '../../utils/apply-dependencies';
-import { applyPathAndIdToModel } from '../../utils/apply-path-and-id-to-model';
 import { applyValues } from '../../utils/apply-values';
 import { createFormalizerModel } from '../../utils/create-formalizer-model';
 import { CreateObjectObserveHandlerProps } from '../typings/shared-types';
-import { setValueProperty } from './set-value-property';
+import { propagateItemsProperty } from '../utils/propagate-items-property';
+import { updateRelations } from '../utils/update-relations';
 
 interface SetItemsPropertyProps extends CreateObjectObserveHandlerProps {
   items: FormalizedModel[];
@@ -36,20 +32,23 @@ export const setItemsProperty = ({
     default:
       handleShufflingItems({ model, items, onChange, ...rest });
   }
+
+  onChange({ model, property: 'items', value: model.items });
+
+  propagateItemsProperty({
+    onChange,
+    modelIdMap: rest.modelIdMap,
+    modelId: model.parentId,
+  });
+
+  applyValues(rest);
 };
 
-const handleAddingItems = ({
-  model,
-  items,
-  onChange,
-  ...rest
-}: SetItemsPropertyProps): void => {
-  let newItems: FormalizedModel[] = [];
-
+const handleAddingItems = ({ model, items, ...rest }: SetItemsPropertyProps): void => {
   const isAddedModel = (item: FormalizedModel) =>
     !item.parentId || item.parentId !== model.id || !item.__formalized__;
 
-  const preparedModelsArray = items.reduce(
+  const newItems = items.reduce(
     (acc: FormalizedModel[], item: FormalizedModel, index: number) => {
       const dataParentId = model.path ? model.id : model.dataParentId;
       const dataParentModel = rest.modelIdMap?.[dataParentId || ''];
@@ -66,11 +65,14 @@ const handleAddingItems = ({
             dataParentId,
           });
 
-          rest.modelIdMap = formalized.modelIdMap;
-          rest.modelPathMap = formalized.modelPathMap;
-
           if (formalized.model) {
+            if (rest.modelIdMap && rest.modelPathMap) {
+              rest.modelIdMap[formalized.model.id || ''] = formalized.model;
+              rest.modelPathMap[formalized.model.path || ''] = formalized.model;
+            }
+
             applyDependencies({ ...rest, model: item });
+
             acc[index] = formalized.model;
           }
         } else {
@@ -88,6 +90,19 @@ const handleAddingItems = ({
             dataParentId,
             parentId: model.id,
           });
+
+          if (item.items && item.items.length > 0) {
+            propagateItemsChangeToChildren({
+              ...rest,
+              model: item,
+              index,
+              path: dataParentModel?.path,
+              dataParentId,
+              parentId: model.id,
+            });
+          }
+
+          acc[index] = item;
         }
       }
 
@@ -96,19 +111,10 @@ const handleAddingItems = ({
     new Array(items.length)
   );
 
-  newItems = preparedModelsArray;
   model.items = newItems;
-
-  onChange({ model, property: 'items', value: newItems });
-  applyValues(rest);
 };
 
-const handleRemovingItems = ({
-  model,
-  items,
-  onChange,
-  ...rest
-}: SetItemsPropertyProps): void => {
+const handleRemovingItems = ({ model, items, ...rest }: SetItemsPropertyProps): void => {
   const preparedValue: unknown[] = [];
 
   const removedItems = model.items?.filter(
@@ -128,7 +134,14 @@ const handleRemovingItems = ({
         }
       });
 
-      mappedModel.dependencies = newDependencies;
+      // @TODO: Removed models might have dependencies that needs to be cleared
+      // Can I maybe reuse updateRelations?
+
+      if (mappedModel.dependencies) {
+        mappedModel.dependencies = newDependencies;
+      } else if (!mappedModel.dependencies && newDependencies.length > 0) {
+        mappedModel.dependencies = newDependencies;
+      }
     }
 
     delete rest.modelIdMap?.[item.id || ''];
@@ -151,17 +164,9 @@ const handleRemovingItems = ({
   });
 
   model.items = items;
-
-  onChange({ model, property: 'items', value: items });
-  applyValues(rest);
 };
 
-const handleShufflingItems = ({
-  model,
-  items,
-  onChange,
-  ...rest
-}: SetItemsPropertyProps): void => {
+const handleShufflingItems = ({ model, items, ...rest }: SetItemsPropertyProps): void => {
   const preparedModelsArray: FormalizedModel[] = [];
   const preparedValue: unknown[] = [];
 
@@ -170,9 +175,7 @@ const handleShufflingItems = ({
     const dataParentModel = rest.modelIdMap?.[dataParentId || ''];
 
     if (!model.accepts?.includes(item.type)) {
-      throw Error(
-        `Attempting to an unaccepted item (${item.id}) on to ${model.id}`
-      );
+      throw Error(`Attempting to an unaccepted item (${item.id}) on to ${model.id}`);
     }
 
     if (!item.__formalized__) {
@@ -184,10 +187,12 @@ const handleShufflingItems = ({
         dataParentId,
       });
 
-      rest.modelIdMap = formalized.modelIdMap;
-      rest.modelPathMap = formalized.modelPathMap;
-
       if (formalized.model) {
+        if (rest.modelIdMap && rest.modelPathMap) {
+          rest.modelIdMap[formalized.model.id || ''] = formalized.model;
+          rest.modelPathMap[formalized.model.path || ''] = formalized.model;
+        }
+
         applyDependencies({ model: item, modelIdMap: formalized.modelIdMap });
         preparedModelsArray[index] = formalized.model;
       }
@@ -208,32 +213,25 @@ const handleShufflingItems = ({
   });
 
   model.items = preparedModelsArray;
-
-  onChange({ model, property: 'items', value: preparedModelsArray });
-  applyValues(rest);
 };
 
-const updateRelations = ({
+const propagateItemsChangeToChildren = ({
   model,
   ...rest
-}: CreateObjectObserveHandlerProps): void => {
-  const oldItemId = model.id;
+}: CreateObjectObserveHandlerProps) => {
+  model.items?.forEach((item, index) => {
+    const dataParentId = model.apiType === 'none' ? model.dataParentId : model.id;
 
-  applyPathAndIdToModel({ ...rest, model });
-
-  updateDependencies(rest.modelIdMap, oldItemId, model.id);
-};
-
-const updateDependencies = (
-  modelIdMap: Record<string, FormalizedModel> | undefined,
-  oldItemId: string | undefined,
-  newId: string | undefined
-): void => {
-  Object.values(modelIdMap ?? {}).forEach((mappedModel) => {
-    mappedModel.dependencies?.forEach((dependency) => {
-      if (dependency.id === oldItemId && newId) {
-        dependency.id = newId;
-      }
+    updateRelations({
+      ...rest,
+      dataParentId,
+      index,
+      parentId: item.parentId,
+      model: item,
     });
+
+    if (item.items && item.items.length > 0) {
+      propagateItemsChangeToChildren({ ...rest, model: item });
+    }
   });
 };

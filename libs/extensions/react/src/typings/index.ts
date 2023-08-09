@@ -32,6 +32,7 @@ export type FieldChildProps = {
 
 export type FieldComponentProps = {
   model: FormalizedModel;
+  overrides?: Partial<FormalizedModel>;
 } & FieldChildProps;
 
 export type FieldChildRenderProps = {

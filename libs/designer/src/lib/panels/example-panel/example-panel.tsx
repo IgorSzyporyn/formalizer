@@ -5,7 +5,7 @@ import * as Styled from './styled';
 
 export const ExamplePanel = () => {
   const _formalizer = useContext(FormalizerContext);
-  const { activeExampleModelId } = useContext(UiContext);
+  const { activeFocusModelId } = useContext(UiContext);
 
   const formalizer = useFormalizer({
     formalizer: _formalizer,
@@ -15,7 +15,7 @@ export const ExamplePanel = () => {
   return (
     <Styled.Wrapper>
       <Styled.Box>
-        <Formalizer formalizer={formalizer} modelId={activeExampleModelId} auto />
+        <Formalizer formalizer={formalizer} modelId={activeFocusModelId} auto />
       </Styled.Box>
     </Styled.Wrapper>
   );

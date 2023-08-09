@@ -4,7 +4,7 @@ import { Box } from '@mui/material';
 import { createPropertiesClientModel } from '../../utils/create-properties-client-model';
 
 type PropertiesPanelItemProps = {
-  model?: FormalizedModel;
+  model: FormalizedModel;
   onModelChange: ((change: FormalizerModelChange) => void) | undefined;
 };
 
@@ -18,8 +18,12 @@ export const PropertiesPanelItem = ({ model, onModelChange }: PropertiesPanelIte
   });
 
   return (
-    <Box>
-      <Formalizer formalizer={formalizer} auto modelId={model?.id} />
+    <Box key={model.id}>
+      <Formalizer
+        formalizer={formalizer}
+        auto
+        modelId={formalizer.formalizer?.getRootModel()?.id}
+      />
     </Box>
   );
 };

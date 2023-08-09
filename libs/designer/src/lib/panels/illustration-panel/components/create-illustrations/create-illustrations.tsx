@@ -10,7 +10,7 @@ export const CreateIllustrations = ({ items }: CreateIllustrationsProps) => {
   return items?.map((item) => {
     return (
       <Fragment key={item.id}>
-        <CreateIllustration modelId={item.id} />
+        <CreateIllustration model={item} />
       </Fragment>
     );
   });

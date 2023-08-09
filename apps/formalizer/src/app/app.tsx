@@ -8,22 +8,43 @@ export function App() {
     title: 'Form Project',
     items: [
       {
-        name: 'personalInformation',
+        name: 'a',
         type: 'form',
+        fullWidth: true,
         title: 'Personal Information Form',
         description: 'Please fill in your personal details',
         items: [
           {
-            name: 'nationality',
-            type: 'radiogroup',
-            title: 'Nationality',
+            name: 'b',
+            type: 'object',
+            title: 'test object model',
             items: [
               {
-                type: 'radioItem',
+                name: 'c',
+                type: 'text',
+                title: 'first entry',
+              },
+              {
+                name: 'd',
+                type: 'text',
+                title: 'first entry',
+              },
+            ],
+          },
+          {
+            name: 'various',
+            type: 'group',
+            title: 'Various Horizontal',
+            direction: 'horizontal',
+            fullWidth: true,
+            items: [
+              {
+                type: 'text',
                 name: 'danish',
                 title: 'Danish',
               },
-              { type: 'radioItem', name: 'other', title: 'Other' },
+              { type: 'text', name: 'other', title: 'Other' },
+              { type: 'text', name: 'john', title: 'John' },
             ],
           },
           {
@@ -36,6 +57,7 @@ export function App() {
                 name: 'firstName',
                 type: 'text',
                 title: 'First Name',
+                fullWidth: true,
               },
               {
                 name: 'lastName',

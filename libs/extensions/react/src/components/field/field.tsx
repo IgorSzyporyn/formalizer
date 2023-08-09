@@ -22,7 +22,7 @@ export const Field = ({ id, children, onChange, onBlur }: FieldProps) => {
   const options = formalizer?.getOptions();
   const model = formalizer?.getModel(id);
 
-  useListener(model);
+  useListener({ model, id: 'react-field' });
 
   const handleBlur = useCallback(
     (e: ChangeEvent<unknown>) => {
